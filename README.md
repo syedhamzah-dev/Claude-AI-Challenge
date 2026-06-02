@@ -64,13 +64,13 @@ Week 1/
 ├── Day1.md
 ├── Day2.md
 
-Day 3/
+Day3/
 ├── Day3.md
 ├── other files
     .
     .
     .
-Day 60/
+Day60/
 ├── Day60.md
 ├── other files    
 
