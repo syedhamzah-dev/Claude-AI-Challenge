@@ -51,11 +51,11 @@ The purpose of this challenge is simple:
 
 ```Claude AI Challenge
 Week 1/
-├── day-01.md
-├── day-02.md
-├── day-03.md
+├── Day1.md
+├── Day2.md
+├── Day3.md
 ...
-└── day-07.md
+└── Day7.md
 
 Week 2
 
