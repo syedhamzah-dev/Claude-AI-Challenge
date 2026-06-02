@@ -124,19 +124,19 @@ Claude Usage Counter helps monitor AI usage, understand token consumption, and m
 ## General Advice Response
 
 <p align="center">
-  <img src="../Day 3/General_Advice.png" width="100%">
+  <img src="../Day3/General_Advice.png" width="100%">
 </p>
 
 ## Startup Founder Response
 
 <p align="center">
-  <img src="../Day 3/Startup_Founder.png" width="100%">
+  <img src="../Day3/Startup_Founder.png" width="100%">
 </p>
 
 ## Senior Software Developer Response
 
 <p align="center">
-  <img src="../Day 3/Software_Developer.png" width="100%">
+  <img src="../Day3/Software_Developer.png" width="100%">
 </p>
 
 ---
