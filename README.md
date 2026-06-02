@@ -47,30 +47,36 @@ The purpose of this challenge is simple:
 
 ---
 
-## 📂 Repository Structure
+1. 📂 Repository Structure Till Day 2
 
 ```Claude AI Challenge
 Week 1/
 ├── Day1.md
 ├── Day2.md
-├── Day3.md
-...
-└── Day7.md
-
-Week 2
-
-....
 
 assets/
 └── Images and screenshots
 ```
+2. 📂 Repository Structure After Day 2
 
----
+```Claude AI Challenge
+Week 1/
+├── Day1.md
+├── Day2.md
 
-## 📅 Progress
+Day 3/
+├── Day3.md
+├── other files
+    .
+    .
+    .
+Day 60/
+├── Day60.md
+├── other files    
 
-* ✅ Day 01 Completed
-* ⏳ Day 02–60 In Progress
+assets/
+└── Images and screenshots
+```
 
 ---
 
