@@ -1,0 +1,2273 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NutriScope Pro — Advanced Nutrition Analytics & Planner</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #0b0f19;
+        color: #f3f4f6;
+      }
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: #1f2937;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #4b5563;
+        border-radius: 3px;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen antialiased bg-[#0b0f19] text-gray-100 pb-12">
+    <header
+      class="sticky top-0 z-50 border-b border-gray-800 bg-[#0b0f19]/80 backdrop-blur-md"
+    >
+      <div
+        class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between"
+      >
+        <div class="flex items-center gap-2.5">
+          <div
+            class="p-2 bg-emerald-500/10 text-emerald-400 rounded-xl border border-emerald-500/20"
+          >
+            <i data-lucide="activity" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <span
+              class="text-xl font-bold tracking-tight bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent"
+              >NutriScope</span
+            >
+            <span class="text-xs block text-gray-400 font-medium tracking-wide"
+              >PRO ANALYTICS v2.0</span
+            >
+          </div>
+        </div>
+        <div class="flex items-center gap-4">
+          <span
+            class="text-xs bg-gray-800 text-gray-300 px-3 py-1.5 rounded-lg border border-gray-700 flex items-center gap-1.5 font-medium"
+          >
+            <span
+              class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"
+            ></span>
+            Offline Engine Active
+          </span>
+        </div>
+      </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-8">
+      <div
+        class="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-4 flex gap-4 items-start"
+      >
+        <i
+          data-lucide="alert-triangle"
+          class="w-5 h-5 text-amber-400 shrink-0 mt-0.5"
+        ></i>
+        <div>
+          <h4 class="text-sm font-semibold text-amber-400">
+            Educational & Informational Disclaimer
+          </h4>
+          <p class="text-xs text-amber-300/80 mt-1 leading-relaxed">
+            NutriScope is an educational synthesis engine. Values are
+            algorithmic approximations sourced from public nutritional datasets
+            (USDA, IFCT). This is not medical advice, a diagnostic utility, or a
+            substitute for professional healthcare consultation.
+          </p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div
+          class="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-xl space-y-5"
+        >
+          <div class="flex items-center gap-2 border-b border-gray-800 pb-3">
+            <i data-lucide="sliders" class="w-5 h-5 text-emerald-400"></i>
+            <h2 class="text-lg font-bold tracking-tight">Biometric Profile</h2>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label
+                class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5"
+                >Age</label
+              >
+              <input
+                type="number"
+                id="prof-age"
+                value="28"
+                class="w-full bg-[#1f2937] border border-gray-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500 transition"
+              />
+            </div>
+            <div>
+              <label
+                class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5"
+                >Gender</label
+              >
+              <select
+                id="prof-gender"
+                class="w-full bg-[#1f2937] border border-gray-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500 transition"
+              >
+                <option value="male" selected>Male</option>
+                <option value="female">Female</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label
+                class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5"
+                >Height (cm)</label
+              >
+              <input
+                type="number"
+                id="prof-height"
+                value="175"
+                class="w-full bg-[#1f2937] border border-gray-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500 transition"
+              />
+            </div>
+            <div>
+              <label
+                class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5"
+                >Weight (kg)</label
+              >
+              <input
+                type="number"
+                id="prof-weight"
+                value="75"
+                class="w-full bg-[#1f2937] border border-gray-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500 transition"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label
+              class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5"
+              >Activity Multiplier</label
+            >
+            <select
+              id="prof-activity"
+              class="w-full bg-[#1f2937] border border-gray-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500 transition"
+            >
+              <option value="1.2">Sedentary (Little or no exercise)</option>
+              <option value="1.375" selected>
+                Lightly Active (Exercise 1-3 days/wk)
+              </option>
+              <option value="1.55">
+                Moderately Active (Exercise 3-5 days/wk)
+              </option>
+              <option value="1.725">
+                Very Active (Hard exercise 6-7 days/wk)
+              </option>
+            </select>
+          </div>
+
+          <div>
+            <label
+              class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5"
+              >Dietary Target Strategy</label
+            >
+            <select
+              id="prof-diet"
+              class="w-full bg-[#1f2937] border border-gray-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500 transition"
+            >
+              <option value="Non-Vegetarian" selected>
+                Non-Vegetarian Baseline
+              </option>
+              <option value="Vegetarian">Strict Vegetarian</option>
+              <option value="Eggetarian">Eggetarian Matrix</option>
+            </select>
+          </div>
+        </div>
+
+        <div
+          class="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-xl space-y-5 lg:col-span-2 flex flex-col justify-between"
+        >
+          <div>
+            <div
+              class="flex items-center justify-between border-b border-gray-800 pb-3 mb-4"
+            >
+              <div class="flex items-center gap-2">
+                <i
+                  data-lucide="plus-circle"
+                  class="w-5 h-5 text-emerald-400"
+                ></i>
+                <h2 class="text-lg font-bold tracking-tight">
+                  Ingestion & Logging Engine
+                </h2>
+              </div>
+              <div class="flex items-center gap-2">
+                <label
+                  for="csv-file"
+                  class="cursor-pointer text-xs bg-gray-800 hover:bg-gray-700 text-gray-200 px-3 py-1.5 rounded-lg border border-gray-700 flex items-center gap-1.5 font-medium transition"
+                >
+                  <i data-lucide="upload-cloud" class="w-3.5 h-3.5"></i> Import
+                  CSV Log
+                </label>
+                <input type="file" id="csv-file" accept=".csv" class="hidden" />
+                <button
+                  onclick="downloadSampleCSV()"
+                  class="text-xs text-gray-400 hover:text-white p-1.5"
+                  title="Download Sample template"
+                >
+                  <i data-lucide="download" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
+              <div class="md:col-span-5">
+                <label
+                  class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5"
+                  >Select Matrix Item</label
+                >
+                <select
+                  id="log-food-select"
+                  class="w-full bg-[#1f2937] border border-gray-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500 transition"
+                ></select>
+              </div>
+              <div class="md:col-span-3">
+                <label
+                  class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5"
+                  >Quantity</label
+                >
+                <input
+                  type="number"
+                  id="log-quantity"
+                  value="100"
+                  min="1"
+                  class="w-full bg-[#1f2937] border border-gray-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500 transition"
+                />
+              </div>
+              <div class="md:col-span-2">
+                <label
+                  class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5"
+                  >Unit</label
+                >
+                <select
+                  id="log-unit"
+                  class="w-full bg-[#1f2937] border border-gray-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500 transition"
+                >
+                  <option value="g">grams (g)</option>
+                  <option value="ml">ml</option>
+                </select>
+              </div>
+              <div class="md:col-span-2">
+                <button
+                  onclick="addLogEntry()"
+                  class="w-full bg-emerald-500 hover:bg-emerald-600 text-gray-950 font-semibold text-sm py-2 px-4 rounded-xl transition shadow-lg shadow-emerald-500/10 flex items-center justify-center gap-1"
+                >
+                  <i data-lucide="plus" class="w-4 h-4"></i> Add
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="border-t border-gray-800 pt-4 mt-4">
+            <div class="flex items-center justify-between mb-3">
+              <span
+                class="text-xs font-bold uppercase tracking-wider text-gray-400 flex items-center gap-1.5"
+              >
+                <i data-lucide="calendar" class="w-4 h-4 text-teal-400"></i>
+                Active Chrono-Log Frame:
+              </span>
+              <div
+                class="inline-flex rounded-lg bg-gray-900 p-0.5 border border-gray-800"
+              >
+                <button
+                  id="day-btn-1"
+                  onclick="switchDay(1)"
+                  class="px-3 py-1 text-xs font-medium rounded-md bg-emerald-500 text-gray-950 shadow-sm transition"
+                >
+                  Day 01 (Baseline)
+                </button>
+                <button
+                  id="day-btn-2"
+                  onclick="switchDay(2)"
+                  class="px-3 py-1 text-xs font-medium rounded-md text-gray-400 hover:text-white transition"
+                >
+                  Day 02 (Variant)
+                </button>
+              </div>
+            </div>
+            <div class="text-xs text-gray-400 flex items-center gap-4">
+              <span class="flex items-center gap-1"
+                ><i
+                  data-lucide="database"
+                  class="w-3.5 h-3.5 text-emerald-400"
+                ></i>
+                Database Capacity: <b>60 Complex Profiles</b></span
+              >
+              <span class="flex items-center gap-1"
+                ><i data-lucide="layers" class="w-3.5 h-3.5 text-teal-400"></i>
+                Tracked Targets: <b>14 Variables</b></span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div
+          class="bg-[#111827] border border-gray-800 rounded-2xl p-5 shadow-xl flex items-center justify-between relative overflow-hidden"
+        >
+          <div class="space-y-1">
+            <span
+              class="text-xs font-semibold text-gray-400 uppercase tracking-wider"
+              >Energy Balance</span
+            >
+            <h3 id="dash-cal-summary" class="text-2xl font-bold tracking-tight">
+              0 / 0 <span class="text-xs font-normal text-gray-400">kcal</span>
+            </h3>
+            <p id="dash-cal-pct" class="text-xs text-emerald-400 font-medium">
+              0% Allocation Achieved
+            </p>
+          </div>
+          <div class="w-16 h-16 relative">
+            <canvas id="chart-cal-donut"></canvas>
+          </div>
+        </div>
+
+        <div
+          class="bg-[#111827] border border-gray-800 rounded-2xl p-5 shadow-xl md:col-span-2 grid grid-cols-3 gap-2"
+        >
+          <div
+            class="flex flex-col justify-between border-r border-gray-800 pr-2"
+          >
+            <span
+              class="text-[10px] font-bold text-red-400 uppercase tracking-wider"
+              >Protein Target</span
+            >
+            <div>
+              <span
+                id="dash-macro-p"
+                class="text-base font-bold text-gray-100 block"
+                >0g / 0g</span
+              >
+              <div
+                class="w-full bg-gray-800 h-1 rounded-full overflow-hidden mt-1"
+              >
+                <div
+                  id="bar-macro-p"
+                  class="bg-red-500 h-full transition-all duration-300"
+                  style="width: 0%"
+                ></div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="flex flex-col justify-between border-r border-gray-800 px-2"
+          >
+            <span
+              class="text-[10px] font-bold text-amber-400 uppercase tracking-wider"
+              >Carbohydrates</span
+            >
+            <div>
+              <span
+                id="dash-macro-c"
+                class="text-base font-bold text-gray-100 block"
+                >0g / 0g</span
+              >
+              <div
+                class="w-full bg-gray-800 h-1 rounded-full overflow-hidden mt-1"
+              >
+                <div
+                  id="bar-macro-c"
+                  class="bg-amber-500 h-full transition-all duration-300"
+                  style="width: 0%"
+                ></div>
+              </div>
+            </div>
+          </div>
+          <div class="flex flex-col justify-between pl-2">
+            <span
+              class="text-[10px] font-bold text-blue-400 uppercase tracking-wider"
+              >Lipid Matrix</span
+            >
+            <div>
+              <span
+                id="dash-macro-f"
+                class="text-base font-bold text-gray-100 block"
+                >0g / 0g</span
+              >
+              <div
+                class="w-full bg-gray-800 h-1 rounded-full overflow-hidden mt-1"
+              >
+                <div
+                  id="bar-macro-f"
+                  class="bg-blue-500 h-full transition-all duration-300"
+                  style="width: 0%"
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          id="risk-status-card"
+          class="bg-[#111827] border border-gray-800 rounded-2xl p-5 shadow-xl flex flex-col justify-between"
+        >
+          <div class="flex justify-between items-start">
+            <span
+              class="text-xs font-semibold text-gray-400 uppercase tracking-wider"
+              >Risk Profile Evaluation</span
+            >
+            <span
+              id="risk-badge"
+              class="text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/20 font-bold uppercase tracking-wider"
+              >Optimal</span
+            >
+          </div>
+          <div class="my-2">
+            <p id="risk-desc" class="text-xs text-gray-400 leading-tight">
+              No systemic micro-deficiencies detected inside the current active
+              ingestion window.
+            </p>
+          </div>
+          <button
+            onclick="scrollToSection('risk-analysis-sec')"
+            class="text-left text-[11px] text-emerald-400 hover:underline flex items-center gap-0.5 font-medium"
+          >
+            Analyze critical physiological risks
+            <i data-lucide="chevron-right" class="w-3 h-3"></i>
+          </button>
+        </div>
+      </div>
+
+      <div
+        class="bg-[#111827] border border-gray-800 rounded-2xl overflow-hidden shadow-xl"
+      >
+        <div
+          class="px-6 py-4 border-b border-gray-800 flex items-center justify-between"
+        >
+          <div class="flex items-center gap-2">
+            <i
+              data-lucide="clipboard-list"
+              class="w-5 h-5 text-emerald-400"
+            ></i>
+            <h3 class="font-bold tracking-tight text-base">
+              Active Log Table — Day <span id="log-day-title">1</span>
+            </h3>
+          </div>
+          <span
+            id="log-count-badge"
+            class="text-xs bg-gray-800 text-gray-400 px-2.5 py-1 rounded-md border border-gray-700"
+            >0 Items Listed</span
+          >
+        </div>
+        <div class="overflow-x-auto custom-scrollbar">
+          <table class="w-full text-left text-sm whitespace-nowrap">
+            <thead
+              class="bg-gray-900 text-gray-400 text-xs uppercase tracking-wider font-semibold border-b border-gray-800"
+            >
+              <tr>
+                <th class="px-6 py-3">Ingredient Node</th>
+                <th class="px-6 py-3">Logged Mass</th>
+                <th class="px-6 py-3">Energy (kcal)</th>
+                <th class="px-6 py-3">Protein (g)</th>
+                <th class="px-6 py-3">Carbs (g)</th>
+                <th class="px-6 py-3">Fats (g)</th>
+                <th class="px-6 py-3">Fiber (g)</th>
+                <th class="px-6 py-3 text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody
+              id="log-table-body"
+              class="divide-y divide-gray-800/60"
+            ></tbody>
+          </table>
+        </div>
+        <div
+          id="empty-state"
+          class="p-8 text-center text-gray-500 text-xs space-y-2 hidden"
+        >
+          <i data-lucide="layers" class="w-8 h-8 mx-auto text-gray-600"></i>
+          <p>
+            No biometric data ingested into this frame yet. Pick an item above
+            to deploy calculation matrix.
+          </p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div
+          class="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-xl lg:col-span-7 space-y-6"
+        >
+          <div
+            class="flex items-center justify-between border-b border-gray-800 pb-3"
+          >
+            <div class="flex items-center gap-2">
+              <i data-lucide="bar-chart-3" class="w-5 h-5 text-teal-400"></i>
+              <h3 class="font-bold tracking-tight text-base">
+                Micronutrient Vector Spectrum
+              </h3>
+            </div>
+            <span class="text-xs text-gray-400">DRI Target Mapping</span>
+          </div>
+
+          <div
+            class="space-y-4 custom-scrollbar overflow-y-auto max-h-[440px] pr-2"
+            id="micro-progress-container"
+          ></div>
+        </div>
+
+        <div
+          class="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-xl lg:col-span-5 flex flex-col justify-between gap-6"
+        >
+          <div>
+            <div
+              class="flex items-center gap-2 border-b border-gray-800 pb-3 mb-4"
+            >
+              <i data-lucide="pie-chart" class="w-5 h-5 text-purple-400"></i>
+              <h3 class="font-bold tracking-tight text-base">
+                Advanced Vector Analytics
+              </h3>
+            </div>
+            <div class="relative w-full h-56 flex items-center justify-center">
+              <canvas id="chart-advanced-radar"></canvas>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4 border-t border-gray-800 pt-4">
+            <div class="space-y-2">
+              <span
+                class="text-[11px] font-bold text-red-400 uppercase tracking-wider flex items-center gap-1"
+                ><i data-lucide="trending-down" class="w-3 h-3"></i> Top
+                Deficiencies</span
+              >
+              <div id="box-deficiencies" class="space-y-1 text-xs"></div>
+            </div>
+            <div class="space-y-2">
+              <span
+                class="text-[11px] font-bold text-amber-500 uppercase tracking-wider flex items-center gap-1"
+                ><i data-lucide="trending-up" class="w-3 h-3"></i> Critical
+                Saturation</span
+              >
+              <div id="box-excesses" class="space-y-1 text-xs"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div
+          class="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-xl lg:col-span-2 space-y-4"
+        >
+          <div class="flex items-center gap-2 border-b border-gray-800 pb-3">
+            <i data-lucide="cpu" class="w-5 h-5 text-emerald-400"></i>
+            <h3 class="font-bold tracking-tight text-base">
+              Algorithmic Substitution & Optimization Matrix
+            </h3>
+          </div>
+          <div
+            class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs"
+            id="recommendation-matrix-box"
+          ></div>
+        </div>
+
+        <div
+          id="risk-analysis-sec"
+          class="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-xl space-y-4"
+        >
+          <div class="flex items-center gap-2 border-b border-gray-800 pb-3">
+            <i data-lucide="heart-pulse" class="w-5 h-5 text-red-400"></i>
+            <h3 class="font-bold tracking-tight text-base">
+              Physiological Risk Vectors
+            </h3>
+          </div>
+          <div class="space-y-3 text-xs" id="risk-analysis-detailed-box"></div>
+        </div>
+      </div>
+
+      <div
+        class="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-xl"
+      >
+        <div class="flex items-center gap-2 border-b border-gray-800 pb-3 mb-3">
+          <i data-lucide="book-open" class="w-4 h-4 text-gray-400"></i>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-gray-300">
+            Biochemical Reference Standards & Data Pedigree
+          </h4>
+        </div>
+        <p class="text-[11px] text-gray-400 leading-relaxed">
+          Primary data structures mapped inside this application are calibrated
+          from the
+          <b
+            >Indian Food Composition Tables (IFCT, ICMR-National Institute of
+            Nutrition)</b
+          >
+          and supplemented by cross-linked values from the
+          <b>USDA National Nutrient Database</b>. Daily Recommended Intake (DRI)
+          threshold rules utilize profiles defined by the Food and Nutrition
+          Board of the Institute of Medicine.
+        </p>
+      </div>
+    </main>
+
+    <script>
+      // 1. Unified Complex Food Dataset (60 Entries, 14 Biochemical targets each)
+      const FoodDatabase = [
+        // Prompt 1 Baseline Core (20 Items)
+        {
+          name: "Rice",
+          type: "Vegetarian",
+          cal: 130,
+          p: 2.7,
+          c: 28,
+          f: 0.3,
+          fib: 0.4,
+          fe: 0.2,
+          ca: 10,
+          vitC: 0,
+          vitD: 0,
+          vitB12: 0,
+          mg: 12,
+          k: 35,
+        },
+        {
+          name: "Roti",
+          type: "Vegetarian",
+          cal: 120,
+          p: 3.5,
+          c: 24,
+          f: 0.8,
+          fib: 2.8,
+          fe: 1.5,
+          ca: 20,
+          vitC: 0,
+          vitD: 0,
+          vitB12: 0,
+          mg: 41,
+          k: 90,
+        },
+        {
+          name: "Dal",
+          type: "Vegetarian",
+          cal: 116,
+          p: 9.0,
+          c: 20,
+          f: 0.4,
+          fib: 7.9,
+          fe: 2.1,
+          ca: 27,
+          vitC: 1.5,
+          vitD: 0,
+          vitB12: 0,
+          mg: 36,
+          k: 360,
+        },
+        {
+          name: "Paneer",
+          type: "Vegetarian",
+          cal: 265,
+          p: 18.3,
+          c: 3.4,
+          f: 20.8,
+          fib: 0,
+          fe: 0.1,
+          ca: 480,
+          vitC: 0,
+          vitD: 0.5,
+          vitB12: 0.8,
+          mg: 30,
+          k: 50,
+        },
+        {
+          name: "Curd",
+          type: "Vegetarian",
+          cal: 60,
+          p: 3.5,
+          c: 4.7,
+          f: 3.3,
+          fib: 0,
+          fe: 0.1,
+          ca: 120,
+          vitC: 0.5,
+          vitD: 0.1,
+          vitB12: 0.4,
+          mg: 12,
+          k: 155,
+        },
+        {
+          name: "Chana",
+          type: "Vegetarian",
+          cal: 164,
+          p: 8.9,
+          c: 27,
+          f: 2.6,
+          fib: 7.6,
+          fe: 2.9,
+          ca: 49,
+          vitC: 1.3,
+          vitD: 0,
+          vitB12: 0,
+          mg: 48,
+          k: 291,
+        },
+        {
+          name: "Rajma",
+          type: "Vegetarian",
+          cal: 127,
+          p: 8.7,
+          c: 22.8,
+          f: 0.5,
+          fib: 7.4,
+          fe: 2.9,
+          ca: 28,
+          vitC: 1.2,
+          vitD: 0,
+          vitB12: 0,
+          mg: 45,
+          k: 405,
+        },
+        {
+          name: "Banana",
+          type: "Vegetarian",
+          cal: 89,
+          p: 1.1,
+          c: 22.8,
+          f: 0.3,
+          fib: 2.6,
+          fe: 0.3,
+          ca: 5,
+          vitC: 8.7,
+          vitD: 0,
+          vitB12: 0,
+          mg: 27,
+          k: 358,
+        },
+        {
+          name: "Apple",
+          type: "Vegetarian",
+          cal: 52,
+          p: 0.3,
+          c: 13.8,
+          f: 0.2,
+          fib: 2.4,
+          fe: 0.1,
+          ca: 6,
+          vitC: 4.6,
+          vitD: 0,
+          vitB12: 0,
+          mg: 5,
+          k: 107,
+        },
+        {
+          name: "Milk",
+          type: "Vegetarian",
+          cal: 64,
+          p: 3.3,
+          c: 4.8,
+          f: 3.6,
+          fib: 0,
+          fe: 0.05,
+          ca: 120,
+          vitC: 1.0,
+          vitD: 1.2,
+          vitB12: 0.4,
+          mg: 11,
+          k: 140,
+        },
+        {
+          name: "Oats",
+          type: "Vegetarian",
+          cal: 389,
+          p: 16.9,
+          c: 66.3,
+          f: 6.9,
+          fib: 10.6,
+          fe: 4.7,
+          ca: 54,
+          vitC: 0,
+          vitD: 0,
+          vitB12: 0,
+          mg: 177,
+          k: 429,
+        },
+        {
+          name: "Bread",
+          type: "Vegetarian",
+          cal: 265,
+          p: 9.0,
+          c: 49.0,
+          f: 3.2,
+          fib: 2.7,
+          fe: 3.6,
+          ca: 260,
+          vitC: 0,
+          vitD: 0,
+          vitB12: 0,
+          mg: 25,
+          k: 115,
+        },
+        {
+          name: "Egg",
+          type: "Eggetarian",
+          cal: 155,
+          p: 13.0,
+          c: 1.1,
+          f: 11.0,
+          fib: 0,
+          fe: 1.2,
+          ca: 50,
+          vitC: 0,
+          vitD: 2.0,
+          vitB12: 1.1,
+          mg: 10,
+          k: 126,
+        },
+        {
+          name: "Chicken",
+          type: "Non-Vegetarian",
+          cal: 165,
+          p: 31.0,
+          c: 0,
+          f: 3.6,
+          fib: 0,
+          fe: 1.0,
+          ca: 15,
+          vitC: 0,
+          vitD: 0.1,
+          vitB12: 0.3,
+          mg: 29,
+          k: 256,
+        },
+        {
+          name: "Fish",
+          type: "Non-Vegetarian",
+          cal: 206,
+          p: 22.0,
+          c: 0,
+          f: 12.0,
+          fib: 0,
+          fe: 0.3,
+          ca: 15,
+          vitC: 0,
+          vitD: 11.0,
+          vitB12: 2.8,
+          mg: 28,
+          k: 384,
+        },
+        {
+          name: "Potato",
+          type: "Vegetarian",
+          cal: 77,
+          p: 2.0,
+          c: 17.0,
+          f: 0.1,
+          fib: 2.2,
+          fe: 0.8,
+          ca: 12,
+          vitC: 19.7,
+          vitD: 0,
+          vitB12: 0,
+          mg: 23,
+          k: 421,
+        },
+        {
+          name: "Poha",
+          type: "Vegetarian",
+          cal: 130,
+          p: 2.5,
+          c: 29.0,
+          f: 0.2,
+          fib: 0.7,
+          fe: 2.7,
+          ca: 14,
+          vitC: 0,
+          vitD: 0,
+          vitB12: 0,
+          mg: 18,
+          k: 45,
+        },
+        {
+          name: "Idli",
+          type: "Vegetarian",
+          cal: 39,
+          p: 1.0,
+          c: 8.0,
+          f: 0.1,
+          fib: 0.4,
+          fe: 0.1,
+          ca: 4,
+          vitC: 0,
+          vitD: 0,
+          vitB12: 0,
+          mg: 6,
+          k: 18,
+        },
+        {
+          name: "Dosa",
+          type: "Vegetarian",
+          cal: 133,
+          p: 2.0,
+          c: 24.0,
+          f: 3.0,
+          fib: 0.9,
+          fe: 0.5,
+          ca: 10,
+          vitC: 0,
+          vitD: 0,
+          vitB12: 0,
+          mg: 12,
+          k: 34,
+        },
+        {
+          name: "Spinach",
+          type: "Vegetarian",
+          cal: 23,
+          p: 2.9,
+          c: 3.6,
+          f: 0.4,
+          fib: 2.2,
+          fe: 2.7,
+          ca: 99,
+          vitC: 28.1,
+          vitD: 0,
+          vitB12: 0,
+          mg: 79,
+          k: 558,
+        },
+
+        // Prompt 2 Advanced Additions (40 Items to hit 60 entries)
+        {
+          name: "Almonds",
+          type: "Vegetarian",
+          cal: 579,
+          p: 21.2,
+          c: 21.7,
+          f: 49.9,
+          fib: 12.5,
+          fe: 3.7,
+          ca: 269,
+          vitC: 0,
+          vitD: 0,
+          vitB12: 0,
+          mg: 270,
+          k: 733,
+        },
+        {
+          name: "Walnuts",
+          type: "Vegetarian",
+          cal: 654,
+          p: 15.2,
+          c: 13.7,
+          f: 65.2,
+          fib: 6.7,
+          fe: 2.9,
+          ca: 98,
+          vitC: 1.3,
+          vitD: 0,
+          vitB12: 0,
+          mg: 158,
+          k: 441,
+        },
+        {
+          name: "Chia Seeds",
+          type: "Vegetarian",
+          cal: 486,
+          p: 16.5,
+          c: 42.1,
+          f: 30.7,
+          fib: 34.4,
+          fe: 7.7,
+          ca: 631,
+          vitC: 1.6,
+          vitD: 0,
+          vitB12: 0,
+          mg: 335,
+          k: 407,
+        },
+        {
+          name: "Flaxseeds",
+          type: "Vegetarian",
+          cal: 534,
+          p: 18.3,
+          c: 28.9,
+          f: 42.2,
+          fib: 27.3,
+          fe: 5.7,
+          ca: 255,
+          vitC: 0.6,
+          vitD: 0,
+          vitB12: 0,
+          mg: 392,
+          k: 813,
+        },
+        {
+          name: "Tofu",
+          type: "Vegetarian",
+          cal: 76,
+          p: 8.0,
+          c: 1.9,
+          f: 4.8,
+          fib: 0.3,
+          fe: 5.4,
+          ca: 350,
+          vitC: 0,
+          vitD: 0,
+          vitB12: 0,
+          mg: 30,
+          k: 121,
+        },
+        {
+          name: "Soy Milk",
+          type: "Vegetarian",
+          cal: 54,
+          p: 3.3,
+          c: 6.0,
+          f: 1.8,
+          fib: 0.6,
+          fe: 0.6,
+          ca: 25,
+          vitC: 0,
+          vitD: 1.0,
+          vitB12: 1.5,
+          mg: 25,
+          k: 118,
+        },
+        {
+          name: "Mutton",
+          type: "Non-Vegetarian",
+          cal: 294,
+          p: 25.0,
+          c: 0,
+          f: 21.0,
+          fib: 0,
+          fe: 1.9,
+          ca: 17,
+          vitC: 0,
+          vitD: 0.2,
+          vitB12: 2.3,
+          mg: 22,
+          k: 310,
+        },
+        {
+          name: "Prawns",
+          type: "Non-Vegetarian",
+          cal: 85,
+          p: 20.1,
+          c: 0,
+          f: 0.5,
+          fib: 0,
+          fe: 0.5,
+          ca: 64,
+          vitC: 0,
+          vitD: 2.2,
+          vitB12: 1.7,
+          mg: 35,
+          k: 264,
+        },
+        {
+          name: "Sardines",
+          type: "Non-Vegetarian",
+          cal: 208,
+          p: 24.6,
+          c: 0,
+          f: 11.5,
+          fib: 0,
+          fe: 2.9,
+          ca: 382,
+          vitC: 0,
+          vitD: 4.8,
+          vitB12: 8.9,
+          mg: 39,
+          k: 397,
+        },
+        {
+          name: "Broccoli",
+          type: "Vegetarian",
+          cal: 34,
+          p: 2.8,
+          c: 6.6,
+          f: 0.4,
+          fib: 2.6,
+          fe: 0.7,
+          ca: 47,
+          vitC: 89.2,
+          vitD: 0,
+          vitB12: 0,
+          mg: 21,
+          k: 316,
+        },
+        {
+          name: "Mushroom",
+          type: "Vegetarian",
+          cal: 22,
+          p: 3.1,
+          c: 3.3,
+          f: 0.3,
+          fib: 1.0,
+          fe: 0.5,
+          ca: 3,
+          vitC: 2.1,
+          vitD: 0.2,
+          vitB12: 0.1,
+          mg: 9,
+          k: 318,
+        },
+        {
+          name: "Quinoa",
+          type: "Vegetarian",
+          cal: 120,
+          p: 4.4,
+          c: 21.3,
+          f: 1.9,
+          fib: 2.8,
+          fe: 1.5,
+          ca: 17,
+          vitC: 0,
+          vitD: 0,
+          vitB12: 0,
+          mg: 64,
+          k: 172,
+        },
+        {
+          name: "Brown Rice",
+          type: "Vegetarian",
+          cal: 111,
+          p: 2.6,
+          c: 23.0,
+          f: 0.9,
+          fib: 1.8,
+          fe: 0.4,
+          ca: 10,
+          vitC: 0,
+          vitD: 0,
+          vitB12: 0,
+          mg: 43,
+          k: 43,
+        },
+        {
+          name: "Sweet Potato",
+          type: "Vegetarian",
+          cal: 86,
+          p: 1.6,
+          c: 20.1,
+          f: 0.1,
+          fib: 3.0,
+          fe: 0.6,
+          ca: 30,
+          vitC: 2.4,
+          vitD: 0,
+          vitB12: 0,
+          mg: 25,
+          k: 337,
+        },
+        {
+          name: "Avocado",
+          type: "Vegetarian",
+          cal: 160,
+          p: 2.0,
+          c: 8.5,
+          f: 14.7,
+          fib: 6.7,
+          fe: 0.6,
+          ca: 12,
+          vitC: 10.0,
+          vitD: 0,
+          vitB12: 0,
+          mg: 29,
+          k: 485,
+        },
+        {
+          name: "Peanuts",
+          type: "Vegetarian",
+          cal: 567,
+          p: 25.8,
+          c: 16.1,
+          f: 49.2,
+          fib: 8.5,
+          fe: 4.6,
+          ca: 92,
+          vitC: 0,
+          vitD: 0,
+          vitB12: 0,
+          mg: 168,
+          k: 705,
+        },
+        {
+          name: "Greek Yogurt",
+          type: "Vegetarian",
+          cal: 59,
+          p: 10.0,
+          c: 3.6,
+          f: 0.4,
+          fib: 0,
+          fe: 0.1,
+          ca: 110,
+          vitC: 0,
+          vitD: 0,
+          vitB12: 0.6,
+          mg: 11,
+          k: 141,
+        },
+        {
+          name: "Cottage Cheese",
+          type: "Vegetarian",
+          cal: 98,
+          p: 11.1,
+          c: 3.4,
+          f: 4.3,
+          fib: 0,
+          fe: 0.1,
+          ca: 83,
+          vitC: 0,
+          vitD: 0.1,
+          vitB12: 0.4,
+          mg: 8,
+          k: 104,
+        },
+        {
+          name: "Whey Protein",
+          type: "Vegetarian",
+          cal: 400,
+          p: 80.0,
+          c: 6.0,
+          f: 3.0,
+          fib: 0,
+          fe: 0.5,
+          ca: 450,
+          vitC: 0,
+          vitD: 0,
+          vitB12: 0.5,
+          mg: 35,
+          k: 160,
+        },
+        {
+          name: "Lentils",
+          type: "Vegetarian",
+          cal: 116,
+          p: 9.0,
+          c: 20.1,
+          f: 0.4,
+          fib: 7.9,
+          fe: 3.3,
+          ca: 19,
+          vitC: 1.5,
+          vitD: 0,
+          vitB12: 0,
+          mg: 36,
+          k: 369,
+        },
+        {
+          name: "Green Peas",
+          type: "Vegetarian",
+          cal: 81,
+          p: 5.4,
+          c: 14.4,
+          f: 0.4,
+          fib: 5.1,
+          fe: 1.5,
+          ca: 25,
+          vitC: 40.0,
+          vitD: 0,
+          vitB12: 0,
+          mg: 33,
+          k: 244,
+        },
+        {
+          name: "Carrot",
+          type: "Vegetarian",
+          cal: 41,
+          p: 0.9,
+          c: 9.6,
+          f: 0.2,
+          fib: 2.8,
+          fe: 0.3,
+          ca: 33,
+          vitC: 5.9,
+          vitD: 0,
+          vitB12: 0,
+          mg: 12,
+          k: 320,
+        },
+        {
+          name: "Cucumber",
+          type: "Vegetarian",
+          cal: 15,
+          p: 0.7,
+          c: 3.6,
+          f: 0.1,
+          fib: 0.5,
+          fe: 0.3,
+          ca: 16,
+          vitC: 2.8,
+          vitD: 0,
+          vitB12: 0,
+          mg: 13,
+          k: 147,
+        },
+        {
+          name: "Tomato",
+          type: "Vegetarian",
+          cal: 18,
+          p: 0.9,
+          c: 3.9,
+          f: 0.2,
+          fib: 1.2,
+          fe: 0.3,
+          ca: 10,
+          vitC: 13.7,
+          vitD: 0,
+          vitB12: 0,
+          mg: 11,
+          k: 237,
+        },
+        {
+          name: "Garlic",
+          type: "Vegetarian",
+          cal: 149,
+          p: 6.4,
+          c: 33.1,
+          f: 0.5,
+          fib: 2.1,
+          fe: 1.7,
+          ca: 181,
+          vitC: 31.2,
+          vitD: 0,
+          vitB12: 0,
+          mg: 25,
+          k: 401,
+        },
+        {
+          name: "Ginger",
+          type: "Vegetarian",
+          cal: 80,
+          p: 1.8,
+          c: 17.8,
+          f: 0.8,
+          fib: 2.0,
+          fe: 0.6,
+          ca: 16,
+          vitC: 5.0,
+          vitD: 0,
+          vitB12: 0,
+          mg: 43,
+          k: 415,
+        },
+        {
+          name: "Onion",
+          type: "Vegetarian",
+          cal: 40,
+          p: 1.1,
+          c: 9.3,
+          f: 0.1,
+          fib: 1.7,
+          fe: 0.2,
+          ca: 23,
+          vitC: 7.4,
+          vitD: 0,
+          vitB12: 0,
+          mg: 10,
+          k: 146,
+        },
+        {
+          name: "Orange",
+          type: "Vegetarian",
+          cal: 47,
+          p: 0.9,
+          c: 11.8,
+          f: 0.1,
+          fib: 2.4,
+          fe: 0.1,
+          ca: 40,
+          vitC: 53.2,
+          vitD: 0,
+          vitB12: 0,
+          mg: 10,
+          k: 181,
+        },
+        {
+          name: "Papaya",
+          type: "Vegetarian",
+          cal: 43,
+          p: 0.5,
+          c: 10.8,
+          f: 0.3,
+          fib: 1.7,
+          fe: 0.3,
+          ca: 20,
+          vitC: 60.9,
+          vitD: 0,
+          vitB12: 0,
+          mg: 21,
+          k: 182,
+        },
+        {
+          name: "Watermelon",
+          type: "Vegetarian",
+          cal: 30,
+          p: 0.6,
+          c: 7.6,
+          f: 0.2,
+          fib: 0.4,
+          fe: 0.2,
+          ca: 7,
+          vitC: 8.1,
+          vitD: 0,
+          vitB12: 0,
+          mg: 10,
+          k: 112,
+        },
+        {
+          name: "Dates",
+          type: "Vegetarian",
+          cal: 282,
+          p: 2.5,
+          c: 75.0,
+          f: 0.4,
+          fib: 8.0,
+          fe: 1.0,
+          ca: 39,
+          vitC: 0,
+          vitD: 0,
+          vitB12: 0,
+          mg: 43,
+          k: 656,
+        },
+        {
+          name: "Cashews",
+          type: "Vegetarian",
+          cal: 553,
+          p: 18.2,
+          c: 30.2,
+          f: 43.8,
+          fib: 3.3,
+          fe: 6.7,
+          ca: 37,
+          vitC: 0.5,
+          vitD: 0,
+          vitB12: 0,
+          mg: 292,
+          k: 660,
+        },
+        {
+          name: "Pumpkin Seeds",
+          type: "Vegetarian",
+          cal: 559,
+          p: 30.2,
+          c: 10.7,
+          f: 49.0,
+          fib: 6.0,
+          fe: 8.8,
+          ca: 46,
+          vitC: 1.9,
+          vitD: 0,
+          vitB12: 0,
+          mg: 592,
+          k: 809,
+        },
+        {
+          name: "Sunflower Seeds",
+          type: "Vegetarian",
+          cal: 584,
+          p: 20.8,
+          c: 20.0,
+          f: 51.5,
+          fib: 8.6,
+          fe: 5.3,
+          ca: 78,
+          vitC: 1.4,
+          vitD: 0,
+          vitB12: 0,
+          mg: 325,
+          k: 645,
+        },
+        {
+          name: "Honey",
+          type: "Vegetarian",
+          cal: 304,
+          p: 0.3,
+          c: 82.4,
+          f: 0,
+          fib: 0,
+          fe: 0.4,
+          ca: 6,
+          vitC: 0.5,
+          vitD: 0,
+          vitB12: 0,
+          mg: 2,
+          k: 52,
+        },
+        {
+          name: "Olive Oil",
+          type: "Vegetarian",
+          cal: 884,
+          p: 0,
+          c: 0,
+          f: 100.0,
+          fib: 0,
+          fe: 0.6,
+          ca: 1,
+          vitC: 0,
+          vitD: 0,
+          vitB12: 0,
+          mg: 0,
+          k: 1,
+        },
+        {
+          name: "Coconut Oil",
+          type: "Vegetarian",
+          cal: 862,
+          p: 0,
+          c: 0,
+          f: 100.0,
+          fib: 0,
+          fe: 0.04,
+          ca: 1,
+          vitC: 0,
+          vitD: 0,
+          vitB12: 0,
+          mg: 0,
+          k: 1,
+        },
+        {
+          name: "Turkey",
+          type: "Non-Vegetarian",
+          cal: 189,
+          p: 29.0,
+          c: 0,
+          f: 7.4,
+          fib: 0,
+          fe: 1.4,
+          ca: 14,
+          vitC: 0,
+          vitD: 0.1,
+          vitB12: 1.4,
+          mg: 30,
+          k: 289,
+        },
+        {
+          name: "Beef",
+          type: "Non-Vegetarian",
+          cal: 250,
+          p: 26.0,
+          c: 0,
+          f: 15.0,
+          fib: 0,
+          fe: 2.6,
+          ca: 18,
+          vitC: 0,
+          vitD: 0.1,
+          vitB12: 2.6,
+          mg: 24,
+          k: 318,
+        },
+        {
+          name: "Lemon",
+          type: "Vegetarian",
+          cal: 29,
+          p: 1.1,
+          c: 9.3,
+          f: 0.3,
+          fib: 2.8,
+          fe: 0.6,
+          ca: 26,
+          vitC: 53.0,
+          vitD: 0,
+          vitB12: 0,
+          mg: 8,
+          k: 138,
+        },
+      ];
+
+      // System Constants
+      const MICRO_METRICS = [
+        {
+          key: "fib",
+          name: "Dietary Fiber",
+          unit: "g",
+          targetM: 38,
+          targetF: 25,
+        },
+        { key: "fe", name: "Iron (Fe)", unit: "mg", targetM: 8, targetF: 18 },
+        {
+          key: "ca",
+          name: "Calcium (Ca)",
+          unit: "mg",
+          targetM: 1000,
+          targetF: 1000,
+        },
+        {
+          key: "vitC",
+          name: "Vitamin C",
+          unit: "mg",
+          targetM: 90,
+          targetF: 75,
+        },
+        {
+          key: "vitD",
+          name: "Vitamin D",
+          unit: "mcg",
+          targetM: 15,
+          targetF: 15,
+        },
+        {
+          key: "vitB12",
+          name: "Vitamin B12",
+          unit: "mcg",
+          targetM: 2.4,
+          targetF: 2.4,
+        },
+        {
+          key: "mg",
+          name: "Magnesium (Mg)",
+          unit: "mg",
+          targetM: 420,
+          targetF: 320,
+        },
+        {
+          key: "k",
+          name: "Potassium (K)",
+          unit: "mg",
+          targetM: 3400,
+          targetF: 2600,
+        },
+      ];
+
+      // 2-Day Chrono-State Engine Storage
+      let currentDay = 1;
+      let logsByDay = {
+        1: [
+          { food: "Roti", quantity: 150, unit: "g" },
+          { food: "Dal", quantity: 200, unit: "g" },
+          { food: "Paneer", quantity: 100, unit: "g" },
+        ],
+        2: [
+          { food: "Oats", quantity: 80, unit: "g" },
+          { food: "Milk", quantity: 250, unit: "g" },
+          { food: "Banana", quantity: 120, unit: "g" },
+        ],
+      };
+
+      // Chart Targets
+      let calDonutChart = null;
+      let advancedRadarChart = null;
+
+      // Initialization
+      window.addEventListener("DOMContentLoaded", () => {
+        lucide.createIcons();
+        populateFoodDropdown();
+        bindEventListeners();
+        calculateAndRender();
+      });
+
+      function populateFoodDropdown() {
+        const select = document.getElementById("log-food-select");
+        select.innerHTML = "";
+        // Sort database systematically alphabetically
+        const sortedDb = [...FoodDatabase].sort((a, b) =>
+          a.name.localeCompare(b.name),
+        );
+        sortedDb.forEach((item) => {
+          const opt = document.createElement("option");
+          opt.value = item.name;
+          opt.textContent = `${item.name} (${item.type[0]})`;
+          select.appendChild(opt);
+        });
+      }
+
+      function bindEventListeners() {
+        [
+          "prof-age",
+          "prof-gender",
+          "prof-height",
+          "prof-weight",
+          "prof-activity",
+          "prof-diet",
+        ].forEach((id) => {
+          document
+            .getElementById(id)
+            .addEventListener("change", calculateAndRender);
+          document
+            .getElementById(id)
+            .addEventListener("input", calculateAndRender);
+        });
+        document
+          .getElementById("csv-file")
+          .addEventListener("change", handleCSVUpload);
+      }
+
+      function switchDay(dayNum) {
+        currentDay = dayNum;
+        document.getElementById("day-btn-1").className =
+          dayNum === 1
+            ? "px-3 py-1 text-xs font-medium rounded-md bg-emerald-500 text-gray-950 shadow-sm transition"
+            : "px-3 py-1 text-xs font-medium rounded-md text-gray-400 hover:text-white transition";
+        document.getElementById("day-btn-2").className =
+          dayNum === 2
+            ? "px-3 py-1 text-xs font-medium rounded-md bg-emerald-500 text-gray-950 shadow-sm transition"
+            : "px-3 py-1 text-xs font-medium rounded-md text-gray-400 hover:text-white transition";
+        document.getElementById("log-day-title").textContent = dayNum;
+        calculateAndRender();
+      }
+
+      // Logic Computations
+      function calculateAndRender() {
+        const age = parseFloat(document.getElementById("prof-age").value) || 25;
+        const gender = document.getElementById("prof-gender").value;
+        const height =
+          parseFloat(document.getElementById("prof-height").value) || 170;
+        const weight =
+          parseFloat(document.getElementById("prof-weight").value) || 70;
+        const activity =
+          parseFloat(document.getElementById("prof-activity").value) || 1.2;
+        const dietPref = document.getElementById("prof-diet").value;
+
+        // Harris-Benedict Formula
+        let bmr = 0;
+        if (gender === "male") {
+          bmr = 88.362 + 13.397 * weight + 4.799 * height - 5.677 * age;
+        } else {
+          bmr = 447.593 + 9.247 * weight + 3.098 * height - 4.33 * age;
+        }
+        const targetCalories = Math.round(bmr * activity);
+
+        // Macrogenics Split Strategy (45% Carb, 30% Protein, 25% Lipid Matrix)
+        const targetProtein = Math.round((targetCalories * 0.3) / 4);
+        const targetCarbs = Math.round((targetCalories * 0.45) / 4);
+        const targetFats = Math.round((targetCalories * 0.25) / 9);
+
+        // Reset Ingested Structs
+        let totalCal = 0,
+          totalP = 0,
+          totalC = 0,
+          totalF = 0,
+          totalFib = 0,
+          totalFe = 0,
+          totalCa = 0,
+          totalVitC = 0,
+          totalVitD = 0,
+          totalVitB12 = 0,
+          totalMg = 0,
+          totalK = 0;
+
+        const activeLogs = logsByDay[currentDay];
+        const tbody = document.getElementById("log-table-body");
+        tbody.innerHTML = "";
+
+        if (activeLogs.length === 0) {
+          document.getElementById("empty-state").classList.remove("hidden");
+          document.getElementById("log-count-badge").textContent =
+            "0 Items Listed";
+        } else {
+          document.getElementById("empty-state").classList.add("hidden");
+          document.getElementById("log-count-badge").textContent =
+            `${activeLogs.length} Items Ingested`;
+
+          activeLogs.forEach((entry, index) => {
+            const dbItem = FoodDatabase.find((f) => f.name === entry.food);
+            if (!dbItem) return;
+
+            const factor = entry.quantity / 100;
+            const cCal = Math.round(dbItem.cal * factor);
+            const cP = parseFloat((dbItem.p * factor).toFixed(1));
+            const cC = parseFloat((dbItem.c * factor).toFixed(1));
+            const cF = parseFloat((dbItem.f * factor).toFixed(1));
+            const cFib = parseFloat((dbItem.fib * factor).toFixed(1));
+
+            totalCal += cCal;
+            totalP += cP;
+            totalC += cC;
+            totalF += cF;
+            totalFib += cFib;
+            totalFe += dbItem.fe * factor;
+            totalCa += dbItem.ca * factor;
+            totalVitC += dbItem.vitC * factor;
+            totalVitD += dbItem.vitD * factor;
+            totalVitB12 += dbItem.vitB12 * factor;
+            totalMg += dbItem.mg * factor;
+            totalK += dbItem.k * factor;
+
+            // Generate Row
+            const tr = document.createElement("tr");
+            tr.className =
+              "hover:bg-gray-800/30 transition text-gray-300 font-medium";
+            tr.innerHTML = `
+                        <td class="px-6 py-3.5 text-white font-semibold">${entry.food} <span class="text-[10px] text-gray-500 font-normal px-1.5 py-0.5 bg-gray-900 rounded border border-gray-800 ml-1.5">${dbItem.type}</span></td>
+                        <td class="px-6 py-3.5">
+                            <input type="number" value="${entry.quantity}" class="bg-gray-900 text-gray-100 w-16 text-center border border-gray-800 rounded px-1.5 py-0.5 text-xs focus:outline-none focus:border-emerald-500" onchange="updateLogQuantity(${index}, this.value)"> ${entry.unit}
+                        </td>
+                        <td class="px-6 py-3.5 text-emerald-400 font-semibold">${cCal}</td>
+                        <td class="px-6 py-3.5">${cP}g</td>
+                        <td class="px-6 py-3.5">${cC}g</td>
+                        <td class="px-6 py-3.5">${cF}g</td>
+                        <td class="px-6 py-3.5 text-gray-400">${cFib}g</td>
+                        <td class="px-6 py-3.5 text-center">
+                            <button onclick="deleteLogEntry(${index})" class="text-red-400 hover:text-red-300 p-1 bg-red-500/5 rounded hover:bg-red-500/10 border border-red-500/10 transition">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </td>
+                    `;
+            tbody.appendChild(tr);
+          });
+          lucide.createIcons();
+        }
+
+        // Calculations Summaries Update
+        document.getElementById("dash-cal-summary").innerHTML =
+          `${Math.round(totalCal)} / <span class="text-base text-gray-400 font-normal">${targetCalories}</span> <span class="text-xs font-normal text-gray-400">kcal</span>`;
+        const calPct =
+          targetCalories > 0
+            ? Math.round((totalCal / targetCalories) * 100)
+            : 0;
+        document.getElementById("dash-cal-pct").textContent =
+          `${calPct}% Total Energy Deployed`;
+
+        // Macros Metrics Engine Update
+        document.getElementById("dash-macro-p").textContent =
+          `${Math.round(totalP)}g / ${targetProtein}g`;
+        document.getElementById("dash-macro-c").textContent =
+          `${Math.round(totalC)}g / ${targetCarbs}g`;
+        document.getElementById("dash-macro-f").textContent =
+          `${Math.round(totalF)}g / ${targetFats}g`;
+
+        document.getElementById("bar-macro-p").style.width =
+          `${Math.min(100, (totalP / targetProtein) * 100)}%`;
+        document.getElementById("bar-macro-c").style.width =
+          `${Math.min(100, (totalC / targetCarbs) * 100)}%`;
+        document.getElementById("bar-macro-f").style.width =
+          `${Math.min(100, (totalF / targetFats) * 100)}%`;
+
+        // Micro Targets Allocation Computation
+        const microContainer = document.getElementById(
+          "micro-progress-container",
+        );
+        microContainer.innerHTML = "";
+
+        let deficienciesList = [];
+        let excessesList = [];
+        let macroRadarData = [];
+
+        MICRO_METRICS.forEach((m) => {
+          const target = gender === "male" ? m.targetM : m.targetF;
+          let currentVal = 0;
+          if (m.key === "fib") currentVal = totalFib;
+          if (m.key === "fe") currentVal = totalFe;
+          if (m.key === "ca") currentVal = totalCa;
+          if (m.key === "vitC") currentVal = totalVitC;
+          if (m.key === "vitD") currentVal = totalVitD;
+          if (m.key === "vitB12") currentVal = totalVitB12;
+          if (m.key === "mg") currentVal = totalMg;
+          if (m.key === "k") currentVal = totalK;
+
+          const pct = target > 0 ? Math.round((currentVal / target) * 100) : 0;
+          macroRadarData.push(Math.min(120, pct)); // cap radar visualization at 120%
+
+          if (pct < 60) deficienciesList.push({ name: m.name, pct });
+          if (pct > 100) excessesList.push({ name: m.name, pct });
+
+          // Generate tracking row components
+          const row = document.createElement("div");
+          row.className = "space-y-1.5";
+          row.innerHTML = `
+                    <div class="flex justify-between text-xs font-medium">
+                        <span class="text-gray-300 font-semibold">${m.name}</span>
+                        <span class="text-gray-400">${currentVal.toFixed(1)} / ${target} ${m.unit} <b class="ml-2 ${pct >= 100 ? "text-emerald-400" : pct >= 60 ? "text-teal-400" : "text-amber-500"}">${pct}%</b></span>
+                    </div>
+                    <div class="w-full bg-gray-800 h-2 rounded-full overflow-hidden">
+                        <div class="h-full transition-all duration-300 ${pct >= 100 ? "bg-emerald-500" : pct >= 60 ? "bg-teal-500" : "bg-amber-500"}" style="width: ${Math.min(100, pct)}%"></div>
+                    </div>
+                `;
+          microContainer.appendChild(row);
+        });
+
+        // Handle Extremes Renderers
+        const defBox = document.getElementById("box-deficiencies");
+        defBox.innerHTML = "";
+        if (deficienciesList.length === 0) {
+          defBox.innerHTML = `<span class="text-emerald-400 bg-emerald-500/5 px-2 py-1 rounded block">All vectors stabilized > 60%</span>`;
+        } else {
+          deficienciesList
+            .sort((a, b) => a.pct - b.pct)
+            .slice(0, 3)
+            .forEach((d) => {
+              defBox.innerHTML += `<div class="flex justify-between p-1.5 bg-red-500/5 border border-red-500/10 rounded text-red-300 font-medium"><span>${d.name}</span><span>${d.pct}%</span></div>`;
+            });
+        }
+
+        const excBox = document.getElementById("box-excesses");
+        excBox.innerHTML = "";
+        if (excessesList.length === 0) {
+          excBox.innerHTML = `<span class="text-gray-400 bg-gray-800/40 px-2 py-1 rounded block">No variables saturated</span>`;
+        } else {
+          excessesList
+            .sort((a, b) => b.pct - a.pct)
+            .slice(0, 3)
+            .forEach((e) => {
+              excBox.innerHTML += `<div class="flex justify-between p-1.5 bg-amber-500/5 border border-amber-500/10 rounded text-amber-300 font-medium"><span>${e.name}</span><span>${e.pct}%</span></div>`;
+            });
+        }
+
+        // System Dynamic Risk Profiles Analysis engine logic
+        computeRiskProfiles(deficienciesList, excessesList, dietPref);
+
+        // Dynamic Advanced Smart Food Recommendations Swap Engine
+        computeSmartRecommendations(deficienciesList, dietPref);
+
+        // Render Charts
+        renderCalDonut(totalCal, targetCalories);
+        renderAdvancedRadar(macroRadarData);
+      }
+
+      function addLogEntry() {
+        const select = document.getElementById("log-food-select");
+        const foodName = select.value;
+        const quantity = parseFloat(
+          document.getElementById("log-quantity").value,
+        );
+        const unit = document.getElementById("log-unit").value;
+
+        if (!foodName || !quantity || quantity <= 0) return;
+
+        logsByDay[currentDay].push({ food: foodName, quantity, unit });
+        calculateAndRender();
+      }
+
+      function updateLogQuantity(index, val) {
+        const parsed = parseFloat(val);
+        if (parsed && parsed > 0) {
+          logsByDay[currentDay][index].quantity = parsed;
+          calculateAndRender();
+        }
+      }
+
+      function deleteLogEntry(index) {
+        logsByDay[currentDay].splice(index, 1);
+        calculateAndRender();
+      }
+
+      // CSV Analytical Processing Parser
+      function handleCSVUpload(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function (evt) {
+          const text = evt.target.result;
+          const lines = text.split("\n");
+          let validIngests = 0;
+
+          // Simple strict structured verification execution logic loop
+          for (let i = 1; i < lines.length; i++) {
+            if (!lines[i].trim()) continue;
+            const cols = lines[i].split(",");
+            if (cols.length >= 2) {
+              const foodCandidate = cols[0].trim();
+              const quantCandidate = parseFloat(cols[1].trim());
+
+              // Cross verifying structural baseline item matches database footprint mapping
+              const match = FoodDatabase.find(
+                (f) => f.name.toLowerCase() === foodCandidate.toLowerCase(),
+              );
+              if (match && quantCandidate > 0) {
+                logsByDay[currentDay].push({
+                  food: match.name,
+                  quantity: quantCandidate,
+                  unit: "g",
+                });
+                validIngests++;
+              }
+            }
+          }
+          alert(
+            `CSV processing cycle terminated successfully. Data logs parsed: ${validIngests} values integrated into Frame Day ${currentDay}.`,
+          );
+          calculateAndRender();
+        };
+        reader.readAsText(file);
+      }
+
+      function downloadSampleCSV() {
+        const csvContent =
+          "data:text/csv;charset=utf-8,Food Item,Quantity(g)\nRoti,120\nPaneer,100\nBanana,150\nSpinach,80\nAlmonds,30";
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "nutriscope_bulk_log_template.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+
+      function computeRiskProfiles(deficiencies, excesses, dietPref) {
+        const riskBadge = document.getElementById("risk-badge");
+        const riskDesc = document.getElementById("risk-desc");
+        const detailedBox = document.getElementById(
+          "risk-analysis-detailed-box",
+        );
+        detailedBox.innerHTML = "";
+
+        let structuralRisks = [];
+
+        // Evaluative processing calculations loop criteria rules
+        const hasB12Def = deficiencies.some((d) => d.name.includes("B12"));
+        const hasD3Def = deficiencies.some((d) => d.name.includes("Vitamin D"));
+        const hasFeDef = deficiencies.some((d) => d.name.includes("Iron"));
+        const hasCaDef = deficiencies.some((d) => d.name.includes("Calcium"));
+
+        if (
+          (dietPref === "Vegetarian" || dietPref === "Eggetarian") &&
+          hasB12Def
+        ) {
+          structuralRisks.push({
+            title: "Neurological & Hematological Strain",
+            level: "High Risk",
+            color: "text-red-400 border-red-500/20 bg-red-500/5",
+            desc: "Veg/Egg matrix bounds display critical absolute micro-deficiencies in cyanocobalamin (B12). Prolonged levels cause macrocytic anemia symptoms.",
+          });
+        }
+        if (hasD3Def) {
+          structuralRisks.push({
+            title: "Bone Structural Sclerosis Risks",
+            level: "Moderate Risk",
+            color: "text-amber-400 border-amber-500/20 bg-amber-500/5",
+            desc: "Vitamin D absorption spectrum falls short. Impairs total localized cellular calcium binding architecture dynamics internally.",
+          });
+        }
+        if (hasFeDef) {
+          structuralRisks.push({
+            title: "Oxygen Carrier Kinetics Deflection",
+            level: "Moderate Risk",
+            color: "text-amber-400 border-amber-500/20 bg-amber-500/5",
+            desc: "Iron values below mandatory metabolic DRI boundaries. Downward cellular energy transduction velocity patterns may manifest.",
+          });
+        }
+
+        if (structuralRisks.length === 0) {
+          riskBadge.textContent = "Optimal Profile";
+          riskBadge.className =
+            "text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/20 font-bold uppercase tracking-wider";
+          riskDesc.textContent =
+            "No critical systemic macro or micro biochemical failure risks detected within the log frames.";
+          detailedBox.innerHTML = `<div class="p-4 text-center text-gray-500 border border-gray-800 rounded-xl">All biological systems functioning optimally inside calibrated biometric bounds.</div>`;
+        } else {
+          riskBadge.textContent = `${structuralRisks.length} Critical Flag(s)`;
+          riskBadge.className =
+            "text-[10px] bg-red-500/10 text-red-400 px-2 py-0.5 rounded border border-red-500/20 font-bold uppercase tracking-wider";
+          riskDesc.textContent =
+            "Potential metabolic and biological pathway constraints detected from systematic calculation parameters.";
+
+          structuralRisks.forEach((r) => {
+            detailedBox.innerHTML += `
+                        <div class="p-3 border rounded-xl space-y-1 ${r.color}">
+                            <div class="flex justify-between items-center font-semibold">
+                                <span>${r.title}</span>
+                                <span class="text-[10px] uppercase tracking-widest px-1.5 py-0.5 rounded bg-gray-950">${r.level}</span>
+                            </div>
+                            <p class="text-[11px] text-gray-300/90 leading-relaxed">${r.desc}</p>
+                        </div>
+                    `;
+          });
+        }
+      }
+
+      function computeSmartRecommendations(deficiencies, dietPref) {
+        const container = document.getElementById("recommendation-matrix-box");
+        container.innerHTML = "";
+
+        let recs = [];
+
+        // Structural strategy selection system logic rules mapping swaps
+        const needsB12 = deficiencies.some((d) => d.name.includes("B12"));
+        const needsIron = deficiencies.some((d) => d.name.includes("Iron"));
+        const needsCalcium = deficiencies.some((d) =>
+          d.name.includes("Calcium"),
+        );
+        const needsFiber = deficiencies.some((d) => d.name.includes("Fiber"));
+
+        if (needsB12) {
+          if (dietPref === "Vegetarian") {
+            recs.push({
+              action: "Matrix Addition",
+              item: "Soy Milk (Fortified) or Whey Protein",
+              target: "Vitamin B12 Optimization",
+              rationale:
+                "Adds clean chemical cobalamin structures without violating absolute plant boundary parameters rules.",
+            });
+          } else if (dietPref === "Eggetarian") {
+            recs.push({
+              action: "Portion Boost",
+              item: "Whole Eggs (Deploy 100-150g)",
+              target: "B12 / Vitamin D Spike",
+              rationale:
+                "Leverages natural bioavailable animal lipids matrices natively mapped to target vector requirements.",
+            });
+          } else {
+            recs.push({
+              action: "Structural Swap",
+              item: "Exchange Chicken for Sardines/Fish",
+              target: "B12/D3 Saturation",
+              rationale:
+                "Increases bio-absorption coefficients for systemic nervous support framework structures instantly.",
+            });
+          }
+        }
+
+        if (needsIron) {
+          recs.push({
+            action: "Target Substitution",
+            item: "Integrate Spinach alongside Lemon juice",
+            target: "Iron Bioavailability",
+            rationale:
+              "Ascorbic acid matrices drastically accelerate non-heme iron extraction efficiencies inside intestinal tracts.",
+          });
+        }
+
+        if (needsCalcium) {
+          recs.push({
+            action: "Density Inclusion",
+            item: "Add 30g Chia Seeds or Paneer",
+            target: "Calcium Saturation",
+            rationale:
+              "Provides intense high-density crystal structures balancing phosphorus ratios naturally.",
+          });
+        }
+
+        if (needsFiber) {
+          recs.push({
+            action: "Carb Vector Swaps",
+            item: "Swap White Rice for Oats or Quinoa",
+            target: "Fiber Matrix Elevation",
+            rationale:
+              "Maintains caloric payload bounds while introducing beta-glucans to support internal microbiome parameters safely.",
+          });
+        }
+
+        // Fallback base configuration loops if profiles look perfectly optimized
+        if (recs.length === 0) {
+          recs.push({
+            action: "Maintenance Plan",
+            item: "Maintain current logged baseline profiles",
+            target: "Homeostasis",
+            rationale:
+              "Current configurations represent a high degree of mathematical balance matching targeted parameters cleanly.",
+          });
+          recs.push({
+            action: "Micronutrient Shield",
+            item: "Add 15g Mixed Pumpkin/Almond seeds",
+            target: "Mineral Reserve Padding",
+            rationale:
+              "Secures high trace elements buffer margins safeguarding ongoing stress frameworks safely.",
+          });
+        }
+
+        recs.forEach((r) => {
+          container.innerHTML += `
+                    <div class="p-3.5 bg-gray-900 border border-gray-800 rounded-xl space-y-2 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start gap-1">
+                                <span class="text-[10px] uppercase font-bold text-emerald-400 bg-emerald-500/5 border border-emerald-500/10 px-1.5 py-0.5 rounded tracking-wider">${r.action}</span>
+                                <span class="text-gray-400 text-[11px] font-semibold">${r.target}</span>
+                            </div>
+                            <h4 class="text-sm font-bold text-white mt-2">${r.item}</h4>
+                            <p class="text-[11px] text-gray-400 mt-1 leading-relaxed">${r.rationale}</p>
+                        </div>
+                    </div>
+                `;
+        });
+      }
+
+      // Charts Engine Rendering Pipelines
+      function renderCalDonut(current, target) {
+        const ctx = document.getElementById("chart-cal-donut").getContext("2d");
+        const balance = Math.max(0, target - current);
+
+        if (calDonutChart) {
+          calDonutChart.data.datasets[0].data = [current, balance];
+          calDonutChart.update();
+          return;
+        }
+
+        calDonutChart = new Chart(ctx, {
+          type: "doughnut",
+          data: {
+            datasets: [
+              {
+                data: [current, balance],
+                backgroundColor: ["#10b981", "#1f2937"],
+                borderWidth: 0,
+                hoverOffset: 0,
+              },
+            ],
+          },
+          options: {
+            cutout: "78%",
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              tooltip: { enabled: false },
+              legend: { display: false },
+            },
+          },
+        });
+      }
+
+      function renderAdvancedRadar(dataArray) {
+        const ctx = document
+          .getElementById("chart-advanced-radar")
+          .getContext("2d");
+        const labels = MICRO_METRICS.map((m) => m.name.split(" ")[0]);
+
+        if (advancedRadarChart) {
+          advancedRadarChart.data.datasets[0].data = dataArray;
+          advancedRadarChart.update();
+          return;
+        }
+
+        advancedRadarChart = new Chart(ctx, {
+          type: "radar",
+          data: {
+            labels: labels,
+            datasets: [
+              {
+                label: "Target Achievement %",
+                data: dataArray,
+                fill: true,
+                backgroundColor: "rgba(20, 184, 166, 0.1)",
+                borderColor: "#14b8a6",
+                pointBackgroundColor: "#14b8a6",
+                pointBorderColor: "#fff",
+                pointHoverBackgroundColor: "#fff",
+                pointHoverBorderColor: "#14b8a6",
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              r: {
+                angleLines: { color: "#1f2937" },
+                grid: { color: "#1f2937" },
+                pointLabels: {
+                  color: "#9ca3af",
+                  font: { size: 9, family: "Inter" },
+                },
+                ticks: { display: false },
+                suggestedMin: 0,
+                suggestedMax: 100,
+              },
+            },
+            plugins: {
+              legend: { display: false },
+            },
+          },
+        });
+      }
+
+      function scrollToSection(id) {
+        const element = document.getElementById(id);
+        if (element) element.scrollIntoView({ behavior: "smooth" });
+      }
+    </script>
+  </body>
+</html>
