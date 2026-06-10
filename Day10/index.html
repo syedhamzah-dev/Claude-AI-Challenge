@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Syed Mohammad Hamzah — Data Science Enthusiast</title>
+
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Syed Mohammad Hamzah — B.Tech CSE student at Integral University, passionate about Data Science, AI/ML, and software development. Explore projects, skills, and get in touch." />
+  <meta name="keywords" content="Syed Mohammad Hamzah, Data Science, AI, ML, Python, B.Tech CSE, Integral University, Lucknow, portfolio" />
+  <meta name="author" content="Syed Mohammad Hamzah" />
+  <meta property="og:title" content="Syed Mohammad Hamzah — Data Science Enthusiast" />
+  <meta property="og:description" content="B.Tech CSE student passionate about Data Science, AI/ML, and software development." />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="robots" content="index, follow" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Space Grotesk', 'sans-serif'],
+            body: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            navy: { 950: '#050810', 900: '#0A0F1E', 800: '#111827', 700: '#1E293B' },
+            violet: { DEFAULT: '#7C3AED', light: '#A78BFA', dark: '#5B21B6' },
+            cyan: { DEFAULT: '#06B6D4', light: '#67E8F9' },
+          },
+          animation: {
+            'spin-slow': 'spin 12s linear infinite',
+            'pulse-slow': 'pulse 4s ease-in-out infinite',
+            'float': 'float 6s ease-in-out infinite',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-12px)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      --violet: #7C3AED;
+      --cyan: #06B6D4;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    h1, h2, h3, h4, h5, .font-display {
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #7C3AED; border-radius: 9999px; }
+
+    /* ── Gradient text ── */
+    .grad-text {
+      background: linear-gradient(135deg, #7C3AED 0%, #06B6D4 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ── Orbital ring ── */
+    .orbital-ring {
+      position: absolute;
+      inset: -14px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      background: linear-gradient(135deg, #7C3AED, #06B6D4, transparent, transparent) border-box;
+      -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: destination-out;
+      mask-composite: exclude;
+      animation: spin 10s linear infinite;
+    }
+
+    .orbital-ring-2 {
+      position: absolute;
+      inset: -26px;
+      border-radius: 50%;
+      border: 1px solid transparent;
+      background: linear-gradient(315deg, #06B6D4, #7C3AED, transparent, transparent) border-box;
+      -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: destination-out;
+      mask-composite: exclude;
+      animation: spin 18s linear infinite reverse;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Glow ── */
+    .glow-violet { box-shadow: 0 0 32px rgba(124, 58, 237, 0.35); }
+    .glow-cyan   { box-shadow: 0 0 32px rgba(6, 182, 212, 0.25); }
+
+    /* ── Card ── */
+    .card-hover {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card-hover:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 48px rgba(124, 58, 237, 0.18);
+    }
+
+    /* ── Skill bars ── */
+    .skill-bar-fill {
+      width: 0%;
+      transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+      background: linear-gradient(90deg, #7C3AED, #06B6D4);
+      height: 100%;
+      border-radius: 9999px;
+    }
+
+    /* ── Section reveal ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── Nav pill ── */
+    .nav-link {
+      position: relative;
+      transition: color 0.2s;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -3px; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #7C3AED, #06B6D4);
+      border-radius: 9999px;
+      transform: scaleX(0);
+      transition: transform 0.25s ease;
+    }
+    .nav-link.active::after,
+    .nav-link:hover::after { transform: scaleX(1); }
+
+    /* ── Typing cursor ── */
+    .cursor {
+      display: inline-block;
+      width: 3px;
+      height: 1.1em;
+      background: #06B6D4;
+      margin-left: 2px;
+      vertical-align: middle;
+      animation: blink 0.9s step-end infinite;
+      border-radius: 2px;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    /* ── Contact input ── */
+    .contact-input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border-radius: 0.75rem;
+      outline: none;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .dark .contact-input {
+      background: #111827;
+      border: 1.5px solid #1E293B;
+      color: #F0EEE9;
+    }
+    .light .contact-input,
+    :not(.dark) .contact-input {
+      background: #F0F4FF;
+      border: 1.5px solid #CBD5E1;
+      color: #0A0F1E;
+    }
+    .contact-input:focus {
+      border-color: #7C3AED;
+      box-shadow: 0 0 0 3px rgba(124,58,237,0.15);
+    }
+
+    /* ── Mobile menu transition ── */
+    #mobile-menu {
+      transition: max-height 0.35s ease, opacity 0.35s ease;
+      max-height: 0; opacity: 0; overflow: hidden;
+    }
+    #mobile-menu.open { max-height: 400px; opacity: 1; }
+
+    /* ── Dark/Light base ── */
+    .dark body, body.dark-body  { background: #0A0F1E; color: #F0EEE9; }
+    html:not(.dark) body { background: #F8F7F4; color: #0A0F1E; }
+  </style>
+</head>
+
+<body class="antialiased">
+
+<!-- ════════════════════════════════════════════
+     NAVBAR
+════════════════════════════════════════════ -->
+<header id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+  <div class="max-w-6xl mx-auto px-5 py-4 flex items-center justify-between">
+
+    <!-- Logo -->
+    <a href="#hero" class="font-display font-700 text-lg tracking-tight grad-text select-none">SMH.</a>
+
+    <!-- Desktop Nav -->
+    <nav class="hidden md:flex items-center gap-7 text-sm font-medium">
+      <a href="#about"        class="nav-link dark:text-slate-300 text-slate-600 hover:text-violet">About</a>
+      <a href="#skills"       class="nav-link dark:text-slate-300 text-slate-600 hover:text-violet">Skills</a>
+      <a href="#projects"     class="nav-link dark:text-slate-300 text-slate-600 hover:text-violet">Projects</a>
+      <a href="#achievements" class="nav-link dark:text-slate-300 text-slate-600 hover:text-violet">Achievements</a>
+      <a href="#contact"      class="nav-link dark:text-slate-300 text-slate-600 hover:text-violet">Contact</a>
+    </nav>
+
+    <!-- Right: theme toggle + mobile burger -->
+    <div class="flex items-center gap-3">
+      <!-- Theme toggle -->
+      <button id="theme-toggle" aria-label="Toggle dark/light mode"
+        class="w-9 h-9 rounded-full flex items-center justify-center dark:bg-navy-700 bg-slate-200 transition-colors hover:scale-110 active:scale-95">
+        <svg id="icon-moon" class="w-4 h-4 dark:block hidden text-violet-400" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/>
+        </svg>
+        <svg id="icon-sun" class="w-4 h-4 dark:hidden block text-amber-500" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"/>
+        </svg>
+      </button>
+
+      <!-- Mobile burger -->
+      <button id="burger" class="md:hidden w-9 h-9 flex flex-col justify-center items-center gap-1.5 rounded-lg dark:bg-navy-700 bg-slate-200" aria-label="Menu">
+        <span class="burger-line w-5 h-0.5 dark:bg-slate-300 bg-slate-700 rounded transition-all duration-300"></span>
+        <span class="burger-line w-5 h-0.5 dark:bg-slate-300 bg-slate-700 rounded transition-all duration-300"></span>
+        <span class="burger-line w-3.5 h-0.5 dark:bg-slate-300 bg-slate-700 rounded transition-all duration-300"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Nav -->
+  <div id="mobile-menu" class="md:hidden dark:bg-navy-800 bg-white border-t dark:border-navy-700 border-slate-200">
+    <nav class="flex flex-col px-5 py-4 gap-4 text-sm font-medium">
+      <a href="#about"        class="dark:text-slate-300 text-slate-700" onclick="closeMobile()">About</a>
+      <a href="#skills"       class="dark:text-slate-300 text-slate-700" onclick="closeMobile()">Skills</a>
+      <a href="#projects"     class="dark:text-slate-300 text-slate-700" onclick="closeMobile()">Projects</a>
+      <a href="#achievements" class="dark:text-slate-300 text-slate-700" onclick="closeMobile()">Achievements</a>
+      <a href="#contact"      class="dark:text-slate-300 text-slate-700" onclick="closeMobile()">Contact</a>
+    </nav>
+  </div>
+</header>
+
+
+<!-- ════════════════════════════════════════════
+     HERO
+════════════════════════════════════════════ -->
+<section id="hero" class="min-h-screen flex items-center relative overflow-hidden pt-20">
+
+  <!-- Background glow blobs -->
+  <div class="absolute top-1/4 left-0 w-72 h-72 rounded-full opacity-20 blur-3xl"
+       style="background: radial-gradient(circle, #7C3AED, transparent)"></div>
+  <div class="absolute bottom-1/4 right-0 w-64 h-64 rounded-full opacity-15 blur-3xl"
+       style="background: radial-gradient(circle, #06B6D4, transparent)"></div>
+
+  <!-- Grid pattern overlay -->
+  <div class="absolute inset-0 opacity-[0.03]" style="background-image: linear-gradient(rgba(124,58,237,.5) 1px, transparent 1px), linear-gradient(90deg, rgba(124,58,237,.5) 1px, transparent 1px); background-size: 40px 40px;"></div>
+
+  <div class="max-w-6xl mx-auto px-5 w-full py-16">
+    <div class="flex flex-col-reverse md:flex-row items-center gap-12 md:gap-8">
+
+      <!-- Text -->
+      <div class="flex-1 text-center md:text-left">
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium mb-6
+                    dark:bg-violet/10 bg-violet/10 dark:border-violet/20 border-violet/20 border dark:text-violet-300 text-violet-700">
+          <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
+          Available for Internships & Collaborations
+        </div>
+
+        <h1 class="font-display font-bold leading-tight mb-3"
+            style="font-size: clamp(2.4rem, 5vw, 4rem)">
+          Hi, I'm<br/>
+          <span class="grad-text">Syed Mohammad Hamzah</span>
+        </h1>
+
+        <p class="text-lg md:text-xl dark:text-slate-400 text-slate-500 mb-2 font-light" style="font-family:'Space Grotesk',sans-serif">
+          <span id="typing-text" class="dark:text-cyan-300 text-cyan-600 font-medium"></span><span class="cursor"></span>
+        </p>
+
+        <p class="dark:text-slate-400 text-slate-500 text-sm mb-2 flex items-center justify-center md:justify-start gap-1.5">
+          <svg class="w-4 h-4 text-violet-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+          </svg>
+          Lucknow, India · Integral University
+        </p>
+
+        <!-- CTA buttons -->
+        <div class="flex flex-wrap gap-3 mt-8 justify-center md:justify-start">
+          <a href="#projects"
+             class="px-6 py-2.5 rounded-xl font-medium text-sm text-white transition-all hover:scale-105 active:scale-95 glow-violet"
+             style="background: linear-gradient(135deg, #7C3AED, #06B6D4)">
+            View Projects
+          </a>
+          <a href="#contact"
+             class="px-6 py-2.5 rounded-xl font-medium text-sm border transition-all hover:scale-105 active:scale-95
+                    dark:border-violet/40 border-violet/40 dark:text-violet-300 text-violet-700 dark:hover:bg-violet/10 hover:bg-violet/5">
+            Get In Touch
+          </a>
+        </div>
+
+        <!-- Social links -->
+        <div class="flex gap-4 mt-8 justify-center md:justify-start">
+          <a href="https://github.com/syedhamzah-dev" target="_blank" rel="noopener"
+             class="w-10 h-10 rounded-xl flex items-center justify-center dark:bg-navy-700 bg-slate-100 dark:hover:bg-violet/20 hover:bg-violet/10 transition-all hover:scale-110 dark:text-slate-300 text-slate-600"
+             aria-label="GitHub">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+            </svg>
+          </a>
+          <a href="https://www.linkedin.com/in/syedmohdhamzah/" target="_blank" rel="noopener"
+             class="w-10 h-10 rounded-xl flex items-center justify-center dark:bg-navy-700 bg-slate-100 dark:hover:bg-violet/20 hover:bg-violet/10 transition-all hover:scale-110 dark:text-slate-300 text-slate-600"
+             aria-label="LinkedIn">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+            </svg>
+          </a>
+          <a href="mailto:mohdhamzah1308@gmail.com"
+             class="w-10 h-10 rounded-xl flex items-center justify-center dark:bg-navy-700 bg-slate-100 dark:hover:bg-violet/20 hover:bg-violet/10 transition-all hover:scale-110 dark:text-slate-300 text-slate-600"
+             aria-label="Email">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Avatar / orbital signature -->
+      <div class="flex-shrink-0 flex justify-center">
+        <div class="relative w-52 h-52 md:w-64 md:h-64" style="animation: float 6s ease-in-out infinite">
+          <!-- Outer glow -->
+          <div class="absolute inset-0 rounded-full opacity-30 blur-2xl"
+               style="background: radial-gradient(circle, #7C3AED 30%, #06B6D4 100%)"></div>
+          <!-- Orbital rings -->
+          <div class="orbital-ring-2"></div>
+          <div class="orbital-ring"></div>
+          <!-- Avatar circle -->
+          <div class="relative w-full h-full rounded-full overflow-hidden border-2 dark:border-violet/30 border-violet/20 flex items-center justify-center"
+               style="background: linear-gradient(135deg, #1E1040 0%, #0C2340 100%)">
+            <!-- Default avatar initials -->
+            <div id="avatar-placeholder" class="text-center select-none">
+              <div class="font-display font-bold text-5xl md:text-6xl grad-text leading-none">SM</div>
+              <div class="text-xs dark:text-slate-500 text-slate-400 mt-1 tracking-widest font-display">HAMZAH</div>
+            </div>
+            <!-- Uploaded photo goes here -->
+            <img id="avatar-img" class="w-full h-full object-cover absolute inset-0 hidden" alt="Syed Mohammad Hamzah" />
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Scroll hint -->
+    <div class="flex justify-center mt-16 animate-bounce">
+      <a href="#about" aria-label="Scroll down">
+        <svg class="w-6 h-6 dark:text-slate-600 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 9l-7 7-7-7"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════
+     ABOUT
+════════════════════════════════════════════ -->
+<section id="about" class="py-24 relative">
+  <div class="max-w-6xl mx-auto px-5">
+
+    <div class="reveal">
+      <p class="text-xs font-medium tracking-[0.2em] uppercase dark:text-violet-400 text-violet-600 mb-2">Who I Am</p>
+      <h2 class="font-display font-bold text-3xl md:text-4xl mb-12 dark:text-white text-slate-900">About Me</h2>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-12 items-center reveal">
+
+      <!-- Text -->
+      <div>
+        <p class="dark:text-slate-300 text-slate-600 leading-relaxed mb-5 text-[0.97rem]">
+          I'm <span class="font-medium dark:text-white text-slate-900">Syed Mohammad Hamzah</span>, a 2nd-year B.Tech Computer Science & Engineering student at 
+          <span class="font-medium dark:text-cyan-300 text-cyan-600">Integral University, Lucknow</span>. I'm driven by a deep passion for 
+          <span class="font-medium dark:text-violet-300 text-violet-700">Data Science, AI/ML, and software development</span>.
+        </p>
+        <p class="dark:text-slate-300 text-slate-600 leading-relaxed mb-5 text-[0.97rem]">
+          I'm actively sharpening my skills through structured courses, hands-on projects, and daily DSA practice. My goal is to become a skilled, industry-ready data scientist who contributes meaningfully to real-world problems.
+        </p>
+        <p class="dark:text-slate-300 text-slate-600 leading-relaxed text-[0.97rem]">
+          I'm actively seeking <span class="font-medium dark:text-white text-slate-900">internships, hackathons, and open-source opportunities</span> to bridge the gap between academic learning and industry impact.
+        </p>
+
+        <!-- Stats -->
+        <div class="grid grid-cols-3 gap-4 mt-8">
+          <div class="text-center p-3 rounded-xl dark:bg-navy-700 bg-slate-100">
+            <div class="font-display font-bold text-2xl grad-text">2nd</div>
+            <div class="text-xs dark:text-slate-400 text-slate-500 mt-0.5">Year B.Tech</div>
+          </div>
+          <div class="text-center p-3 rounded-xl dark:bg-navy-700 bg-slate-100">
+            <div class="font-display font-bold text-2xl grad-text">5+</div>
+            <div class="text-xs dark:text-slate-400 text-slate-500 mt-0.5">Projects Built</div>
+          </div>
+          <div class="text-center p-3 rounded-xl dark:bg-navy-700 bg-slate-100">
+            <div class="font-display font-bold text-2xl grad-text">∞</div>
+            <div class="text-xs dark:text-slate-400 text-slate-500 mt-0.5">Curiosity</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Info card -->
+      <div class="rounded-2xl p-6 dark:bg-navy-800 bg-white border dark:border-navy-700 border-slate-200 shadow-sm">
+        <h3 class="font-display font-semibold mb-5 dark:text-white text-slate-800 text-lg">Quick Info</h3>
+        <ul class="space-y-4">
+          <li class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-lg flex-shrink-0 flex items-center justify-center" style="background: linear-gradient(135deg,#7C3AED22,#06B6D422)">
+              <svg class="w-4 h-4 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>
+            </div>
+            <div>
+              <div class="text-xs dark:text-slate-500 text-slate-400 mb-0.5">Education</div>
+              <div class="text-sm dark:text-slate-200 text-slate-700 font-medium">B.Tech CSE — Integral University</div>
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-lg flex-shrink-0 flex items-center justify-center" style="background: linear-gradient(135deg,#7C3AED22,#06B6D422)">
+              <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+            </div>
+            <div>
+              <div class="text-xs dark:text-slate-500 text-slate-400 mb-0.5">Focus Areas</div>
+              <div class="text-sm dark:text-slate-200 text-slate-700 font-medium">Data Science · AI/ML · DSA</div>
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-lg flex-shrink-0 flex items-center justify-center" style="background: linear-gradient(135deg,#7C3AED22,#06B6D422)">
+              <svg class="w-4 h-4 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
+            </div>
+            <div>
+              <div class="text-xs dark:text-slate-500 text-slate-400 mb-0.5">Location</div>
+              <div class="text-sm dark:text-slate-200 text-slate-700 font-medium">Lucknow, Uttar Pradesh, India</div>
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-lg flex-shrink-0 flex items-center justify-center" style="background: linear-gradient(135deg,#7C3AED22,#06B6D422)">
+              <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            </div>
+            <div>
+              <div class="text-xs dark:text-slate-500 text-slate-400 mb-0.5">Looking For</div>
+              <div class="text-sm dark:text-slate-200 text-slate-700 font-medium">Internships · Hackathons · Open Source</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════
+     SKILLS
+════════════════════════════════════════════ -->
+<section id="skills" class="py-24 dark:bg-navy-900/50 bg-slate-50">
+  <div class="max-w-6xl mx-auto px-5">
+
+    <div class="reveal text-center mb-14">
+      <p class="text-xs font-medium tracking-[0.2em] uppercase dark:text-violet-400 text-violet-600 mb-2">What I Work With</p>
+      <h2 class="font-display font-bold text-3xl md:text-4xl dark:text-white text-slate-900">Skills & Tools</h2>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-10">
+
+      <!-- Skill Bars -->
+      <div class="reveal">
+        <h3 class="font-display font-semibold mb-6 text-lg dark:text-white text-slate-800">Technical Proficiency</h3>
+        <div class="space-y-5" id="skill-bars">
+          <!-- Bars injected by JS -->
+        </div>
+      </div>
+
+      <!-- Tech Tags -->
+      <div class="reveal">
+        <h3 class="font-display font-semibold mb-6 text-lg dark:text-white text-slate-800">Technologies & Tools</h3>
+
+        <div class="mb-5">
+          <p class="text-xs font-medium tracking-widest uppercase dark:text-slate-500 text-slate-400 mb-3">Languages & Libraries</p>
+          <div class="flex flex-wrap gap-2" id="tags-lang"></div>
+        </div>
+        <div class="mb-5">
+          <p class="text-xs font-medium tracking-widest uppercase dark:text-slate-500 text-slate-400 mb-3">Tools & Platforms</p>
+          <div class="flex flex-wrap gap-2" id="tags-tools"></div>
+        </div>
+        <div>
+          <p class="text-xs font-medium tracking-widest uppercase dark:text-slate-500 text-slate-400 mb-3">Soft Skills</p>
+          <div class="flex flex-wrap gap-2" id="tags-soft"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════
+     PROJECTS
+════════════════════════════════════════════ -->
+<section id="projects" class="py-24">
+  <div class="max-w-6xl mx-auto px-5">
+
+    <div class="reveal text-center mb-14">
+      <p class="text-xs font-medium tracking-[0.2em] uppercase dark:text-violet-400 text-violet-600 mb-2">What I've Built</p>
+      <h2 class="font-display font-bold text-3xl md:text-4xl dark:text-white text-slate-900">Projects</h2>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6" id="projects-grid">
+      <!-- Cards injected by JS -->
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════
+     ACHIEVEMENTS
+════════════════════════════════════════════ -->
+<section id="achievements" class="py-24 dark:bg-navy-900/50 bg-slate-50">
+  <div class="max-w-6xl mx-auto px-5">
+
+    <div class="reveal text-center mb-14">
+      <p class="text-xs font-medium tracking-[0.2em] uppercase dark:text-violet-400 text-violet-600 mb-2">Journey So Far</p>
+      <h2 class="font-display font-bold text-3xl md:text-4xl dark:text-white text-slate-900">Achievements & Certifications</h2>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5" id="achievements-grid">
+      <!-- Cards injected by JS -->
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════
+     CONTACT
+════════════════════════════════════════════ -->
+<section id="contact" class="py-24">
+  <div class="max-w-4xl mx-auto px-5">
+
+    <div class="reveal text-center mb-14">
+      <p class="text-xs font-medium tracking-[0.2em] uppercase dark:text-violet-400 text-violet-600 mb-2">Let's Connect</p>
+      <h2 class="font-display font-bold text-3xl md:text-4xl dark:text-white text-slate-900">Get In Touch</h2>
+      <p class="dark:text-slate-400 text-slate-500 mt-3 text-sm max-w-md mx-auto">
+        Whether it's an internship opportunity, project collaboration, or just a conversation about data science — my inbox is open.
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-5 gap-8 reveal">
+
+      <!-- Direct links -->
+      <div class="md:col-span-2 flex flex-col gap-4">
+        <a href="mailto:mohdhamzah1308@gmail.com"
+           class="flex items-center gap-4 p-4 rounded-2xl dark:bg-navy-800 bg-white border dark:border-navy-700 border-slate-200 card-hover group">
+          <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+               style="background: linear-gradient(135deg, #7C3AED, #06B6D4)">
+            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+            </svg>
+          </div>
+          <div>
+            <div class="text-xs dark:text-slate-500 text-slate-400 mb-0.5">Email</div>
+            <div class="text-sm dark:text-slate-200 text-slate-700 font-medium break-all">mohdhamzah1308@gmail.com</div>
+          </div>
+        </a>
+
+        <a href="https://www.linkedin.com/in/syedmohdhamzah/" target="_blank" rel="noopener"
+           class="flex items-center gap-4 p-4 rounded-2xl dark:bg-navy-800 bg-white border dark:border-navy-700 border-slate-200 card-hover group">
+          <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+               style="background: linear-gradient(135deg, #0A66C2, #0A8ECC)">
+            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+            </svg>
+          </div>
+          <div>
+            <div class="text-xs dark:text-slate-500 text-slate-400 mb-0.5">LinkedIn</div>
+            <div class="text-sm dark:text-slate-200 text-slate-700 font-medium">syedmohdhamzah</div>
+          </div>
+        </a>
+
+        <a href="https://github.com/syedhamzah-dev" target="_blank" rel="noopener"
+           class="flex items-center gap-4 p-4 rounded-2xl dark:bg-navy-800 bg-white border dark:border-navy-700 border-slate-200 card-hover group">
+          <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 dark:bg-slate-700 bg-slate-800">
+            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+            </svg>
+          </div>
+          <div>
+            <div class="text-xs dark:text-slate-500 text-slate-400 mb-0.5">GitHub</div>
+            <div class="text-sm dark:text-slate-200 text-slate-700 font-medium">syedhamzah-dev</div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Contact form -->
+      <div class="md:col-span-3 rounded-2xl p-6 dark:bg-navy-800 bg-white border dark:border-navy-700 border-slate-200">
+        <h3 class="font-display font-semibold mb-5 dark:text-white text-slate-800">Send a Message</h3>
+        <div id="contact-form" class="space-y-4">
+          <input type="text" placeholder="Your Name" class="contact-input" id="cf-name" />
+          <input type="email" placeholder="Your Email" class="contact-input" id="cf-email" />
+          <input type="text" placeholder="Subject" class="contact-input" id="cf-subject" />
+          <textarea rows="4" placeholder="Your message..." class="contact-input resize-none" id="cf-msg"></textarea>
+          <button onclick="handleContactSubmit()"
+            class="w-full py-3 rounded-xl font-medium text-sm text-white transition-all hover:scale-[1.02] active:scale-95 glow-violet"
+            style="background: linear-gradient(135deg, #7C3AED, #06B6D4)">
+            Send Message →
+          </button>
+          <p id="cf-status" class="text-sm text-center hidden"></p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════ -->
+<footer class="py-8 dark:border-navy-800 border-slate-200 border-t">
+  <div class="max-w-6xl mx-auto px-5 flex flex-col sm:flex-row items-center justify-between gap-3">
+    <p class="text-xs dark:text-slate-500 text-slate-400">
+      © 2025 Syed Mohammad Hamzah · Built with passion in Lucknow, India
+    </p>
+    <p class="text-xs dark:text-slate-600 text-slate-400 flex items-center gap-1">
+      <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse inline-block"></span>
+      Open to opportunities
+    </p>
+  </div>
+</footer>
+
+
+<!-- ════════════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════════════ -->
+<script>
+// ── DATA ──────────────────────────────────────
+const SKILLS_BARS = [
+  { name: 'Python',          pct: 80 },
+  { name: 'Machine Learning',pct: 70 },
+  { name: 'SQL',             pct: 75 },
+  { name: 'Data Analysis',   pct: 72 },
+  { name: 'DSA (C++/Python)',pct: 65 },
+];
+
+const TAGS_LANG  = ['Python','NumPy','Pandas','Scikit-learn','Matplotlib','Seaborn','SQL','HTML/CSS','C++','JavaScript'];
+const TAGS_TOOLS = ['VS Code','Jupyter Notebook','Google Colab','Power BI','Git & GitHub','Kaggle','Linux'];
+const TAGS_SOFT  = ['Problem Solving','Leadership','Communication','Team Collaboration','Critical Thinking','Time Management'];
+
+const PROJECTS = [
+  {
+    title: 'Student Performance Predictor',
+    desc: 'An end-to-end ML web app that predicts students\' exam scores based on demographic and study habits data, featuring a clean Flask interface and deployed on AWS.',
+    tech: ['Python', 'Scikit-learn', 'Flask', 'Pandas', 'AWS'],
+    icon: '📊',
+    gradient: 'from-violet-600/20 to-cyan-600/20',
+  },
+  {
+    title: 'Sales Analytics Dashboard',
+    desc: 'Interactive Power BI dashboard visualising retail sales KPIs, regional trends, and YoY growth, enabling data-driven decisions for stakeholders.',
+    tech: ['Power BI', 'SQL', 'Excel', 'DAX'],
+    icon: '📈',
+    gradient: 'from-cyan-600/20 to-blue-600/20',
+  },
+  {
+    title: 'Spam Email Classifier',
+    desc: 'NLP-based binary classifier using TF-IDF and Naive Bayes/SVM to detect spam vs ham emails with 97%+ accuracy on the UCI spam dataset.',
+    tech: ['Python', 'NLTK', 'Scikit-learn', 'Streamlit'],
+    icon: '🛡️',
+    gradient: 'from-purple-600/20 to-violet-600/20',
+  },
+  {
+    title: 'Exploratory Data Analysis Tool',
+    desc: 'A Streamlit-based web app that automates EDA on any uploaded CSV — instant histograms, correlations, missing-value reports, and summary stats.',
+    tech: ['Python', 'Streamlit', 'Pandas', 'Seaborn'],
+    icon: '🔬',
+    gradient: 'from-teal-600/20 to-cyan-600/20',
+  },
+  {
+    title: 'Movie Recommendation System',
+    desc: 'Content-based and collaborative filtering recommender built with cosine similarity on the TMDB 5000 dataset, served via a Flask REST API.',
+    tech: ['Python', 'Pandas', 'Flask', 'TMDB API'],
+    icon: '🎬',
+    gradient: 'from-rose-600/20 to-violet-600/20',
+  },
+];
+
+const ACHIEVEMENTS = [
+  { icon: '🏆', title: 'Hackathon Participant', desc: 'Competed in national-level data science hackathons, building ML solutions under 24-hour time constraints.' },
+  { icon: '🎓', title: 'IBM Data Science Certificate', desc: 'Completed the IBM Data Science Professional Certificate on Coursera, covering ML, SQL, and Python.' },
+  { icon: '📜', title: 'Python for Data Science — Coursera', desc: 'Earned certification in Python for Data Science and AI from IBM/Coursera, with hands-on lab projects.' },
+  { icon: '💡', title: 'DSA Practice Streak', desc: 'Solving 200+ problems on LeetCode & GFG, building strong algorithmic foundations in Python and C++.' },
+  { icon: '🤝', title: 'Open Source Contributor', desc: 'Actively contributing to open-source repositories, collaborating with global developers on real-world codebases.' },
+  { icon: '📊', title: 'Kaggle Notebook Author', desc: 'Published well-received exploratory data analysis notebooks on Kaggle, earning upvotes from the community.' },
+];
+
+const TYPING_STRINGS = [
+  'Data Science Enthusiast',
+  'AI / ML Explorer',
+  'B.Tech CSE @ Integral University',
+  'Open Source Contributor',
+  'Problem Solver',
+];
+
+// ── THEME ──────────────────────────────────────
+const html = document.documentElement;
+
+function getStoredTheme() {
+  return localStorage.getItem('theme') || 'dark';
+}
+
+function applyTheme(theme) {
+  if (theme === 'dark') {
+    html.classList.add('dark');
+    document.body.style.background = '#0A0F1E';
+    document.body.style.color = '#F0EEE9';
+  } else {
+    html.classList.remove('dark');
+    document.body.style.background = '#F8F7F4';
+    document.body.style.color = '#0A0F1E';
+  }
+  localStorage.setItem('theme', theme);
+}
+
+document.getElementById('theme-toggle').addEventListener('click', () => {
+  const next = html.classList.contains('dark') ? 'light' : 'dark';
+  applyTheme(next);
+});
+
+applyTheme(getStoredTheme());
+
+// ── NAVBAR bg on scroll ────────────────────────
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 50) {
+    navbar.style.background = html.classList.contains('dark')
+      ? 'rgba(10,15,30,0.85)'
+      : 'rgba(248,247,244,0.85)';
+    navbar.style.backdropFilter = 'blur(16px)';
+    navbar.style.borderBottom = html.classList.contains('dark')
+      ? '1px solid rgba(30,41,59,0.6)'
+      : '1px solid rgba(203,213,225,0.6)';
+  } else {
+    navbar.style.background = 'transparent';
+    navbar.style.backdropFilter = '';
+    navbar.style.borderBottom = 'none';
+  }
+}, { passive: true });
+
+// ── MOBILE MENU ────────────────────────────────
+const burger = document.getElementById('burger');
+const mobileMenu = document.getElementById('mobile-menu');
+
+burger.addEventListener('click', () => {
+  mobileMenu.classList.toggle('open');
+});
+
+function closeMobile() {
+  mobileMenu.classList.remove('open');
+}
+
+// ── TYPING ANIMATION ───────────────────────────
+let tIdx = 0, cIdx = 0, deleting = false;
+const typingEl = document.getElementById('typing-text');
+
+function type() {
+  const str = TYPING_STRINGS[tIdx];
+  if (!deleting) {
+    typingEl.textContent = str.slice(0, ++cIdx);
+    if (cIdx === str.length) {
+      deleting = true;
+      return setTimeout(type, 1800);
+    }
+  } else {
+    typingEl.textContent = str.slice(0, --cIdx);
+    if (cIdx === 0) {
+      deleting = false;
+      tIdx = (tIdx + 1) % TYPING_STRINGS.length;
+    }
+  }
+  setTimeout(type, deleting ? 45 : 80);
+}
+setTimeout(type, 600);
+
+// ── SKILL BARS ────────────────────────────────
+const barsContainer = document.getElementById('skill-bars');
+SKILLS_BARS.forEach(s => {
+  const div = document.createElement('div');
+  div.innerHTML = `
+    <div class="flex justify-between mb-1.5">
+      <span class="text-sm font-medium dark:text-slate-300 text-slate-600">${s.name}</span>
+      <span class="text-xs dark:text-slate-500 text-slate-400">${s.pct}%</span>
+    </div>
+    <div class="h-2 rounded-full dark:bg-navy-700 bg-slate-200 overflow-hidden">
+      <div class="skill-bar-fill" data-pct="${s.pct}"></div>
+    </div>
+  `;
+  barsContainer.appendChild(div);
+});
+
+// ── TECH TAGS ─────────────────────────────────
+function renderTags(containerId, items, colorClass) {
+  const el = document.getElementById(containerId);
+  items.forEach(t => {
+    const span = document.createElement('span');
+    span.className = `px-3 py-1.5 rounded-lg text-xs font-medium ${colorClass} transition-all hover:scale-105 cursor-default`;
+    span.textContent = t;
+    el.appendChild(span);
+  });
+}
+renderTags('tags-lang',  TAGS_LANG,  'dark:bg-violet/15 bg-violet/10 dark:text-violet-300 text-violet-700 dark:border-violet/20 border-violet/20 border');
+renderTags('tags-tools', TAGS_TOOLS, 'dark:bg-cyan-900/30 bg-cyan-50 dark:text-cyan-300 text-cyan-700 dark:border-cyan-800/40 border-cyan-200 border');
+renderTags('tags-soft',  TAGS_SOFT,  'dark:bg-slate-800 bg-slate-100 dark:text-slate-300 text-slate-600 dark:border-slate-700 border-slate-200 border');
+
+// ── PROJECTS ──────────────────────────────────
+const grid = document.getElementById('projects-grid');
+PROJECTS.forEach((p, i) => {
+  const card = document.createElement('div');
+  card.className = `reveal rounded-2xl p-5 dark:bg-navy-800 bg-white border dark:border-navy-700 border-slate-200 card-hover flex flex-col`;
+  card.style.transitionDelay = `${i * 80}ms`;
+  card.innerHTML = `
+    <div class="w-12 h-12 rounded-xl bg-gradient-to-br ${p.gradient} flex items-center justify-center text-2xl mb-4 flex-shrink-0">${p.icon}</div>
+    <h3 class="font-display font-semibold text-base mb-2 dark:text-white text-slate-800">${p.title}</h3>
+    <p class="text-sm dark:text-slate-400 text-slate-500 leading-relaxed mb-4 flex-1">${p.desc}</p>
+    <div class="flex flex-wrap gap-1.5 mt-auto">
+      ${p.tech.map(t => `<span class="px-2 py-0.5 rounded-md text-xs dark:bg-navy-700 bg-slate-100 dark:text-slate-300 text-slate-600 font-medium">${t}</span>`).join('')}
+    </div>
+  `;
+  grid.appendChild(card);
+});
+
+// ── ACHIEVEMENTS ──────────────────────────────
+const achGrid = document.getElementById('achievements-grid');
+ACHIEVEMENTS.forEach((a, i) => {
+  const card = document.createElement('div');
+  card.className = `reveal rounded-2xl p-5 dark:bg-navy-800 bg-white border dark:border-navy-700 border-slate-200 card-hover`;
+  card.style.transitionDelay = `${i * 80}ms`;
+  card.innerHTML = `
+    <div class="text-3xl mb-3">${a.icon}</div>
+    <h3 class="font-display font-semibold text-sm mb-1.5 dark:text-white text-slate-800">${a.title}</h3>
+    <p class="text-xs dark:text-slate-400 text-slate-500 leading-relaxed">${a.desc}</p>
+  `;
+  achGrid.appendChild(card);
+});
+
+// ── INTERSECTION OBSERVER (reveal + skill bars) ──
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      // Animate skill bars when visible
+      e.target.querySelectorAll('.skill-bar-fill').forEach(bar => {
+        bar.style.width = bar.dataset.pct + '%';
+      });
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.12 });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Also observe skill bars globally for when section becomes visible
+const globalBarObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      document.querySelectorAll('.skill-bar-fill').forEach(bar => {
+        bar.style.width = bar.dataset.pct + '%';
+      });
+      globalBarObserver.disconnect();
+    }
+  });
+}, { threshold: 0.1 });
+const skillSection = document.getElementById('skills');
+if (skillSection) globalBarObserver.observe(skillSection);
+
+// ── ACTIVE NAV ─────────────────────────────────
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-link');
+
+const navObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navLinks.forEach(a => {
+        a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id);
+      });
+    }
+  });
+}, { rootMargin: '-50% 0px -50% 0px' });
+
+sections.forEach(s => navObserver.observe(s));
+
+// ── CONTACT FORM ───────────────────────────────
+function handleContactSubmit() {
+  const name    = document.getElementById('cf-name').value.trim();
+  const email   = document.getElementById('cf-email').value.trim();
+  const subject = document.getElementById('cf-subject').value.trim();
+  const msg     = document.getElementById('cf-msg').value.trim();
+  const status  = document.getElementById('cf-status');
+
+  if (!name || !email || !msg) {
+    status.textContent = 'Please fill in name, email, and message.';
+    status.className = 'text-sm text-center text-red-400';
+    status.classList.remove('hidden');
+    return;
+  }
+
+  const mailtoLink = `mailto:mohdhamzah1308@gmail.com?subject=${encodeURIComponent(subject || 'Portfolio Contact')}&body=${encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${msg}`)}`;
+  window.location.href = mailtoLink;
+
+  status.textContent = '✓ Opening your mail client…';
+  status.className = 'text-sm text-center dark:text-green-400 text-green-600';
+  status.classList.remove('hidden');
+}
+
+// ── NAVBAR bg fix on theme toggle ─────────────
+document.getElementById('theme-toggle').addEventListener('click', () => {
+  setTimeout(() => {
+    if (window.scrollY > 50) {
+      navbar.style.background = html.classList.contains('dark')
+        ? 'rgba(10,15,30,0.85)'
+        : 'rgba(248,247,244,0.85)';
+    }
+  }, 50);
+});
+</script>
+
+</body>
+</html>
