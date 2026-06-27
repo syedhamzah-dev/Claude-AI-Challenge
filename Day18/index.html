@@ -1,0 +1,621 @@
+<style>
+  :root{
+    --navy:#0F2A4A; --navy-700:#163A60; --navy-50:#EEF3F8;
+    --ink:#14213A; --ink-soft:#4A5872; --ink-faint:#7C879C;
+    --line:#E2E7EF; --line-soft:#EEF1F6;
+    --paper:#FFFFFF; --canvas:#F6F8FB;
+    --red:#B3261E; --red-bg:#FDECEC; --red-line:#F3C6C4;
+    --amber:#8A5A00; --amber-bg:#FFF4DE; --amber-line:#F0D6A0;
+    --green:#1E6B47; --green-bg:#E8F6EE; --green-line:#BFE6CF;
+    --blue:#1A5FA8; --blue-bg:#EAF2FB; --blue-line:#C6DCF2;
+    --gray-bg:#F1F2F5; --gray-line:#DDE0E6;
+    --radius:14px; --radius-sm:8px;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;}
+  .dpw-app{
+    font-family:var(--sans); color:var(--ink); background:var(--canvas);
+    line-height:1.5; -webkit-font-smoothing:antialiased; padding:0 0 64px;
+  }
+  .dpw-shell{max-width:1180px; margin:0 auto; padding:0 28px;}
+
+  /* ---------- Header ---------- */
+  .dpw-header{
+    background:linear-gradient(180deg, var(--navy) 0%, var(--navy-700) 100%);
+    color:#fff; padding:46px 0 38px;
+  }
+  .dpw-header-inner{max-width:1180px; margin:0 auto; padding:0 28px;}
+  .dpw-eyebrow{
+    font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:#AFC4DD; font-weight:600; margin:0 0 14px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .dpw-eyebrow::before{content:""; width:7px; height:7px; border-radius:50%; background:#7FB8FF; display:inline-block;}
+  .dpw-title{
+    font-family:var(--serif); font-size:34px; line-height:1.18; margin:0 0 10px; font-weight:500;
+    letter-spacing:-.01em;
+  }
+  .dpw-subtitle{font-size:15px; color:#C9D7E8; margin:0 0 26px; max-width:640px;}
+  .dpw-header-stats{display:flex; gap:14px; flex-wrap:wrap;}
+  .dpw-hstat{
+    background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.14);
+    border-radius:var(--radius-sm); padding:12px 18px; min-width:140px;
+  }
+  .dpw-hstat-label{font-size:11px; color:#A9BFDA; text-transform:uppercase; letter-spacing:.08em; margin:0 0 5px;}
+  .dpw-hstat-value{font-size:20px; font-weight:600; margin:0; font-family:var(--serif);}
+  .dpw-hstat-value small{font-size:12px; color:#B9CCE3; font-weight:400; font-family:var(--sans); margin-left:6px;}
+
+  /* ---------- Nav ---------- */
+  .dpw-nav{
+    background:var(--paper); border-bottom:1px solid var(--line);
+    position:sticky; top:0; z-index:30; overflow-x:auto;
+  }
+  .dpw-nav-inner{
+    max-width:1180px; margin:0 auto; padding:0 28px; display:flex; gap:4px;
+    white-space:nowrap;
+  }
+  .dpw-nav a{
+    color:var(--ink-soft); text-decoration:none; font-size:13.5px; font-weight:600;
+    padding:14px 14px; display:inline-block; border-bottom:2.5px solid transparent;
+    transition:color .15s, border-color .15s;
+  }
+  .dpw-nav a:hover{color:var(--navy); border-bottom-color:var(--line);}
+
+  /* ---------- Section shell ---------- */
+  .dpw-section{padding:40px 0 6px;}
+  .dpw-section-head{display:flex; align-items:baseline; gap:12px; margin-bottom:18px;}
+  .dpw-section-num{
+    font-family:var(--serif); font-size:13px; color:var(--ink-faint); font-weight:500;
+  }
+  .dpw-section-title{font-family:var(--serif); font-size:22px; font-weight:500; margin:0; color:var(--ink);}
+  .dpw-section-sub{font-size:13.5px; color:var(--ink-faint); margin:2px 0 0;}
+
+  /* ---------- Cards generic ---------- */
+  .dpw-card{
+    background:var(--paper); border:1px solid var(--line); border-radius:var(--radius);
+    padding:22px 24px;
+  }
+
+  /* ---------- Summary ---------- */
+  .dpw-summary-card{font-size:15px; color:var(--ink); line-height:1.7;}
+  .dpw-summary-card p{margin:0;}
+
+  /* ---------- Key takeaways ---------- */
+  .dpw-grid-3{display:grid; grid-template-columns:repeat(3,1fr); gap:14px;}
+  .dpw-take{
+    background:var(--paper); border:1px solid var(--line); border-radius:var(--radius);
+    padding:18px 18px 16px; position:relative; overflow:hidden;
+  }
+  .dpw-take::before{content:""; position:absolute; left:0; top:0; bottom:0; width:4px;}
+  .dpw-take.tone-red::before{background:var(--red);}
+  .dpw-take.tone-amber::before{background:var(--amber);}
+  .dpw-take.tone-green::before{background:var(--green);}
+  .dpw-take.tone-blue::before{background:var(--blue);}
+  .dpw-take.tone-gray::before{background:var(--ink-faint);}
+  .dpw-take-label{font-size:11px; text-transform:uppercase; letter-spacing:.07em; font-weight:700; margin:0 0 8px;}
+  .dpw-take.tone-red .dpw-take-label{color:var(--red);}
+  .dpw-take.tone-amber .dpw-take-label{color:var(--amber);}
+  .dpw-take.tone-green .dpw-take-label{color:var(--green);}
+  .dpw-take.tone-blue .dpw-take-label{color:var(--blue);}
+  .dpw-take.tone-gray .dpw-take-label{color:var(--ink-soft);}
+  .dpw-take-text{font-size:14.5px; color:var(--ink); margin:0; line-height:1.55;}
+  .dpw-take-text b{font-weight:600;}
+
+  /* ---------- Badges ---------- */
+  .dpw-badge{
+    display:inline-flex; align-items:center; gap:6px; font-size:11.5px; font-weight:700;
+    padding:4px 10px; border-radius:99px; line-height:1.4; white-space:nowrap;
+  }
+  .dpw-badge.b-red{background:var(--red-bg); color:var(--red); border:1px solid var(--red-line);}
+  .dpw-badge.b-amber{background:var(--amber-bg); color:var(--amber); border:1px solid var(--amber-line);}
+  .dpw-badge.b-green{background:var(--green-bg); color:var(--green); border:1px solid var(--green-line);}
+  .dpw-badge.b-blue{background:var(--blue-bg); color:var(--blue); border:1px solid var(--blue-line);}
+  .dpw-badge.b-gray{background:var(--gray-bg); color:var(--ink-soft); border:1px solid var(--gray-line);}
+
+  /* ---------- Action items table ---------- */
+  .dpw-table-wrap{
+    background:var(--paper); border:1px solid var(--line); border-radius:var(--radius);
+    overflow:hidden;
+  }
+  table.dpw-table{width:100%; border-collapse:collapse; font-size:14px;}
+  table.dpw-table thead th{
+    text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.06em;
+    color:var(--ink-faint); font-weight:700; padding:13px 18px; border-bottom:1px solid var(--line);
+    background:var(--navy-50);
+  }
+  table.dpw-table tbody td{
+    padding:15px 18px; border-bottom:1px solid var(--line-soft); vertical-align:top; color:var(--ink);
+  }
+  table.dpw-table tbody tr:last-child td{border-bottom:none;}
+  table.dpw-table tbody tr:hover{background:#FAFBFD;}
+  .dpw-task-main{font-weight:600; font-size:14.5px; margin:0 0 4px;}
+  .dpw-task-note{font-size:12.5px; color:var(--ink-faint); margin:0;}
+  .dpw-owner-pill{
+    display:inline-flex; align-items:center; gap:7px; font-size:13px; font-weight:600; color:var(--ink);
+  }
+  .dpw-owner-dot{width:8px; height:8px; border-radius:50%; background:var(--navy); flex-shrink:0;}
+  .dpw-not-specified{color:var(--ink-faint); font-style:italic; font-size:13px;}
+
+  /* ---------- Open questions / Risks / Conflicts list cards ---------- */
+  .dpw-list-card{
+    background:var(--paper); border:1px solid var(--line); border-radius:var(--radius);
+    padding:6px 0; margin-bottom:12px; overflow:hidden;
+  }
+  .dpw-list-row{
+    display:flex; gap:14px; padding:16px 22px; border-bottom:1px solid var(--line-soft); align-items:flex-start;
+  }
+  .dpw-list-row:last-child{border-bottom:none;}
+  .dpw-list-icon{
+    width:30px; height:30px; border-radius:9px; flex-shrink:0; display:flex; align-items:center;
+    justify-content:center; font-size:14px; margin-top:1px;
+  }
+  .dpw-list-icon.i-amber{background:var(--amber-bg); color:var(--amber);}
+  .dpw-list-icon.i-red{background:var(--red-bg); color:var(--red);}
+  .dpw-list-icon.i-blue{background:var(--blue-bg); color:var(--blue);}
+  .dpw-list-body{flex:1; min-width:0;}
+  .dpw-list-title{font-size:14.5px; font-weight:600; margin:0 0 4px; color:var(--ink);}
+  .dpw-list-meta{font-size:12.5px; color:var(--ink-faint); margin:0 0 6px;}
+  .dpw-list-detail{font-size:13.5px; color:var(--ink-soft); margin:0; line-height:1.55;}
+
+  /* ---------- Collapsible ---------- */
+  details.dpw-collapse{
+    background:var(--paper); border:1px solid var(--line); border-radius:var(--radius);
+    margin-bottom:12px; overflow:hidden;
+  }
+  details.dpw-collapse > summary{
+    list-style:none; cursor:pointer; padding:16px 22px; display:flex; align-items:center;
+    justify-content:space-between; gap:12px; font-weight:600; font-size:14.5px; color:var(--ink);
+  }
+  details.dpw-collapse > summary::-webkit-details-marker{display:none;}
+  details.dpw-collapse > summary .dpw-chev{
+    color:var(--ink-faint); font-size:12px; transition:transform .18s; flex-shrink:0;
+  }
+  details.dpw-collapse[open] > summary .dpw-chev{transform:rotate(90deg);}
+  details.dpw-collapse > summary:hover{background:#FAFBFD;}
+  .dpw-collapse-body{padding:0 22px 18px; font-size:14px; color:var(--ink-soft); line-height:1.7; border-top:1px solid var(--line-soft); padding-top:14px;}
+  .dpw-collapse-body p{margin:0 0 10px;}
+  .dpw-collapse-body p:last-child{margin-bottom:0;}
+
+  /* ---------- Speaker grid ---------- */
+  .dpw-speaker-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:14px;}
+  .dpw-speaker-card{
+    background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); padding:18px 20px;
+  }
+  .dpw-speaker-name{
+    display:flex; align-items:center; gap:10px; font-weight:600; font-size:15px; margin:0 0 12px; color:var(--navy);
+  }
+  .dpw-speaker-avatar{
+    width:32px; height:32px; border-radius:50%; background:var(--navy-50); color:var(--navy);
+    display:flex; align-items:center; justify-content:center; font-size:12.5px; font-weight:700; flex-shrink:0;
+  }
+  .dpw-speaker-sub{font-size:12.5px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-faint); margin:14px 0 7px;}
+  .dpw-speaker-sub:first-of-type{margin-top:0;}
+  .dpw-speaker-card ul{margin:0; padding:0 0 0 16px;}
+  .dpw-speaker-card li{font-size:13.5px; color:var(--ink-soft); margin-bottom:6px; line-height:1.5;}
+  .dpw-speaker-card li:last-child{margin-bottom:0;}
+  .dpw-speaker-empty{font-size:13px; color:var(--ink-faint); font-style:italic;}
+
+  /* ---------- Notes ---------- */
+  .dpw-notes-card{background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); padding:22px 24px;}
+  .dpw-notes-card ul{margin:0; padding-left:18px;}
+  .dpw-notes-card li{font-size:14px; color:var(--ink-soft); margin-bottom:8px; line-height:1.6;}
+  .dpw-notes-card li:last-child{margin-bottom:0;}
+
+  /* ---------- Attribution callout ---------- */
+  .dpw-attribution{
+    display:flex; gap:12px; align-items:flex-start; background:var(--amber-bg);
+    border:1px solid var(--amber-line); border-radius:var(--radius-sm); padding:14px 16px; margin-top:14px;
+    font-size:13px; color:#6B4700; line-height:1.55;
+  }
+  .dpw-attribution b{color:var(--amber);}
+
+  footer.dpw-foot{text-align:center; padding:36px 0 0; font-size:12px; color:var(--ink-faint);}
+
+  @media (max-width:760px){
+    .dpw-shell, .dpw-header-inner, .dpw-nav-inner{padding-left:18px; padding-right:18px;}
+    .dpw-title{font-size:26px;}
+    .dpw-grid-3{grid-template-columns:1fr;}
+    .dpw-speaker-grid{grid-template-columns:1fr;}
+    table.dpw-table, table.dpw-table thead, table.dpw-table tbody, table.dpw-table th, table.dpw-table td, table.dpw-table tr{display:block;}
+    table.dpw-table thead{display:none;}
+    table.dpw-table tbody tr{border-bottom:1px solid var(--line); padding:14px 18px;}
+    table.dpw-table tbody td{border-bottom:none; padding:6px 0;}
+    table.dpw-table tbody td::before{content:attr(data-label); display:block; font-size:10.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-faint); font-weight:700; margin-bottom:3px;}
+    .dpw-header-stats{gap:10px;}
+    .dpw-hstat{min-width:130px; flex:1;}
+  }
+</style>
+
+<div class="dpw-app">
+
+  <div class="dpw-header">
+    <div class="dpw-header-inner">
+      <p class="dpw-eyebrow">Meeting recap &middot; Transcript mode</p>
+      <h1 class="dpw-title">Quarterly Growth Strategy Meeting</h1>
+      <p class="dpw-subtitle">Structured breakdown of the leadership discussion on Q2 performance, enterprise pipeline slippage, conversion, engineering capacity, support volume, hiring, and the annual conference budget.</p>
+      <div class="dpw-header-stats">
+        <div class="dpw-hstat">
+          <p class="dpw-hstat-label">Speakers</p>
+          <p class="dpw-hstat-value">7</p>
+        </div>
+        <div class="dpw-hstat">
+          <p class="dpw-hstat-label">Action items</p>
+          <p class="dpw-hstat-value">6</p>
+        </div>
+        <div class="dpw-hstat">
+          <p class="dpw-hstat-label">Open questions</p>
+          <p class="dpw-hstat-value">4</p>
+        </div>
+        <div class="dpw-hstat">
+          <p class="dpw-hstat-label">Follow-up</p>
+          <p class="dpw-hstat-value">Next week <small>leadership mtg</small></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="dpw-nav">
+    <div class="dpw-nav-inner">
+      <a href="#sec-summary">Summary</a>
+      <a href="#sec-takeaways">Key takeaways</a>
+      <a href="#sec-actions">Action items</a>
+      <a href="#sec-questions">Open questions</a>
+      <a href="#sec-risks">Risks &amp; blockers</a>
+      <a href="#sec-conflicts">Conflicts</a>
+      <a href="#sec-speakers">By speaker</a>
+      <a href="#sec-notes">Additional notes</a>
+    </div>
+  </nav>
+
+  <div class="dpw-shell">
+
+    <!-- 1. SUMMARY -->
+    <section class="dpw-section" id="sec-summary">
+      <div class="dpw-section-head">
+        <span class="dpw-section-num">01</span>
+        <div>
+          <h2 class="dpw-section-title">Summary</h2>
+          <p class="dpw-section-sub">What this meeting was about</p>
+        </div>
+      </div>
+      <div class="dpw-card dpw-summary-card">
+        <p>Leadership reviewed Q2 results, where revenue grew 12% against an 18% annual target, with the shortfall attributed to enterprise deals slipping into the next quarter (9 of 14 expected contracts closed). The group covered procurement delays and added security reviews as causes, rising marketing traffic against weaker conversion, engineering capacity constraints around an August dashboard release, a spike in support tickets tied to reporting performance, an unresolved hiring plan, and the still-unapproved annual conference budget. Several decisions were deferred pending more information, and the CEO closed by deferring public commitments on the dashboard date and scheduling follow-up for next week's leadership meeting.</p>
+      </div>
+    </section>
+
+    <!-- 2. KEY TAKEAWAYS -->
+    <section class="dpw-section" id="sec-takeaways">
+      <div class="dpw-section-head">
+        <span class="dpw-section-num">02</span>
+        <div>
+          <h2 class="dpw-section-title">Key takeaways</h2>
+          <p class="dpw-section-sub">The headlines from the discussion</p>
+        </div>
+      </div>
+      <div class="dpw-grid-3">
+        <div class="dpw-take tone-red">
+          <p class="dpw-take-label"><span class="dpw-badge b-red">🔴 High priority</span></p>
+          <p class="dpw-take-text">Q2 revenue grew <b>12%</b>, below the <b>18%</b> annual target. The Head of Sales attributed most of the gap to enterprise deals slipping &mdash; only <b>9 of 14</b> expected large contracts closed.</p>
+        </div>
+        <div class="dpw-take tone-amber">
+          <p class="dpw-take-label"><span class="dpw-badge b-amber">🟠 Medium priority</span></p>
+          <p class="dpw-take-text">Website traffic rose <b>34%</b> quarter-over-quarter, but conversion rates remain lower than expected. A redesign and a simplified demo-request flow are planned in response.</p>
+        </div>
+        <div class="dpw-take tone-red">
+          <p class="dpw-take-label"><span class="dpw-badge b-red">🔴 High priority</span></p>
+          <p class="dpw-take-text">Customer retention holds at <b>94%</b>, but support tickets have risen significantly, mostly tied to reporting performance and dashboard loading times &mdash; an issue sales prospects are also raising.</p>
+        </div>
+        <div class="dpw-take tone-blue">
+          <p class="dpw-take-label"><span class="dpw-badge b-blue">⏳ Pending</span></p>
+          <p class="dpw-take-text">Engineering is already at capacity, focused on the August analytics dashboard. Adding website redesign work may require contractors, but no cost estimate exists yet.</p>
+        </div>
+        <div class="dpw-take tone-gray">
+          <p class="dpw-take-label"><span class="dpw-badge b-gray">⏳ Pending</span></p>
+          <p class="dpw-take-text">Next year's hiring plan is on hold. Department heads submitted differing headcount requests, and the CEO postponed any decision until Q3 forecasts are finalized.</p>
+        </div>
+        <div class="dpw-take tone-amber">
+          <p class="dpw-take-label"><span class="dpw-badge b-amber">🟠 Medium priority</span></p>
+          <p class="dpw-take-text">The annual customer conference budget was not approved. The CFO is waiting on final vendor proposals; the topic returns next month.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. ACTION ITEMS -->
+    <section class="dpw-section" id="sec-actions">
+      <div class="dpw-section-head">
+        <span class="dpw-section-num">03</span>
+        <div>
+          <h2 class="dpw-section-title">Action items</h2>
+          <p class="dpw-section-sub">Tasks raised or assigned during the meeting</p>
+        </div>
+      </div>
+      <div class="dpw-table-wrap">
+        <table class="dpw-table">
+          <thead>
+            <tr><th style="width:32%">Task</th><th style="width:20%">Owner</th><th style="width:16%">Deadline</th><th style="width:16%">Status</th><th>Source</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td data-label="Task"><p class="dpw-task-main">Produce a cost estimate for additional website redesign work before any spend is approved</p><p class="dpw-task-note">Architecture review must be completed first</p></td>
+              <td data-label="Owner"><span class="dpw-owner-pill"><span class="dpw-owner-dot"></span>CTO</span></td>
+              <td data-label="Deadline"><span class="dpw-not-specified">Not specified</span></td>
+              <td data-label="Status"><span class="dpw-badge b-amber">⏳ Pending</span></td>
+              <td data-label="Source">CEO: "Let's get that estimate before approving any additional spending."</td>
+            </tr>
+            <tr>
+              <td data-label="Task"><p class="dpw-task-main">Complete the architecture review</p><p class="dpw-task-note">Prerequisite for the website redesign cost estimate</p></td>
+              <td data-label="Owner"><span class="dpw-owner-pill"><span class="dpw-owner-dot"></span>CTO</span></td>
+              <td data-label="Deadline"><span class="dpw-not-specified">Not specified</span></td>
+              <td data-label="Status"><span class="dpw-badge b-amber">⏳ Pending</span></td>
+              <td data-label="Source">CTO: "Not yet. The architecture review hasn't been completed."</td>
+            </tr>
+            <tr>
+              <td data-label="Task"><p class="dpw-task-main">Continue investigating reporting performance and dashboard loading time issues</p><p class="dpw-task-note">Flagged as a likely priority issue, possibly bigger impact than some planned feature releases</p></td>
+              <td data-label="Owner"><span class="dpw-owner-pill"><span class="dpw-owner-dot"></span>CTO / Engineering team</span></td>
+              <td data-label="Deadline"><span class="dpw-not-specified">Not specified</span></td>
+              <td data-label="Status"><span class="dpw-badge b-blue">⏳ In progress</span></td>
+              <td data-label="Source">CTO: "That's a known issue. The engineering team has already started investigating."</td>
+            </tr>
+            <tr>
+              <td data-label="Task"><p class="dpw-task-main">Plan and execute the website redesign and simplify the demo-request process</p><p class="dpw-task-note">Aimed at improving conversion rates</p></td>
+              <td data-label="Owner"><span class="dpw-owner-pill"><span class="dpw-owner-dot"></span>VP Marketing</span></td>
+              <td data-label="Deadline"><span class="dpw-not-specified">Not specified</span></td>
+              <td data-label="Status"><span class="dpw-badge b-amber">⏳ Pending</span></td>
+              <td data-label="Source">VP Marketing: "We're planning a website redesign and simplifying the demo-request process."</td>
+            </tr>
+            <tr>
+              <td data-label="Task"><p class="dpw-task-main">Submit final vendor proposals for the annual customer conference</p><p class="dpw-task-note">Required before the CFO can approve the conference budget</p></td>
+              <td data-label="Owner"><span class="dpw-not-specified">Not specified</span></td>
+              <td data-label="Deadline"><span class="dpw-not-specified">Not specified</span></td>
+              <td data-label="Status"><span class="dpw-badge b-amber">⏳ Pending</span></td>
+              <td data-label="Source">CFO: "I still need final vendor proposals before approving that budget."</td>
+            </tr>
+            <tr>
+              <td data-label="Task"><p class="dpw-task-main">Revisit the annual customer conference budget approval</p></td>
+              <td data-label="Owner"><span class="dpw-owner-pill"><span class="dpw-owner-dot"></span>CEO / CFO</span></td>
+              <td data-label="Deadline">Next month</td>
+              <td data-label="Status"><span class="dpw-badge b-amber">⏳ Pending</span></td>
+              <td data-label="Source">CEO: "Let's revisit the conference budget next month after proposals are received."</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 4. OPEN QUESTIONS -->
+    <section class="dpw-section" id="sec-questions">
+      <div class="dpw-section-head">
+        <span class="dpw-section-num">04</span>
+        <div>
+          <h2 class="dpw-section-title">Open questions</h2>
+          <p class="dpw-section-sub">Unresolved topics and pending decisions</p>
+        </div>
+      </div>
+      <div class="dpw-list-card">
+        <div class="dpw-list-row">
+          <div class="dpw-list-icon i-blue">❓</div>
+          <div class="dpw-list-body">
+            <p class="dpw-list-title">What is the cost of adding website redesign work to engineering's workload?</p>
+            <p class="dpw-list-meta"><span class="dpw-badge b-blue">❓ Open question</span></p>
+            <p class="dpw-list-detail">Raised by the CFO. The CTO confirmed no estimate exists yet because the architecture review is incomplete.</p>
+          </div>
+        </div>
+        <div class="dpw-list-row">
+          <div class="dpw-list-icon i-blue">❓</div>
+          <div class="dpw-list-body">
+            <p class="dpw-list-title">Will the analytics dashboard ship on the planned August date?</p>
+            <p class="dpw-list-meta"><span class="dpw-badge b-blue">❓ Open question</span></p>
+            <p class="dpw-list-detail">The CTO stated he could not guarantee the date at the time of the meeting. The CEO directed the team to avoid public commitments until the milestone review is complete.</p>
+          </div>
+        </div>
+        <div class="dpw-list-row">
+          <div class="dpw-list-icon i-blue">❓</div>
+          <div class="dpw-list-body">
+            <p class="dpw-list-title">What should next year's headcount plan look like?</p>
+            <p class="dpw-list-meta"><span class="dpw-badge b-blue">❓ Open question</span></p>
+            <p class="dpw-list-detail">Department heads submitted differing headcount requests. The CEO postponed any hiring decisions until Q3 forecasts are finalized.</p>
+          </div>
+        </div>
+        <div class="dpw-list-row">
+          <div class="dpw-list-icon i-blue">❓</div>
+          <div class="dpw-list-body">
+            <p class="dpw-list-title">Should the new analytics dashboard be announced at the customer conference?</p>
+            <p class="dpw-list-meta"><span class="dpw-badge b-blue">❓ Open question</span></p>
+            <p class="dpw-list-detail">The Product Director said this should only happen if the team is confident in the August release date &mdash; which the CTO could not confirm.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. RISKS / BLOCKERS -->
+    <section class="dpw-section" id="sec-risks">
+      <div class="dpw-section-head">
+        <span class="dpw-section-num">05</span>
+        <div>
+          <h2 class="dpw-section-title">Risks &amp; blockers</h2>
+          <p class="dpw-section-sub">Dependencies, blockers, risks, and concerns raised</p>
+        </div>
+      </div>
+      <div class="dpw-list-card">
+        <div class="dpw-list-row">
+          <div class="dpw-list-icon i-red">🔴</div>
+          <div class="dpw-list-body">
+            <p class="dpw-list-title">Annual revenue target at risk if slipped enterprise deals move again</p>
+            <p class="dpw-list-meta"><span class="dpw-badge b-red">🔴 High priority</span> &middot; Raised by CFO</p>
+            <p class="dpw-list-detail">"That delay affects our revenue forecast. If those deals move again, we may miss our annual target."</p>
+          </div>
+        </div>
+        <div class="dpw-list-row">
+          <div class="dpw-list-icon i-amber">🟠</div>
+          <div class="dpw-list-body">
+            <p class="dpw-list-title">Procurement delays and added security reviews slowing enterprise deal closure</p>
+            <p class="dpw-list-meta"><span class="dpw-badge b-amber">🟠 Medium priority</span> &middot; Raised by Head of Sales</p>
+            <p class="dpw-list-detail">Two clients specifically requested additional security reviews before signing, beyond standard procurement delays.</p>
+          </div>
+        </div>
+        <div class="dpw-list-row">
+          <div class="dpw-list-icon i-amber">🟠</div>
+          <div class="dpw-list-body">
+            <p class="dpw-list-title">Engineering is already operating close to capacity</p>
+            <p class="dpw-list-meta"><span class="dpw-badge b-amber">🟠 Medium priority</span> &middot; Raised by CTO</p>
+            <p class="dpw-list-detail">Adding major website redesign work on top of the existing August dashboard commitment may require additional contractors.</p>
+          </div>
+        </div>
+        <div class="dpw-list-row">
+          <div class="dpw-list-icon i-red">🔴</div>
+          <div class="dpw-list-body">
+            <p class="dpw-list-title">Rising support ticket volume tied to reporting performance and dashboard load times</p>
+            <p class="dpw-list-meta"><span class="dpw-badge b-red">🔴 High priority</span> &middot; Raised by Customer Success Lead</p>
+            <p class="dpw-list-detail">Sales also reports prospects raising the same reporting performance concern during sales calls, suggesting it affects both retention and new pipeline.</p>
+          </div>
+        </div>
+        <div class="dpw-list-row">
+          <div class="dpw-list-icon i-amber">🟠</div>
+          <div class="dpw-list-body">
+            <p class="dpw-list-title">No cost estimate available for proposed website work</p>
+            <p class="dpw-list-meta"><span class="dpw-badge b-amber">🟠 Medium priority</span> &middot; Raised by CTO</p>
+            <p class="dpw-list-detail">Blocked on completion of the architecture review; this also blocks CFO approval of any additional spending.</p>
+          </div>
+        </div>
+        <div class="dpw-list-row">
+          <div class="dpw-list-icon i-amber">🟠</div>
+          <div class="dpw-list-body">
+            <p class="dpw-list-title">Uncertainty around the August analytics dashboard release date</p>
+            <p class="dpw-list-meta"><span class="dpw-badge b-amber">🟠 Medium priority</span> &middot; Raised by CTO</p>
+            <p class="dpw-list-detail">Creates a dependency for both the conference announcement decision and overall engineering roadmap confidence.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. CONFLICTS -->
+    <section class="dpw-section" id="sec-conflicts">
+      <div class="dpw-section-head">
+        <span class="dpw-section-num">06</span>
+        <div>
+          <h2 class="dpw-section-title">Conflicts</h2>
+          <p class="dpw-section-sub">Conflicting deadlines, priorities, or information surfaced in the discussion</p>
+        </div>
+      </div>
+      <div class="dpw-list-card">
+        <div class="dpw-list-row">
+          <div class="dpw-list-icon i-red">⚠️</div>
+          <div class="dpw-list-body">
+            <p class="dpw-list-title">Website redesign ambition vs. engineering capacity</p>
+            <p class="dpw-list-meta"><span class="dpw-badge b-red">⚠️ Conflict</span></p>
+            <p class="dpw-list-detail">VP Marketing wants a website redesign to fix conversion, but the Product Director and CTO note engineering is already focused on the August analytics dashboard and operating close to capacity. The CTO said additional contractors may be required, with no cost estimate yet.</p>
+          </div>
+        </div>
+        <div class="dpw-list-row">
+          <div class="dpw-list-icon i-red">⚠️</div>
+          <div class="dpw-list-body">
+            <p class="dpw-list-title">Conference announcement plans vs. unconfirmed release date</p>
+            <p class="dpw-list-meta"><span class="dpw-badge b-red">⚠️ Conflict</span></p>
+            <p class="dpw-list-detail">Head of Sales raised announcing the new analytics dashboard at the conference; the Product Director made this conditional on confidence in the August date, but the CTO said he could not guarantee that date at this time. The CEO resolved this by directing the team to avoid public commitments until the milestone review is complete.</p>
+          </div>
+        </div>
+        <div class="dpw-list-row">
+          <div class="dpw-list-icon i-amber">⚠️</div>
+          <div class="dpw-list-body">
+            <p class="dpw-list-title">Differing headcount requests across department heads</p>
+            <p class="dpw-list-meta"><span class="dpw-badge b-red">⚠️ Conflict</span></p>
+            <p class="dpw-list-detail">The CFO noted department heads submitted different headcount requests for next year's hiring plan. The transcript does not specify which departments or what the differing numbers were. The CEO resolved this for now by postponing all hiring decisions until Q3 forecasts are finalized.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. BY SPEAKER -->
+    <section class="dpw-section" id="sec-speakers">
+      <div class="dpw-section-head">
+        <span class="dpw-section-num">07</span>
+        <div>
+          <h2 class="dpw-section-title">Breakdown by speaker</h2>
+          <p class="dpw-section-sub">Decisions and action items attributed to each participant</p>
+        </div>
+      </div>
+
+      <details class="dpw-collapse" open>
+        <summary>Speaker summary <span class="dpw-chev">&#9656;</span></summary>
+        <div class="dpw-collapse-body">
+          <p><b>CEO</b> &mdash; ran the meeting, set priorities, and made most of the sequencing decisions (postponing hiring, deferring the conference budget, blocking public commitments on the dashboard date).</p>
+          <p><b>Head of Sales</b> &mdash; reported on the enterprise pipeline shortfall and its causes, and raised the conference announcement question.</p>
+          <p><b>CFO</b> &mdash; flagged forecast risk from slipped deals, asked for a cost estimate before approving spend, raised the hiring plan ambiguity, and held the conference budget pending vendor proposals.</p>
+          <p><b>VP Marketing</b> &mdash; reported on traffic and conversion, proposed the website redesign and demo-request simplification, and raised the conference budget approval request.</p>
+          <p><b>Product Director</b> &mdash; flagged engineering timeline risk from the website work, and weighed in on prioritizing reporting performance and the conference announcement decision.</p>
+          <p><b>CTO</b> &mdash; confirmed engineering capacity constraints, the missing cost estimate and incomplete architecture review, the known reporting-performance issue already under investigation, and the inability to guarantee the August release date.</p>
+          <p><b>Customer Success Lead</b> &mdash; reported retention and rising support ticket figures, and identified reporting performance and dashboard load times as the main driver.</p>
+        </div>
+      </details>
+
+      <details class="dpw-collapse">
+        <summary>Decisions by speaker <span class="dpw-chev">&#9656;</span></summary>
+        <div class="dpw-collapse-body">
+          <p><b>CEO:</b> Postpone hiring decisions until Q3 forecasts are finalized. Revisit the conference budget next month after vendor proposals arrive. Avoid public commitments on the dashboard date until the engineering milestone review is complete. Follow up on open items at next week's leadership meeting.</p>
+          <p><b>CFO:</b> Will not approve the conference budget until final vendor proposals are received. Will not approve additional website spending until a cost estimate exists.</p>
+          <p><b>Product Director:</b> The dashboard should only be announced at the conference if the team is confident in the August date.</p>
+        </div>
+      </details>
+
+      <details class="dpw-collapse">
+        <summary>Action items by speaker <span class="dpw-chev">&#9656;</span></summary>
+        <div class="dpw-collapse-body dpw-speaker-grid" style="border-top:none; padding-top:0; display:grid;">
+          <div>
+            <p class="dpw-speaker-sub">CTO</p>
+            <ul>
+              <li>Complete the architecture review</li>
+              <li>Produce a cost estimate for the website redesign work</li>
+              <li>Continue investigating reporting performance and dashboard load time issues</li>
+            </ul>
+          </div>
+          <div>
+            <p class="dpw-speaker-sub">VP Marketing</p>
+            <ul>
+              <li>Plan and execute the website redesign and simplified demo-request process</li>
+            </ul>
+          </div>
+          <div>
+            <p class="dpw-speaker-sub">CEO / CFO</p>
+            <ul>
+              <li>Revisit the conference budget approval next month</li>
+            </ul>
+          </div>
+          <div>
+            <p class="dpw-speaker-sub">Unassigned</p>
+            <ul>
+              <li>Submit final vendor proposals for the customer conference</li>
+            </ul>
+          </div>
+        </div>
+      </details>
+
+      <div class="dpw-attribution">
+        <span>&#9888;&#65039;</span>
+        <p><b>Attribution note:</b> the task "submit final vendor proposals" has no owner specified in the transcript &mdash; only that the CFO is waiting to receive them. This is listed as unassigned rather than guessed.</p>
+      </div>
+    </section>
+
+    <!-- 8. ADDITIONAL NOTES -->
+    <section class="dpw-section" id="sec-notes">
+      <div class="dpw-section-head">
+        <span class="dpw-section-num">08</span>
+        <div>
+          <h2 class="dpw-section-title">Additional notes</h2>
+          <p class="dpw-section-sub">Supporting context that doesn't fit elsewhere</p>
+        </div>
+      </div>
+      <div class="dpw-notes-card">
+        <ul>
+          <li>The meeting closed with the CEO confirming that open items will be followed up on during next week's leadership meeting.</li>
+          <li>No specific dates, numeric headcount figures, or vendor names were given for the hiring plan or conference budget items &mdash; the transcript only describes that requests/proposals exist, not their contents.</li>
+          <li>The reporting performance issue was independently raised by two different functions (Customer Success and Sales), which the Product Director used to argue it could have more business impact than some planned feature releases.</li>
+        </ul>
+      </div>
+    </section>
+
+    <footer class="dpw-foot">Generated from the provided meeting transcript &middot; Transcript mode &middot; All items sourced directly from speaker statements</footer>
+
+  </div>
+</div>
