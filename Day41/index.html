@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Learning Studio — Supervised Learning: Regression &amp; Classification</title>
+<style>
+  :root{
+    --bg-void:#0B0F14;
+    --bg-surface:#131920;
+    --bg-raised:#1B232C;
+    --bg-raised-2:#212B35;
+    --accent-fit:#E3A857;
+    --accent-fit-dim:#E3A85733;
+    --accent-boundary:#57C7B8;
+    --accent-boundary-dim:#57C7B833;
+    --text-primary:#ECEFF3;
+    --text-muted:#8992A3;
+    --text-faint:#5C6577;
+    --danger:#E2636B;
+    --danger-dim:#E2636B22;
+    --success:#4CAF7D;
+    --success-dim:#4CAF7D22;
+    --border-hair:#2A323C;
+    --font-display: 'Iowan Old Style','Palatino Linotype',Georgia,serif;
+    --font-body: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    --font-mono: 'SF Mono','JetBrains Mono',ui-monospace,'Courier New',monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;background:var(--bg-void);color:var(--text-primary);
+    font-family:var(--font-body); line-height:1.6; -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--accent-fit-dim); color:var(--text-primary);}
+  a{color:var(--accent-boundary);}
+  h1,h2,h3,h4{font-family:var(--font-display); font-weight:600; margin:0 0 .5em; letter-spacing:.2px;}
+  p{margin:0 0 1em; color:var(--text-muted);}
+  .mono{font-family:var(--font-mono);}
+  .container{max-width:1080px; margin:0 auto; padding:0 24px;}
+  button{font-family:var(--font-body); cursor:pointer;}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important;}
+  }
+
+  /* ---------- TOP BAR ---------- */
+  #topbar{
+    position:sticky; top:0; z-index:50; background:rgba(11,15,20,.9); backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border-hair);
+  }
+  #topbar .row{display:flex; align-items:center; justify-content:space-between; padding:12px 24px; max-width:1080px; margin:0 auto;}
+  .brand{display:flex; align-items:center; gap:10px;}
+  .brand-mark{width:26px;height:26px;position:relative;}
+  .brand-name{font-family:var(--font-display); font-size:16px; letter-spacing:.3px;}
+  .brand-sub{font-family:var(--font-mono); font-size:10px; color:var(--text-faint); letter-spacing:1px; text-transform:uppercase;}
+  #xp-wrap{display:flex; align-items:center; gap:14px;}
+  #xp-badge{font-family:var(--font-mono); font-size:12px; background:var(--bg-raised); border:1px solid var(--border-hair); padding:5px 12px; border-radius:20px; display:flex; align-items:center; gap:6px;}
+  #xp-badge b{color:var(--accent-fit);}
+  #progress-rail{display:flex; gap:5px;}
+  .rail-dot{width:9px;height:9px;border-radius:50%; background:var(--bg-raised-2); border:1px solid var(--border-hair); transition:.3s;}
+  .rail-dot.done{background:var(--success); border-color:var(--success);}
+  .rail-dot.active{background:var(--accent-fit); border-color:var(--accent-fit); box-shadow:0 0 0 3px var(--accent-fit-dim);}
+
+  /* ---------- HERO ---------- */
+  #hero{padding:64px 0 40px; position:relative; overflow:hidden;}
+  .eyebrow{font-family:var(--font-mono); font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--accent-boundary); margin-bottom:14px; display:flex; align-items:center; gap:8px;}
+  .eyebrow::before{content:''; width:16px; height:1px; background:var(--accent-boundary);}
+  #hero h1{font-size:clamp(30px,4.5vw,48px); max-width:820px; color:var(--text-primary);}
+  #hero .lede{font-size:17px; max-width:620px; color:var(--text-muted);}
+  .hero-grid{display:grid; grid-template-columns:1.1fr .9fr; gap:36px; align-items:center; margin-top:36px;}
+  @media (max-width:860px){.hero-grid{grid-template-columns:1fr;}}
+
+  #fit-demo{
+    background:var(--bg-surface); border:1px solid var(--border-hair); border-radius:14px; padding:18px;
+  }
+  #fit-demo .demo-head{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px;}
+  #fit-demo .demo-title{font-family:var(--font-mono); font-size:11px; color:var(--text-faint); text-transform:uppercase; letter-spacing:1px;}
+  #fit-demo .demo-metric{font-family:var(--font-mono); font-size:13px; color:var(--accent-fit);}
+  svg{display:block; width:100%; height:auto;}
+
+  .meta-strip{display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--border-hair); border:1px solid var(--border-hair); border-radius:12px; overflow:hidden; margin-top:40px;}
+  .meta-cell{background:var(--bg-surface); padding:16px 18px;}
+  .meta-cell .k{font-family:var(--font-mono); font-size:10px; text-transform:uppercase; letter-spacing:1px; color:var(--text-faint); margin-bottom:6px;}
+  .meta-cell .v{font-size:14px; color:var(--text-primary);}
+  @media (max-width:700px){.meta-strip{grid-template-columns:1fr 1fr;}}
+
+  /* ---------- INTRO CARD SECTIONS ---------- */
+  .intro-section{padding:36px 0;}
+  .card-grid{display:grid; grid-template-columns:1fr 1fr; gap:20px;}
+  @media (max-width:760px){.card-grid{grid-template-columns:1fr;}}
+  .info-card{background:var(--bg-surface); border:1px solid var(--border-hair); border-radius:12px; padding:22px;}
+  .info-card h3{font-size:15px; font-family:var(--font-mono); text-transform:uppercase; letter-spacing:1px; color:var(--accent-boundary); margin-bottom:14px;}
+  .info-card ul{margin:0; padding-left:18px; color:var(--text-muted); font-size:14.5px;}
+  .info-card li{margin-bottom:8px;}
+
+  .reward-strip{display:flex; gap:14px; flex-wrap:wrap; margin-top:20px;}
+  .reward-chip{display:flex; align-items:center; gap:8px; background:var(--bg-raised); border:1px solid var(--border-hair); border-radius:10px; padding:10px 14px; font-size:13px; color:var(--text-muted);}
+  .reward-chip .dot{width:8px;height:8px;border-radius:50%;}
+
+  #begin-btn{
+    margin-top:28px; background:var(--accent-fit); color:#1A1300; border:none; padding:14px 28px; border-radius:10px;
+    font-size:15px; font-weight:600; letter-spacing:.3px; transition:transform .15s, box-shadow .15s;
+  }
+  #begin-btn:hover{transform:translateY(-2px); box-shadow:0 10px 24px -8px var(--accent-fit-dim);}
+
+  /* ---------- MODULES ---------- */
+  .module{padding:64px 0; border-top:1px solid var(--border-hair); position:relative;}
+  .module.locked{opacity:.35; pointer-events:none; filter:grayscale(.6);}
+  .module-head{display:flex; align-items:flex-start; gap:20px; margin-bottom:8px;}
+  .module-num{font-family:var(--font-mono); font-size:13px; color:var(--text-faint); border:1px solid var(--border-hair); border-radius:8px; padding:4px 10px; white-space:nowrap;}
+  .module-tag{font-family:var(--font-mono); font-size:11px; text-transform:uppercase; letter-spacing:1.5px; color:var(--accent-fit); margin-bottom:6px;}
+  .module h2{font-size:28px;}
+  .module .module-desc{max-width:680px; margin-bottom:32px;}
+
+  .subblock{margin:28px 0;}
+  .subblock h4{font-size:16px; color:var(--text-primary); display:flex; align-items:center; gap:8px;}
+  .subblock h4::before{content:''; width:5px; height:16px; background:var(--accent-boundary); border-radius:2px; display:inline-block;}
+
+  .example-box{background:var(--bg-surface); border:1px solid var(--border-hair); border-left:3px solid var(--accent-fit); border-radius:0 10px 10px 0; padding:16px 20px; margin:14px 0; font-size:14.5px;}
+  .example-box .label{font-family:var(--font-mono); font-size:10px; text-transform:uppercase; letter-spacing:1px; color:var(--accent-fit); margin-bottom:6px;}
+
+  .analogy-box{background:var(--bg-surface); border:1px solid var(--border-hair); border-left:3px solid var(--accent-boundary); border-radius:0 10px 10px 0; padding:16px 20px; margin:14px 0; font-size:14.5px;}
+  .analogy-box .label{font-family:var(--font-mono); font-size:10px; text-transform:uppercase; letter-spacing:1px; color:var(--accent-boundary); margin-bottom:6px;}
+
+  .misconception-box{background:var(--danger-dim); border:1px solid #E2636B44; border-radius:10px; padding:16px 20px; margin:14px 0; font-size:14.5px;}
+  .misconception-box .label{font-family:var(--font-mono); font-size:10px; text-transform:uppercase; letter-spacing:1px; color:var(--danger); margin-bottom:6px;}
+
+  .diagram-box{background:var(--bg-surface); border:1px solid var(--border-hair); border-radius:12px; padding:20px; margin:18px 0; text-align:center;}
+  .diagram-cap{font-family:var(--font-mono); font-size:11px; color:var(--text-faint); margin-top:10px;}
+
+  table.cmp{width:100%; border-collapse:collapse; margin:16px 0; font-size:14px;}
+  table.cmp th, table.cmp td{border:1px solid var(--border-hair); padding:10px 12px; text-align:left;}
+  table.cmp th{background:var(--bg-raised); font-family:var(--font-mono); font-size:11px; text-transform:uppercase; letter-spacing:.5px; color:var(--text-faint);}
+  table.cmp td{color:var(--text-muted);}
+
+  .exercise-box{background:linear-gradient(180deg,var(--bg-surface),var(--bg-raised)); border:1px solid var(--border-hair); border-radius:12px; padding:22px; margin:20px 0;}
+  .exercise-box .label{font-family:var(--font-mono); font-size:10px; text-transform:uppercase; letter-spacing:1px; color:var(--accent-fit); margin-bottom:10px;}
+
+  .takeaways{background:var(--success-dim); border:1px solid #4CAF7D44; border-radius:12px; padding:20px 22px; margin:24px 0;}
+  .takeaways .label{font-family:var(--font-mono); font-size:10px; text-transform:uppercase; letter-spacing:1px; color:var(--success); margin-bottom:10px;}
+  .takeaways ul{margin:0; padding-left:18px; color:var(--text-primary); font-size:14.5px;}
+  .takeaways li{margin-bottom:6px;}
+
+  input[type=range]{-webkit-appearance:none; width:100%; height:4px; border-radius:2px; background:var(--border-hair); outline:none;}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none; width:16px; height:16px; border-radius:50%; background:var(--accent-fit); cursor:pointer; border:2px solid var(--bg-void);}
+  input[type=range]::-moz-range-thumb{width:16px; height:16px; border-radius:50%; background:var(--accent-fit); cursor:pointer; border:2px solid var(--bg-void);}
+  .slider-row{display:flex; align-items:center; gap:12px; margin:12px 0; font-size:13px;}
+  .slider-row label{width:150px; color:var(--text-muted); font-family:var(--font-mono); font-size:12px;}
+  .slider-row .val{width:56px; text-align:right; font-family:var(--font-mono); color:var(--accent-fit);}
+
+  .num-input{background:var(--bg-void); border:1px solid var(--border-hair); color:var(--text-primary); border-radius:6px; padding:6px 8px; width:64px; font-family:var(--font-mono); text-align:center;}
+
+  .btn{background:var(--bg-raised-2); color:var(--text-primary); border:1px solid var(--border-hair); padding:9px 16px; border-radius:8px; font-size:13px; transition:.15s;}
+  .btn:hover{border-color:var(--accent-boundary); color:var(--accent-boundary);}
+  .btn.primary{background:var(--accent-boundary); color:#052824; border:none; font-weight:600;}
+  .btn.primary:hover{filter:brightness(1.08); color:#052824;}
+  .btn:disabled{opacity:.4; pointer-events:none;}
+
+  /* ---------- QUIZ ---------- */
+  .quiz{background:var(--bg-surface); border:1px solid var(--border-hair); border-radius:14px; padding:26px; margin-top:32px;}
+  .quiz-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;}
+  .quiz-head .quiz-title{font-family:var(--font-mono); font-size:12px; text-transform:uppercase; letter-spacing:1.5px; color:var(--accent-fit);}
+  .quiz-progress{font-family:var(--font-mono); font-size:12px; color:var(--text-faint);}
+  .qcard{margin-bottom:22px; padding-bottom:20px; border-bottom:1px solid var(--border-hair);}
+  .qcard:last-of-type{border-bottom:none;}
+  .qcard .qtext{font-size:15px; color:var(--text-primary); margin-bottom:12px; font-weight:600;}
+  .qopt{display:block; width:100%; text-align:left; background:var(--bg-raised); border:1px solid var(--border-hair); color:var(--text-muted); padding:11px 14px; border-radius:8px; margin-bottom:8px; font-size:14px; transition:.15s;}
+  .qopt:hover{border-color:var(--accent-boundary);}
+  .qopt.selected{border-color:var(--accent-boundary); color:var(--text-primary);}
+  .qopt.correct{background:var(--success-dim); border-color:var(--success); color:var(--text-primary);}
+  .qopt.incorrect{background:var(--danger-dim); border-color:var(--danger); color:var(--text-primary);}
+  .qexplain{display:none; font-size:13px; color:var(--text-muted); background:var(--bg-void); border-radius:8px; padding:10px 14px; margin-top:8px; border-left:3px solid var(--accent-boundary);}
+  .qexplain.show{display:block;}
+  .quiz-result{display:none; text-align:center; padding:24px 0 4px;}
+  .quiz-result.show{display:block;}
+  .score-ring{font-family:var(--font-mono); font-size:40px; color:var(--accent-fit); margin-bottom:6px;}
+
+  /* ---------- FOOTER / CONCLUSION ---------- */
+  #conclusion{padding:64px 0; border-top:1px solid var(--border-hair);}
+  .resource-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:16px;}
+  @media (max-width:800px){.resource-grid{grid-template-columns:1fr 1fr;}}
+  @media (max-width:560px){.resource-grid{grid-template-columns:1fr;}}
+  .resource-card{background:var(--bg-surface); border:1px solid var(--border-hair); border-radius:12px; padding:18px;}
+  .resource-card h4{font-size:13px; font-family:var(--font-mono); text-transform:uppercase; letter-spacing:1px; color:var(--accent-boundary); margin-bottom:10px;}
+  .resource-card ul{margin:0; padding-left:16px; font-size:13.5px; color:var(--text-muted);}
+  .resource-card li{margin-bottom:7px;}
+  .keyword-pill{display:inline-block; background:var(--bg-raised); border:1px solid var(--border-hair); border-radius:16px; padding:5px 12px; font-size:12.5px; margin:4px 6px 0 0; font-family:var(--font-mono); color:var(--text-muted);}
+
+  .cheat-table{width:100%; border-collapse:collapse; font-size:13px; margin-top:10px;}
+  .cheat-table th, .cheat-table td{border:1px solid var(--border-hair); padding:8px 10px; text-align:left;}
+  .cheat-table th{background:var(--bg-raised); color:var(--text-faint); font-family:var(--font-mono); font-size:10.5px; text-transform:uppercase;}
+  .cheat-table td.formula{font-family:var(--font-mono); color:var(--accent-fit);}
+
+  #print-btn{position:fixed; bottom:24px; right:24px; z-index:40; background:var(--accent-fit); color:#1A1300; border:none; width:auto; padding:12px 18px; border-radius:30px; font-size:13px; font-weight:600; box-shadow:0 10px 30px -6px rgba(0,0,0,.5); display:flex; align-items:center; gap:8px;}
+
+  @media print{
+    #topbar,#print-btn,#hero .hero-grid > div:last-child,#begin-btn,.qopt,input[type=range],.exercise-box button{display:none !important;}
+    body{background:#fff; color:#000;}
+    .module.locked{display:none;}
+    * {color:#000 !important; background:#fff !important; border-color:#999 !important;}
+  }
+
+  .final-challenge{background:linear-gradient(180deg,var(--bg-surface),var(--bg-raised)); border:1px solid var(--accent-fit-dim); border-radius:14px; padding:26px; margin:20px 0;}
+  .scenario{background:var(--bg-void); border:1px solid var(--border-hair); border-radius:10px; padding:16px 18px; margin-bottom:14px; font-size:14px; color:var(--text-muted);}
+
+  .badge-earned{display:inline-flex; align-items:center; gap:6px; background:var(--accent-fit-dim); border:1px solid var(--accent-fit); color:var(--accent-fit); border-radius:20px; padding:6px 14px; font-size:12.5px; font-family:var(--font-mono); margin:4px 6px 0 0;}
+
+  .cm-grid{display:grid; grid-template-columns:auto 1fr 1fr; gap:2px; max-width:420px; margin:14px 0; font-size:13px; font-family:var(--font-mono);}
+  .cm-cell{background:var(--bg-raised); padding:10px; text-align:center; border-radius:4px;}
+  .cm-cell.head{background:transparent; color:var(--text-faint); font-size:10px;}
+  .cm-cell input{width:60px;}
+
+  footer{padding:30px 0 80px; text-align:center; color:var(--text-faint); font-size:12.5px; font-family:var(--font-mono);}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <div class="row">
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 26 26"><circle cx="4" cy="20" r="2" fill="#57C7B8"/><circle cx="11" cy="10" r="2" fill="#57C7B8"/><circle cx="18" cy="15" r="2" fill="#57C7B8"/><circle cx="23" cy="4" r="2" fill="#57C7B8"/><line x1="2" y1="22" x2="24" y2="3" stroke="#E3A857" stroke-width="2" stroke-linecap="round"/></svg>
+      <div>
+        <div class="brand-name">Interactive Learning Studio</div>
+        <div class="brand-sub">Supervised Learning · Regression &amp; Classification</div>
+      </div>
+    </div>
+    <div id="xp-wrap">
+      <div id="progress-rail">
+        <div class="rail-dot active" id="rail-0"></div>
+        <div class="rail-dot" id="rail-1"></div>
+        <div class="rail-dot" id="rail-2"></div>
+        <div class="rail-dot" id="rail-3"></div>
+      </div>
+      <div id="xp-badge">⚡ <b id="xp-count">0</b> XP</div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= HERO ================= -->
+<section id="hero">
+  <div class="container">
+    <div class="eyebrow">Data Science / AI · ML Fundamentals</div>
+    <h1>Supervised Learning: Regression &amp; Classification, taught completely.</h1>
+    <p class="lede">Not a roadmap — a full tutorial. By the end, you'll be able to explain, diagram, and apply linear regression, logistic regression, decision trees, overfitting control, and model evaluation from first principles.</p>
+
+    <div class="hero-grid">
+      <div>
+        <div class="meta-strip" style="margin-top:0;">
+          <div class="meta-cell"><div class="k">Format</div><div class="v">4 modules, hands-on</div></div>
+          <div class="meta-cell"><div class="k">Time</div><div class="v">≈ 70–90 minutes</div></div>
+          <div class="meta-cell"><div class="k">Prerequisites</div><div class="v">Basic Python, high-school algebra</div></div>
+          <div class="meta-cell"><div class="k">Outcome</div><div class="v">Build &amp; evaluate your first models</div></div>
+        </div>
+        <button id="begin-btn" onclick="scrollToId('module-1')">Start Module 1 →</button>
+      </div>
+      <div id="fit-demo">
+        <div class="demo-head">
+          <span class="demo-title">Live demo — fitting a line</span>
+          <span class="demo-metric mono">MSE: <span id="hero-mse">—</span></span>
+        </div>
+        <svg id="hero-svg" viewBox="0 0 340 220"></svg>
+        <div class="diagram-cap">Watch gradient descent settle on the line that minimizes error, point by point. This is the heart of Module 1.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= INTRO DETAIL ================= -->
+<section class="intro-section">
+  <div class="container">
+    <div class="card-grid">
+      <div class="info-card">
+        <h3>Learning Objectives</h3>
+        <ul>
+          <li>Distinguish regression from classification and pick the right one for a problem</li>
+          <li>Derive and interpret a cost function, and explain how gradient descent minimizes it</li>
+          <li>Build intuition for logistic regression and decision trees as classifiers</li>
+          <li>Diagnose overfitting vs. underfitting and apply the train/test split correctly</li>
+          <li>Read a confusion matrix and choose the right metric (accuracy, precision, recall, F1, ROC-AUC) for a given business problem</li>
+        </ul>
+      </div>
+      <div class="info-card">
+        <h3>Expected Outcomes &amp; Reward System</h3>
+        <p style="font-size:14.5px; margin-bottom:14px;">Each module ends with a scored quiz. Score 3/4 or higher to unlock the next module and earn its badge. Finish all four to unlock the Final Challenge.</p>
+        <div class="reward-strip">
+          <div class="reward-chip"><span class="dot" style="background:var(--accent-fit)"></span>+25 XP per correct quiz answer</div>
+          <div class="reward-chip"><span class="dot" style="background:var(--accent-boundary)"></span>+50 XP module completion bonus</div>
+          <div class="reward-chip"><span class="dot" style="background:var(--success)"></span>4 skill badges + 1 mastery badge</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= MODULE 1 ================= -->
+<section class="module" id="module-1">
+  <div class="container">
+    <div class="module-head">
+      <div class="module-num">MODULE 01</div>
+      <div style="flex:1">
+        <div class="module-tag">Foundations</div>
+        <h2>What is Supervised Learning, and What Does a "Fit" Mean?</h2>
+      </div>
+    </div>
+    <p class="module-desc">We start from the smallest possible model — a straight line through data — because every technique later in this tutorial is a variation on the same idea: define an error, then shrink it.</p>
+
+    <div class="subblock">
+      <h4>Supervised learning, precisely</h4>
+      <p>Supervised learning means learning a mapping from inputs (features) to known outputs (labels) using example pairs. You show the algorithm many <span class="mono">(input, correct answer)</span> pairs, and it learns a general rule it can apply to new, unseen inputs. There are two flavors, split by what the output looks like:</p>
+      <table class="cmp">
+        <tr><th></th><th>Regression</th><th>Classification</th></tr>
+        <tr><td>Output type</td><td>Continuous number</td><td>Category / class label</td></tr>
+        <tr><td>Example question</td><td>"What will this house sell for?"</td><td>"Is this email spam or not?"</td></tr>
+        <tr><td>Typical metric</td><td>MSE, RMSE, R²</td><td>Accuracy, Precision, Recall, F1</td></tr>
+      </table>
+    </div>
+
+    <div class="analogy-box">
+      <div class="label">Analogy</div>
+      Think of supervised learning like a new intern shadowing a senior analyst. The intern watches many (situation → decision) pairs. Over time they stop needing the senior analyst and start predicting the decision themselves — that's the trained model.
+    </div>
+
+    <div class="subblock">
+      <h4>Simple linear regression</h4>
+      <p>Simple linear regression fits a straight line <span class="mono">ŷ = mx + b</span> through your data, where <span class="mono">m</span> is the slope and <span class="mono">b</span> is the intercept. "Fitting" means choosing <span class="mono">m</span> and <span class="mono">b</span> so the line sits as close as possible to every point.</p>
+      <div class="example-box">
+        <div class="label">Worked example</div>
+        Predicting exam score from hours studied. Say the true relationship is roughly <span class="mono">score ≈ 8×hours + 40</span>. A student who studies 5 hours might score around 80. Linear regression's job is to discover that "8" and "40" purely from example (hours, score) pairs — it never sees the formula, only the dots.
+      </div>
+    </div>
+
+    <div class="subblock">
+      <h4>The cost function: measuring "how wrong"</h4>
+      <p>For every point, the <b>residual</b> is the vertical gap between the actual value and the line's prediction: <span class="mono">residual = y − ŷ</span>. We square each residual (so positive and negative errors don't cancel, and big misses are punished more) and average them — that's <b>Mean Squared Error (MSE)</b>:</p>
+      <div class="diagram-box">
+        <div class="mono" style="font-size:18px; color:var(--accent-fit)">MSE = (1/n) · Σ (yᵢ − ŷᵢ)²</div>
+        <div class="diagram-cap">n = number of points · yᵢ = actual value · ŷᵢ = predicted value on the line</div>
+      </div>
+      <p><b>Gradient descent</b> is the algorithm that nudges <span class="mono">m</span> and <span class="mono">b</span> a small step at a time, always in the direction that reduces MSE fastest — like walking downhill on an "error landscape" with your eyes closed, feeling for the steepest slope under your feet.</p>
+    </div>
+
+    <div class="diagram-box">
+      <svg id="m1-diagram" viewBox="0 0 500 240"></svg>
+      <div class="diagram-cap">Dashed lines = residuals. The best-fit line minimizes the sum of squared residual lengths — not the sum of raw residuals.</div>
+    </div>
+
+    <div class="exercise-box">
+      <div class="label">Exercise — fit the line yourself</div>
+      <p style="margin-bottom:10px;">Drag the sliders to manually minimize MSE for this scatter of (hours studied, score) points. Try to beat 15.0 MSE.</p>
+      <svg id="m1-exercise-svg" viewBox="0 0 460 220" style="background:var(--bg-void); border-radius:8px;"></svg>
+      <div class="slider-row"><label>Slope (m)</label><input type="range" id="m1-slope" min="-2" max="14" step="0.1" value="2"><span class="val" id="m1-slope-val">2.0</span></div>
+      <div class="slider-row"><label>Intercept (b)</label><input type="range" id="m1-intercept" min="0" max="100" step="1" value="40"><span class="val" id="m1-intercept-val">40</span></div>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
+        <span class="mono" style="font-size:13px;">Your MSE: <b id="m1-mse" style="color:var(--accent-fit)">—</b></span>
+        <span id="m1-feedback" class="mono" style="font-size:13px; color:var(--text-faint);"></span>
+      </div>
+    </div>
+
+    <div class="misconception-box">
+      <div class="label">Common misconception</div>
+      "A good fit means the line touches as many points as possible." False — the best-fit line usually touches almost none of the points. It minimizes total squared distance across <i>all</i> points, which is a global balance, not a local one. Also: correlation in the data does not prove causation — hours studied and score both being high could share a hidden cause (like motivation).
+    </div>
+
+    <div class="takeaways">
+      <div class="label">Key takeaways</div>
+      <ul>
+        <li>Supervised learning = learning input→output mapping from labeled examples</li>
+        <li>Regression predicts numbers; classification predicts categories</li>
+        <li>A line is defined by slope (m) and intercept (b); "fitting" = choosing them to minimize error</li>
+        <li>MSE squares residuals so errors can't cancel out and large misses are penalized more</li>
+        <li>Gradient descent walks downhill on the error surface to find the minimum-error m, b</li>
+      </ul>
+    </div>
+
+    <div class="quiz" id="quiz-1" data-module="1"></div>
+  </div>
+</section>
+
+<!-- ================= MODULE 2 ================= -->
+<section class="module locked" id="module-2">
+  <div class="container">
+    <div class="module-head">
+      <div class="module-num">MODULE 02</div>
+      <div style="flex:1">
+        <div class="module-tag">Core Algorithms</div>
+        <h2>From Lines to Decisions: Logistic Regression &amp; Decision Trees</h2>
+      </div>
+    </div>
+    <p class="module-desc">Real problems rarely have one input or a numeric answer. Here we extend to multiple features and pivot from predicting numbers to predicting categories.</p>
+
+    <div class="subblock">
+      <h4>Multiple linear regression</h4>
+      <p>Add more features and the line becomes a plane, then a hyperplane: <span class="mono">ŷ = w₁x₁ + w₂x₂ + ... + wₙxₙ + b</span>. Each weight <span class="mono">wᵢ</span> tells you how much <span class="mono">ŷ</span> moves per unit change in that feature, holding the others constant — e.g. predicting house price from square footage, bedrooms, and age together instead of one at a time.</p>
+    </div>
+
+    <div class="subblock">
+      <h4>Logistic regression: from numbers to probabilities</h4>
+      <p>To classify (e.g. spam / not spam), we still start with a linear combination <span class="mono">z = w·x + b</span>, but squash it through the <b>sigmoid function</b> so the output is always between 0 and 1 — a probability.</p>
+      <div class="diagram-box">
+        <svg id="m2-sigmoid" viewBox="0 0 460 220"></svg>
+        <div class="diagram-cap">σ(z) = 1 / (1 + e⁻ᶻ). Large positive z → probability near 1. Large negative z → near 0.</div>
+      </div>
+      <p>A <b>decision boundary</b> is drawn wherever that probability crosses your chosen threshold (commonly 0.5) — everything on one side is predicted class A, the other side class B.</p>
+    </div>
+
+    <div class="analogy-box">
+      <div class="label">Analogy</div>
+      Logistic regression is a dimmer switch, not an on/off switch. It doesn't just say "spam" — it says "87% sure this is spam," and you decide where to draw the line for action.
+    </div>
+
+    <div class="exercise-box">
+      <div class="label">Exercise — move the decision boundary</div>
+      <p style="margin-bottom:10px;">Drag the threshold to see how many emails get reclassified. Notice the trade-off: a stricter threshold blocks more spam but risks flagging real emails.</p>
+      <svg id="m2-boundary-svg" viewBox="0 0 460 140" style="background:var(--bg-void); border-radius:8px;"></svg>
+      <div class="slider-row"><label>Decision threshold</label><input type="range" id="m2-threshold" min="0.1" max="0.9" step="0.05" value="0.5"><span class="val" id="m2-threshold-val">0.50</span></div>
+      <div class="mono" style="font-size:13px; margin-top:6px;">Classified spam: <b id="m2-spam-count" style="color:var(--accent-boundary)">—</b> / 12</div>
+    </div>
+
+    <div class="subblock">
+      <h4>Decision trees</h4>
+      <p>A decision tree classifies by asking a sequence of yes/no questions about your features, splitting the data at each step to make the resulting groups as "pure" (single-class) as possible. Purity is measured with <b>Gini impurity</b> or <b>entropy</b> — both are just different ways of scoring "how mixed is this group of labels?"</p>
+      <div class="diagram-box">
+        <div id="m2-tree" style="display:flex; flex-direction:column; align-items:center; gap:10px; font-family:var(--font-mono); font-size:12.5px;">
+          <div style="background:var(--bg-raised); border:1px solid var(--border-hair); border-radius:8px; padding:8px 14px;">Income &gt; ₹50k/mo?</div>
+          <div style="display:flex; gap:60px;">
+            <div style="text-align:center;">
+              <div style="color:var(--accent-boundary); margin-bottom:6px;">Yes ↙</div>
+              <div style="background:var(--bg-raised); border:1px solid var(--border-hair); border-radius:8px; padding:8px 14px;">Credit score &gt; 700?</div>
+              <div style="display:flex; gap:16px; margin-top:8px; justify-content:center;">
+                <div style="background:var(--success-dim); border:1px solid var(--success); border-radius:6px; padding:6px 10px;">Approve</div>
+                <div style="background:var(--danger-dim); border:1px solid var(--danger); border-radius:6px; padding:6px 10px;">Review</div>
+              </div>
+            </div>
+            <div style="text-align:center;">
+              <div style="color:var(--accent-boundary); margin-bottom:6px;">No ↘</div>
+              <div style="background:var(--danger-dim); border:1px solid var(--danger); border-radius:6px; padding:8px 14px;">Reject</div>
+            </div>
+          </div>
+        </div>
+        <div class="diagram-cap">Each split increases purity of the resulting groups. This is a loan-approval toy example — trees can nest many levels deep.</div>
+      </div>
+    </div>
+
+    <div class="example-box">
+      <div class="label">Worked example</div>
+      Predicting churn (yes/no) from tenure, monthly charges, and contract type. A tree might first split on contract type (month-to-month vs. yearly), then split each branch again on tenure — mirroring how a human analyst would reason through the same decision manually.
+    </div>
+
+    <table class="cmp">
+      <tr><th>Algorithm</th><th>Best for</th><th>Output</th><th>Interpretability</th></tr>
+      <tr><td>Linear Regression</td><td>Continuous, linear relationships</td><td>Number</td><td>High — inspect weights directly</td></tr>
+      <tr><td>Logistic Regression</td><td>Two-class problems, linearly separable</td><td>Probability → class</td><td>High</td></tr>
+      <tr><td>Decision Tree</td><td>Non-linear, rule-like relationships</td><td>Class or number</td><td>High — read as if/else rules</td></tr>
+    </table>
+
+    <div class="misconception-box">
+      <div class="label">Common misconception</div>
+      "Logistic regression is a regression technique for predicting numbers." It has "regression" in the name for historical reasons (it regresses the log-odds), but it is used for classification, not for predicting arbitrary continuous values.
+    </div>
+
+    <div class="takeaways">
+      <div class="label">Key takeaways</div>
+      <ul>
+        <li>Multiple linear regression extends a line to many features via weighted sums</li>
+        <li>Logistic regression outputs a probability via the sigmoid function, then applies a threshold</li>
+        <li>Decision trees split data repeatedly to maximize the purity of resulting groups</li>
+        <li>All three are interpretable: you can read off exactly why a prediction was made</li>
+      </ul>
+    </div>
+
+    <div class="quiz" id="quiz-2" data-module="2"></div>
+  </div>
+</section>
+
+<!-- ================= MODULE 3 ================= -->
+<section class="module locked" id="module-3">
+  <div class="container">
+    <div class="module-head">
+      <div class="module-num">MODULE 03</div>
+      <div style="flex:1">
+        <div class="module-tag">Practical Application</div>
+        <h2>Making Models That Generalize: Overfitting &amp; Validation</h2>
+      </div>
+    </div>
+    <p class="module-desc">A model that scores perfectly on the data it was trained on can still fail badly on new data. This module is about catching that before it costs you in production.</p>
+
+    <div class="subblock">
+      <h4>Train/test split</h4>
+      <p>Never evaluate a model on the same data it learned from — that's like grading a student using the exact questions they memorized answers to. Instead, split your dataset (commonly 70–80% train, 20–30% test) before training, and only touch the test set once, at the end, to estimate real-world performance.</p>
+    </div>
+
+    <div class="analogy-box">
+      <div class="label">Analogy</div>
+      Training data is the practice exam with an answer key. Test data is the real exam, seen for the first time. A model that only does well on the practice exam hasn't actually learned the subject — it's memorized the answer key.
+    </div>
+
+    <div class="subblock">
+      <h4>Overfitting vs. underfitting</h4>
+      <table class="cmp">
+        <tr><th></th><th>Underfitting</th><th>Good fit</th><th>Overfitting</th></tr>
+        <tr><td>Training error</td><td>High</td><td>Low</td><td>Very low</td></tr>
+        <tr><td>Test error</td><td>High</td><td>Low</td><td>High</td></tr>
+        <tr><td>Cause</td><td>Model too simple</td><td>Right complexity</td><td>Model too complex, memorizes noise</td></tr>
+        <tr><td>Fix</td><td>Add features / complexity</td><td>—</td><td>Regularize, simplify, get more data</td></tr>
+      </table>
+    </div>
+
+    <div class="exercise-box">
+      <div class="label">Exercise — find the sweet spot</div>
+      <p style="margin-bottom:10px;">Drag model complexity from a rigid straight line to a wildly wiggly curve. Watch training error keep falling while test error eventually rises — that gap is overfitting.</p>
+      <svg id="m3-curve-svg" viewBox="0 0 460 220" style="background:var(--bg-void); border-radius:8px;"></svg>
+      <div class="slider-row"><label>Model complexity</label><input type="range" id="m3-complexity" min="1" max="12" step="1" value="1"><span class="val" id="m3-complexity-val">1</span></div>
+      <div style="display:flex; gap:22px; margin-top:8px;" class="mono" style="font-size:13px;">
+        <span>Train error: <b id="m3-train-err" style="color:var(--accent-boundary)">—</b></span>
+        <span>Test error: <b id="m3-test-err" style="color:var(--danger)">—</b></span>
+      </div>
+      <div id="m3-verdict" class="mono" style="font-size:12.5px; margin-top:6px; color:var(--text-faint);"></div>
+    </div>
+
+    <div class="subblock">
+      <h4>Regularization &amp; cross-validation, briefly</h4>
+      <p><b>Regularization</b> (L1/Lasso and L2/Ridge) adds a penalty for large weights to the cost function, discouraging the model from relying too heavily on any single feature — a built-in pressure toward simplicity. <b>Cross-validation</b> (e.g. k-fold) repeats the train/test split several times over different slices of data, then averages the results, giving a more reliable performance estimate than one lucky or unlucky split.</p>
+    </div>
+
+    <div class="example-box">
+      <div class="label">Worked example</div>
+      A churn model that hits 99% accuracy on training data but only 68% on new customers is almost certainly overfit. Trying L2 regularization or pruning the decision tree's depth usually closes most of that gap.
+    </div>
+
+    <div class="misconception-box">
+      <div class="label">Common misconception</div>
+      "Higher training accuracy always means a better model." Training accuracy alone tells you nothing about generalization — it can rise as the model memorizes noise while real-world performance quietly gets worse.
+    </div>
+
+    <div class="takeaways">
+      <div class="label">Key takeaways</div>
+      <ul>
+        <li>Always evaluate on held-out data the model never trained on</li>
+        <li>Underfitting = too simple, high error everywhere; overfitting = too complex, low train error but high test error</li>
+        <li>Regularization penalizes complexity directly inside the cost function</li>
+        <li>Cross-validation gives a more trustworthy performance estimate than a single split</li>
+      </ul>
+    </div>
+
+    <div class="quiz" id="quiz-3" data-module="3"></div>
+  </div>
+</section>
+
+<!-- ================= MODULE 4 ================= -->
+<section class="module locked" id="module-4">
+  <div class="container">
+    <div class="module-head">
+      <div class="module-num">MODULE 04</div>
+      <div style="flex:1">
+        <div class="module-tag">Mastery</div>
+        <h2>Choosing the Right Metric: Evaluation That Matches the Problem</h2>
+      </div>
+    </div>
+    <p class="module-desc">A model is only as good as the metric you judge it by. This module turns raw predictions into the numbers that actually drive decisions.</p>
+
+    <div class="subblock">
+      <h4>The confusion matrix</h4>
+      <p>For binary classification, every prediction falls into one of four buckets:</p>
+      <div class="diagram-box">
+        <div class="cm-grid" style="max-width:460px; margin:0 auto;">
+          <div class="cm-cell head"></div><div class="cm-cell head">Predicted Positive</div><div class="cm-cell head">Predicted Negative</div>
+          <div class="cm-cell head">Actual Positive</div><div class="cm-cell" style="color:var(--success)">TP</div><div class="cm-cell" style="color:var(--danger)">FN</div>
+          <div class="cm-cell head">Actual Negative</div><div class="cm-cell" style="color:var(--danger)">FP</div><div class="cm-cell" style="color:var(--success)">TN</div>
+        </div>
+        <div class="diagram-cap">TP: correctly flagged · FN: missed a real positive · FP: false alarm · TN: correctly cleared</div>
+      </div>
+    </div>
+
+    <div class="subblock">
+      <h4>Precision, recall, F1, accuracy</h4>
+      <table class="cmp">
+        <tr><th>Metric</th><th>Formula</th><th>Answers</th></tr>
+        <tr><td>Accuracy</td><td class="mono">(TP+TN)/(TP+TN+FP+FN)</td><td>Overall, how often was it right?</td></tr>
+        <tr><td>Precision</td><td class="mono">TP/(TP+FP)</td><td>Of predicted positives, how many were real?</td></tr>
+        <tr><td>Recall</td><td class="mono">TP/(TP+FN)</td><td>Of actual positives, how many did we catch?</td></tr>
+        <tr><td>F1 Score</td><td class="mono">2·(P·R)/(P+R)</td><td>Balance of precision and recall</td></tr>
+      </table>
+    </div>
+
+    <div class="analogy-box">
+      <div class="label">Analogy</div>
+      A smoke detector with high recall rarely misses a real fire but may false-alarm on burnt toast (low precision). A smoke detector with high precision only rings for real fires but might stay silent during a small one it's unsure about. Neither is "correct" in isolation — it depends what a missed alarm costs you versus a false one.
+    </div>
+
+    <div class="exercise-box">
+      <div class="label">Exercise — build your own confusion matrix</div>
+      <p style="margin-bottom:10px;">Enter counts for a spam filter tested on 200 emails, then read off the metrics live.</p>
+      <div class="cm-grid">
+        <div class="cm-cell head"></div><div class="cm-cell head">Predicted Spam</div><div class="cm-cell head">Predicted Not-Spam</div>
+        <div class="cm-cell head">Actual Spam</div><div class="cm-cell"><input class="num-input" id="m4-tp" type="number" min="0" value="70"></div><div class="cm-cell"><input class="num-input" id="m4-fn" type="number" min="0" value="20"></div>
+        <div class="cm-cell head">Actual Not-Spam</div><div class="cm-cell"><input class="num-input" id="m4-fp" type="number" min="0" value="15"></div><div class="cm-cell"><input class="num-input" id="m4-tn" type="number" min="0" value="95"></div>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:14px;" class="mono" style="font-size:13px;">
+        <div>Accuracy<br><b id="m4-acc" style="color:var(--accent-fit); font-size:16px;">—</b></div>
+        <div>Precision<br><b id="m4-prec" style="color:var(--accent-fit); font-size:16px;">—</b></div>
+        <div>Recall<br><b id="m4-rec" style="color:var(--accent-fit); font-size:16px;">—</b></div>
+        <div>F1<br><b id="m4-f1" style="color:var(--accent-fit); font-size:16px;">—</b></div>
+      </div>
+    </div>
+
+    <div class="subblock">
+      <h4>ROC-AUC, and metrics for regression</h4>
+      <div class="diagram-box">
+        <svg id="m4-roc" viewBox="0 0 300 220"></svg>
+        <div class="diagram-cap">ROC curve plots True Positive Rate vs. False Positive Rate across every possible threshold. AUC (area under curve) close to 1.0 = excellent separation between classes; 0.5 = no better than a coin flip.</div>
+      </div>
+      <p>For regression problems, use <span class="mono">MSE</span> or <span class="mono">RMSE</span> (same units as your target — easier to interpret) for average error size, <span class="mono">MAE</span> when you want to be less sensitive to outliers, and <span class="mono">R²</span> to answer "what fraction of the variance in the target does my model explain?" (0 to 1, higher is better).</p>
+    </div>
+
+    <div class="example-box">
+      <div class="label">Worked example</div>
+      For a cancer screening classifier, missing a real case (FN) is far more costly than a false alarm (FP) — so you'd optimize for high recall even if precision drops. For a spam filter, a false positive (blocking a real email) is often worse than missing some spam — so precision matters more there.
+    </div>
+
+    <div class="misconception-box">
+      <div class="label">Common misconception</div>
+      "The model with the highest accuracy is the best model." On imbalanced data (e.g. 98% non-fraud, 2% fraud) a model that always predicts "not fraud" scores 98% accuracy while being completely useless. Always check precision/recall on the minority class too.
+    </div>
+
+    <div class="takeaways">
+      <div class="label">Key takeaways</div>
+      <ul>
+        <li>Confusion matrix (TP, FP, FN, TN) is the foundation every classification metric is built from</li>
+        <li>Precision guards against false alarms; recall guards against missed positives — pick based on real-world cost</li>
+        <li>Accuracy is misleading on imbalanced datasets</li>
+        <li>ROC-AUC summarizes performance across all thresholds at once</li>
+        <li>For regression, prefer RMSE/MAE for error size and R² for explained variance</li>
+      </ul>
+    </div>
+
+    <div class="quiz" id="quiz-4" data-module="4"></div>
+  </div>
+</section>
+
+<!-- ================= FINAL CHALLENGE + CONCLUSION ================= -->
+<section class="module locked" id="module-final">
+  <div class="container">
+    <div class="module-head">
+      <div class="module-num">FINAL</div>
+      <div style="flex:1">
+        <div class="module-tag">Capstone</div>
+        <h2>Final Practical Challenge</h2>
+      </div>
+    </div>
+    <p class="module-desc">Apply everything at once across four realistic scenarios. Each one asks you to choose the right algorithm, diagnostic, or metric — the way you'd actually decide on the job.</p>
+    <div class="final-challenge" id="final-challenge"></div>
+
+    <div id="badges-earned" style="margin-top:26px;"></div>
+
+    <div class="subblock" style="margin-top:44px;">
+      <h4>Cheat sheet</h4>
+      <table class="cheat-table">
+        <tr><th>Concept</th><th>Formula / Rule</th></tr>
+        <tr><td>Linear regression</td><td class="formula">ŷ = mx + b (or w·x + b)</td></tr>
+        <tr><td>MSE</td><td class="formula">(1/n)Σ(y−ŷ)²</td></tr>
+        <tr><td>Sigmoid</td><td class="formula">σ(z) = 1/(1+e⁻ᶻ)</td></tr>
+        <tr><td>Accuracy</td><td class="formula">(TP+TN)/Total</td></tr>
+        <tr><td>Precision</td><td class="formula">TP/(TP+FP)</td></tr>
+        <tr><td>Recall</td><td class="formula">TP/(TP+FN)</td></tr>
+        <tr><td>F1</td><td class="formula">2PR/(P+R)</td></tr>
+        <tr><td>R²</td><td class="formula">1 − (SS_res/SS_tot)</td></tr>
+        <tr><td>Overfitting signal</td><td class="formula">train error ≪ test error</td></tr>
+        <tr><td>Fix overfitting</td><td class="formula">regularize · simplify · more data · cross-validate</td></tr>
+      </table>
+    </div>
+
+    <div class="subblock">
+      <h4>Summary notes</h4>
+      <div class="info-card" style="margin-top:8px;">
+        <p style="margin:0; font-size:14.5px;">Supervised learning maps inputs to known outputs. Regression predicts numbers by minimizing squared error (MSE) via gradient descent; classification predicts categories, most simply via logistic regression's sigmoid-squashed probability or a decision tree's sequence of splits. A model is only useful if it generalizes — check this with a train/test split, watch for the overfitting gap, and use regularization or cross-validation to control complexity. Finally, judge classifiers with the metric that matches the real cost of mistakes: precision when false alarms are expensive, recall when missed positives are expensive, F1 for a balance, and ROC-AUC for a threshold-independent summary; judge regressors with RMSE/MAE for error size and R² for explained variance.</p>
+      </div>
+    </div>
+
+    <div id="conclusion">
+      <h3 style="font-size:22px;">Continue Learning</h3>
+      <div class="resource-grid">
+        <div class="resource-card">
+          <h4>Books</h4>
+          <ul>
+            <li>Hands-On Machine Learning with Scikit-Learn, Keras &amp; TensorFlow — Aurélien Géron</li>
+            <li>An Introduction to Statistical Learning — James, Witten, Hastie, Tibshirani</li>
+            <li>Pattern Recognition and Machine Learning — Christopher Bishop</li>
+          </ul>
+        </div>
+        <div class="resource-card">
+          <h4>Documentation</h4>
+          <ul>
+            <li>scikit-learn: linear_model (LinearRegression, LogisticRegression)</li>
+            <li>scikit-learn: tree (DecisionTreeClassifier)</li>
+            <li>scikit-learn: metrics (confusion_matrix, classification_report, roc_auc_score)</li>
+          </ul>
+        </div>
+        <div class="resource-card">
+          <h4>Research Papers</h4>
+          <ul>
+            <li>Domingos, "A Few Useful Things to Know about Machine Learning" (2012)</li>
+            <li>Breiman, "Random Forests" (2001) — the natural next step after single trees</li>
+            <li>Cortes &amp; Vapnik, "Support-Vector Networks" (1995) — a classic alternative classifier</li>
+          </ul>
+        </div>
+        <div class="resource-card">
+          <h4>Communities</h4>
+          <ul>
+            <li>Kaggle forums &amp; competition discussions</li>
+            <li>r/MachineLearning and r/learnmachinelearning</li>
+            <li>Cross Validated (stats.stackexchange.com)</li>
+          </ul>
+        </div>
+        <div class="resource-card">
+          <h4>Practice Platforms</h4>
+          <ul>
+            <li>Kaggle Learn (Intro to ML, Intermediate ML micro-courses)</li>
+            <li>Kaggle Datasets + Notebooks for end-to-end practice</li>
+            <li>Google Colab for free GPU/CPU notebooks</li>
+          </ul>
+        </div>
+        <div class="resource-card">
+          <h4>Search Keywords</h4>
+          <div>
+            <span class="keyword-pill">scikit-learn LinearRegression tutorial</span>
+            <span class="keyword-pill">logistic regression decision boundary</span>
+            <span class="keyword-pill">bias variance tradeoff explained</span>
+            <span class="keyword-pill">precision recall tradeoff</span>
+            <span class="keyword-pill">gini vs entropy decision tree</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-card" style="margin-top:18px;">
+        <h3>Additional AI Prompts for Further Learning</h3>
+        <ul>
+          <li>"Explain the bias-variance tradeoff using an analogy from cooking, then give me 3 practice questions."</li>
+          <li>"Walk me through implementing logistic regression in scikit-learn on a churn dataset, step by step."</li>
+          <li>"Give me 5 confusion-matrix calculation problems with answers, ranging from easy to hard."</li>
+          <li>"Compare Ridge and Lasso regularization with a worked numeric example."</li>
+          <li>"Quiz me on when to use precision vs. recall with 5 real-world business scenarios."</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>Interactive Learning Studio · Built for Hamzah's 60-Day Claude AI Mastery Challenge · Supervised Learning: Regression &amp; Classification</footer>
+
+<button id="print-btn" onclick="window.print()">🖨 Print notes</button>
+
+<script>
+/* ============ GLOBAL STATE ============ */
+const state = { xp:0, modulesDone:[false,false,false,false], scores:[0,0,0,0], badges:[] };
+const BADGE_NAMES = ["Foundations Master","Algorithm Explorer","Overfit Slayer","Metrics Guru"];
+
+function addXP(n){ state.xp += n; document.getElementById('xp-count').textContent = state.xp; }
+
+function scrollToId(id){ document.getElementById(id).scrollIntoView({behavior:'smooth', block:'start'}); }
+
+function updateRail(){
+  for(let i=0;i<4;i++){
+    const dot = document.getElementById('rail-'+i);
+    dot.classList.remove('active','done');
+    if(state.modulesDone[i]) dot.classList.add('done');
+    else if(i===0 || state.modulesDone[i-1]) dot.classList.add('active');
+  }
+}
+updateRail();
+
+/* ============ SVG HELPERS ============ */
+const NS = "http://www.w3.org/2000/svg";
+function svgEl(tag, attrs){
+  const el = document.createElementNS(NS, tag);
+  for(const k in attrs) el.setAttribute(k, attrs[k]);
+  return el;
+}
+
+/* ============ HERO ANIMATED FIT DEMO ============ */
+(function(){
+  const svg = document.getElementById('hero-svg');
+  const W=340,H=220,pad=30;
+  const pts = [[1,48],[2,58],[2.5,50],[3,68],[3.5,60],[4,75],[4.5,82],[5,80],[5.5,90],[6,95],[6.5,88],[7,100]];
+  const xs = pts.map(p=>p[0]), ys = pts.map(p=>p[1]);
+  const xMin=0,xMax=8, yMin=30,yMax=110;
+  function sx(x){ return pad + (x-xMin)/(xMax-xMin)*(W-2*pad); }
+  function sy(y){ return H-pad - (y-yMin)/(yMax-yMin)*(H-2*pad); }
+
+  // axes
+  svg.appendChild(svgEl('line',{x1:pad,y1:H-pad,x2:W-pad,y2:H-pad,stroke:'#2A323C','stroke-width':1}));
+  svg.appendChild(svgEl('line',{x1:pad,y1:pad,x2:pad,y2:H-pad,stroke:'#2A323C','stroke-width':1}));
+  const xlab = svgEl('text',{x:W/2,y:H-6,'text-anchor':'middle',fill:'#5C6577','font-size':'9','font-family':'monospace'}); xlab.textContent='hours studied →'; svg.appendChild(xlab);
+
+  const dotEls = pts.map(p=>{
+    const c = svgEl('circle',{cx:sx(p[0]),cy:sy(p[1]),r:3.2,fill:'#57C7B8'});
+    svg.appendChild(c); return c;
+  });
+  const residualLines = pts.map(()=>{
+    const l = svgEl('line',{stroke:'#E2636B','stroke-width':1,'stroke-dasharray':'2,2',opacity:0.6});
+    svg.insertBefore(l, dotEls[0]); return l;
+  });
+  const fitLine = svgEl('line',{stroke:'#E3A857','stroke-width':2.5,'stroke-linecap':'round'});
+  svg.appendChild(fitLine);
+
+  // target best-fit via least squares
+  const n = pts.length;
+  const sumX=xs.reduce((a,b)=>a+b,0), sumY=ys.reduce((a,b)=>a+b,0);
+  const sumXY=pts.reduce((a,p)=>a+p[0]*p[1],0), sumXX=pts.reduce((a,p)=>a+p[0]*p[0],0);
+  const targetM = (n*sumXY - sumX*sumY)/(n*sumXX - sumX*sumX);
+  const targetB = (sumY - targetM*sumX)/n;
+
+  let m=-1, b=95, t=0;
+  const mseSpan = document.getElementById('hero-mse');
+  function calcMSE(m,b){
+    let s=0; pts.forEach(p=>{ const pred=m*p[0]+b; s+=(p[1]-pred)*(p[1]-pred); });
+    return s/n;
+  }
+  function draw(){
+    t+=0.02;
+    const ease = Math.min(1, t);
+    const curM = -1 + (targetM-(-1))*ease;
+    const curB = 95 + (targetB-95)*ease;
+    fitLine.setAttribute('x1', sx(0)); fitLine.setAttribute('y1', sy(curM*0+curB));
+    fitLine.setAttribute('x2', sx(8)); fitLine.setAttribute('y2', sy(curM*8+curB));
+    pts.forEach((p,i)=>{
+      const predY = curM*p[0]+curB;
+      residualLines[i].setAttribute('x1', sx(p[0])); residualLines[i].setAttribute('y1', sy(p[1]));
+      residualLines[i].setAttribute('x2', sx(p[0])); residualLines[i].setAttribute('y2', sy(predY));
+    });
+    mseSpan.textContent = calcMSE(curM,curB).toFixed(1);
+    if(ease<1) requestAnimationFrame(draw);
+    else setTimeout(()=>{ t=0; requestAnimationFrame(draw); }, 2500);
+  }
+  requestAnimationFrame(draw);
+})();
+
+/* ============ M1 STATIC DIAGRAM ============ */
+(function(){
+  const svg = document.getElementById('m1-diagram');
+  const W=500,H=240,pad=40;
+  const pts=[[1,45],[2,55],[3,52],[4,68],[5,72],[6,66],[7,85],[8,90]];
+  function sx(x){return pad+(x-0)/(9-0)*(W-2*pad);}
+  function sy(y){return H-pad-(y-30)/(100-30)*(H-2*pad);}
+  svg.appendChild(svgEl('line',{x1:pad,y1:H-pad,x2:W-pad,y2:H-pad,stroke:'#2A323C'}));
+  svg.appendChild(svgEl('line',{x1:pad,y1:pad,x2:pad,y2:H-pad,stroke:'#2A323C'}));
+  const n=pts.length, sumX=pts.reduce((a,p)=>a+p[0],0), sumY=pts.reduce((a,p)=>a+p[1],0);
+  const sumXY=pts.reduce((a,p)=>a+p[0]*p[1],0), sumXX=pts.reduce((a,p)=>a+p[0]*p[0],0);
+  const m=(n*sumXY-sumX*sumY)/(n*sumXX-sumX*sumX), b=(sumY-m*sumX)/n;
+  pts.forEach(p=>{
+    const predY=m*p[0]+b;
+    svg.appendChild(svgEl('line',{x1:sx(p[0]),y1:sy(p[1]),x2:sx(p[0]),y2:sy(predY),stroke:'#E2636B','stroke-width':1,'stroke-dasharray':'3,3'}));
+    svg.appendChild(svgEl('circle',{cx:sx(p[0]),cy:sy(p[1]),r:4,fill:'#57C7B8'}));
+  });
+  svg.appendChild(svgEl('line',{x1:sx(0.5),y1:sy(m*0.5+b),x2:sx(8.5),y2:sy(m*8.5+b),stroke:'#E3A857','stroke-width':2.5}));
+  const lab = svgEl('text',{x:W-pad,y:pad+10,'text-anchor':'end',fill:'#E3A857','font-size':'12','font-family':'monospace'});
+  lab.textContent = `ŷ = ${m.toFixed(1)}x + ${b.toFixed(1)}`;
+  svg.appendChild(lab);
+})();
+
+/* ============ M1 EXERCISE (interactive) ============ */
+(function(){
+  const svg = document.getElementById('m1-exercise-svg');
+  const W=460,H=220,pad=36;
+  const pts=[[1,48],[2,58],[2.5,50],[3,68],[3.5,60],[4,75],[4.5,82],[5,80],[5.5,90],[6,95],[6.5,88],[7,100]];
+  function sx(x){return pad+(x-0)/(8-0)*(W-2*pad);}
+  function sy(y){return H-pad-(y-30)/(110-30)*(H-2*pad);}
+  svg.appendChild(svgEl('line',{x1:pad,y1:H-pad,x2:W-pad,y2:H-pad,stroke:'#2A323C'}));
+  svg.appendChild(svgEl('line',{x1:pad,y1:pad,x2:pad,y2:H-pad,stroke:'#2A323C'}));
+  pts.forEach(p=> svg.appendChild(svgEl('circle',{cx:sx(p[0]),cy:sy(p[1]),r:3.5,fill:'#57C7B8'})));
+  const fitLine = svgEl('line',{stroke:'#E3A857','stroke-width':2.5});
+  svg.appendChild(fitLine);
+
+  const slopeInput = document.getElementById('m1-slope'), interInput = document.getElementById('m1-intercept');
+  const slopeVal = document.getElementById('m1-slope-val'), interVal = document.getElementById('m1-intercept-val');
+  const mseOut = document.getElementById('m1-mse'), feedback = document.getElementById('m1-feedback');
+
+  function update(){
+    const m = parseFloat(slopeInput.value), b = parseFloat(interInput.value);
+    slopeVal.textContent = m.toFixed(1); interVal.textContent = b.toFixed(0);
+    fitLine.setAttribute('x1', sx(0)); fitLine.setAttribute('y1', sy(b));
+    fitLine.setAttribute('x2', sx(8)); fitLine.setAttribute('y2', sy(m*8+b));
+    let s=0; pts.forEach(p=>{ const pr=m*p[0]+b; s+=(p[1]-pr)*(p[1]-pr); });
+    const mse = s/pts.length;
+    mseOut.textContent = mse.toFixed(1);
+    if(mse < 15) feedback.textContent = "🎯 Excellent fit!";
+    else if(mse < 30) feedback.textContent = "Getting close — keep adjusting.";
+    else feedback.textContent = "Try again — MSE is still high.";
+  }
+  slopeInput.addEventListener('input', update);
+  interInput.addEventListener('input', update);
+  update();
+})();
+
+/* ============ M2 SIGMOID DIAGRAM ============ */
+(function(){
+  const svg = document.getElementById('m2-sigmoid');
+  const W=460,H=220,pad=36;
+  function sx(x){return pad+(x+6)/(12)*(W-2*pad);}
+  function sy(y){return H-pad-y*(H-2*pad);}
+  svg.appendChild(svgEl('line',{x1:pad,y1:H-pad,x2:W-pad,y2:H-pad,stroke:'#2A323C'}));
+  svg.appendChild(svgEl('line',{x1:pad,y1:pad,x2:pad,y2:H-pad,stroke:'#2A323C'}));
+  svg.appendChild(svgEl('line',{x1:pad,y1:sy(0.5),x2:W-pad,y2:sy(0.5),stroke:'#5C6577','stroke-width':1,'stroke-dasharray':'2,4'}));
+  let d = `M ${sx(-6)} ${sy(1/(1+Math.exp(6)))}`;
+  for(let x=-6;x<=6;x+=0.2){
+    const y = 1/(1+Math.exp(-x));
+    d += ` L ${sx(x)} ${sy(y)}`;
+  }
+  svg.appendChild(svgEl('path',{d, fill:'none', stroke:'#E3A857','stroke-width':2.5}));
+  const lab = svgEl('text',{x:W-pad,y:sy(0.5)-6,'text-anchor':'end',fill:'#5C6577','font-size':'10','font-family':'monospace'});
+  lab.textContent='threshold 0.5'; svg.appendChild(lab);
+})();
+
+/* ============ M2 BOUNDARY EXERCISE ============ */
+(function(){
+  const svg = document.getElementById('m2-boundary-svg');
+  const W=460,H=140,pad=30;
+  const emails = [0.12,0.22,0.31,0.38,0.44,0.49,0.55,0.6,0.68,0.74,0.85,0.93];
+  function sx(p){ return pad + p*(W-2*pad); }
+  emails.forEach((p,i)=>{
+    const c = svgEl('circle',{cx:sx(p), cy: H/2 + (i%2===0?-14:14), r:6, fill:'#57C7B8', 'data-p':p, class:'m2-dot'});
+    svg.appendChild(c);
+  });
+  const thresholdLine = svgEl('line',{y1:12,y2:H-12,stroke:'#E3A857','stroke-width':2});
+  svg.appendChild(thresholdLine);
+
+  const slider = document.getElementById('m2-threshold'), valOut = document.getElementById('m2-threshold-val'), countOut = document.getElementById('m2-spam-count');
+  function update(){
+    const th = parseFloat(slider.value);
+    valOut.textContent = th.toFixed(2);
+    thresholdLine.setAttribute('x1', sx(th)); thresholdLine.setAttribute('x2', sx(th));
+    let spamCount=0;
+    document.querySelectorAll('.m2-dot').forEach(dot=>{
+      const p = parseFloat(dot.getAttribute('data-p'));
+      if(p>=th){ dot.setAttribute('fill','#E2636B'); spamCount++; }
+      else dot.setAttribute('fill','#57C7B8');
+    });
+    countOut.textContent = spamCount;
+  }
+  slider.addEventListener('input', update);
+  update();
+})();
+
+/* ============ M3 OVERFIT CURVE EXERCISE ============ */
+(function(){
+  const svg = document.getElementById('m3-curve-svg');
+  const W=460,H=220,pad=40;
+  function sx(c){ return pad + (c-1)/(12-1)*(W-2*pad); }
+  function sy(e){ return H-pad - (e/100)*(H-2*pad); }
+  svg.appendChild(svgEl('line',{x1:pad,y1:H-pad,x2:W-pad,y2:H-pad,stroke:'#2A323C'}));
+  svg.appendChild(svgEl('line',{x1:pad,y1:pad,x2:pad,y2:H-pad,stroke:'#2A323C'}));
+  const xlab = svgEl('text',{x:W/2,y:H-8,'text-anchor':'middle',fill:'#5C6577','font-size':'9','font-family':'monospace'}); xlab.textContent='model complexity →';
+  svg.appendChild(xlab);
+
+  function trainErr(c){ return Math.max(2, 70*Math.exp(-c/3)); }
+  function testErr(c){ return 70*Math.exp(-c/3) + 0.55*Math.pow(c-1,1.8); }
+
+  let trainPath='', testPath='';
+  for(let c=1;c<=12;c+=0.5){
+    trainPath += (c===1?'M':'L') + ` ${sx(c)} ${sy(trainErr(c))}`;
+    testPath += (c===1?'M':'L') + ` ${sx(c)} ${sy(Math.min(100,testErr(c)))}`;
+  }
+  svg.appendChild(svgEl('path',{d:trainPath, fill:'none', stroke:'#57C7B8','stroke-width':2}));
+  svg.appendChild(svgEl('path',{d:testPath, fill:'none', stroke:'#E2636B','stroke-width':2}));
+  const marker = svgEl('circle',{r:5, fill:'#E3A857'});
+  svg.appendChild(marker);
+
+  const slider = document.getElementById('m3-complexity'), valOut = document.getElementById('m3-complexity-val');
+  const trainOut = document.getElementById('m3-train-err'), testOut = document.getElementById('m3-test-err'), verdict = document.getElementById('m3-verdict');
+  function update(){
+    const c = parseFloat(slider.value);
+    valOut.textContent = c;
+    const te = trainErr(c), ve = Math.min(100,testErr(c));
+    trainOut.textContent = te.toFixed(1); testOut.textContent = ve.toFixed(1);
+    marker.setAttribute('cx', sx(c)); marker.setAttribute('cy', sy(ve));
+    if(c<=2) verdict.textContent = '⚠ Underfitting — both errors are high, model is too simple.';
+    else if(c<=6) verdict.textContent = '✓ Good fit — train and test error are both low and close together.';
+    else verdict.textContent = '⚠ Overfitting — train error keeps dropping but test error is climbing.';
+  }
+  slider.addEventListener('input', update);
+  update();
+})();
+
+/* ============ M4 CONFUSION MATRIX CALCULATOR ============ */
+(function(){
+  const ids = ['m4-tp','m4-fn','m4-fp','m4-tn'];
+  const outs = { acc:'m4-acc', prec:'m4-prec', rec:'m4-rec', f1:'m4-f1' };
+  function update(){
+    const tp=+document.getElementById('m4-tp').value||0, fn=+document.getElementById('m4-fn').value||0;
+    const fp=+document.getElementById('m4-fp').value||0, tn=+document.getElementById('m4-tn').value||0;
+    const total = tp+fn+fp+tn;
+    const acc = total? (tp+tn)/total : 0;
+    const prec = (tp+fp)? tp/(tp+fp) : 0;
+    const rec = (tp+fn)? tp/(tp+fn) : 0;
+    const f1 = (prec+rec)? 2*prec*rec/(prec+rec) : 0;
+    document.getElementById(outs.acc).textContent = (acc*100).toFixed(1)+'%';
+    document.getElementById(outs.prec).textContent = (prec*100).toFixed(1)+'%';
+    document.getElementById(outs.rec).textContent = (rec*100).toFixed(1)+'%';
+    document.getElementById(outs.f1).textContent = (f1*100).toFixed(1)+'%';
+  }
+  ids.forEach(id=> document.getElementById(id).addEventListener('input', update));
+  update();
+})();
+
+/* ============ M4 ROC CURVE ============ */
+(function(){
+  const svg = document.getElementById('m4-roc');
+  const W=300,H=220,pad=34;
+  function sx(x){ return pad + x*(W-2*pad); }
+  function sy(y){ return H-pad - y*(H-2*pad); }
+  svg.appendChild(svgEl('line',{x1:pad,y1:H-pad,x2:W-pad,y2:H-pad,stroke:'#2A323C'}));
+  svg.appendChild(svgEl('line',{x1:pad,y1:pad,x2:pad,y2:H-pad,stroke:'#2A323C'}));
+  svg.appendChild(svgEl('line',{x1:sx(0),y1:sy(0),x2:sx(1),y2:sy(1),stroke:'#5C6577','stroke-width':1,'stroke-dasharray':'3,3'}));
+  let d='M '+sx(0)+' '+sy(0);
+  const pts=[[0,0],[0.05,0.35],[0.15,0.62],[0.3,0.8],[0.5,0.9],[0.75,0.96],[1,1]];
+  pts.forEach(p=> d+=` L ${sx(p[0])} ${sy(p[1])}`);
+  svg.appendChild(svgEl('path',{d, fill:'none', stroke:'#57C7B8','stroke-width':2.5}));
+  const xl=svgEl('text',{x:W/2,y:H-8,'text-anchor':'middle',fill:'#5C6577','font-size':'9','font-family':'monospace'}); xl.textContent='False Positive Rate →'; svg.appendChild(xl);
+  const yl=svgEl('text',{x:14,y:H/2,'text-anchor':'middle',fill:'#5C6577','font-size':'9','font-family':'monospace',transform:`rotate(-90 14 ${H/2})`}); yl.textContent='True Positive Rate →'; svg.appendChild(yl);
+})();
+
+/* ============ QUIZ ENGINE ============ */
+const QUIZZES = {
+  1:[
+    {q:"A model predicts a customer's monthly spend in rupees. What type of supervised learning problem is this?",
+     opts:["Classification","Regression","Clustering","Reinforcement learning"], correct:1,
+     explain:"Monthly spend is a continuous number, so this is a regression problem — classification would apply if we were predicting a category instead."},
+    {q:"Why do we square the residuals in MSE instead of just averaging them directly?",
+     opts:["Squaring is faster to compute","So positive and negative errors don't cancel out, and large errors are penalized more","Because ŷ is always squared","To convert the units to percentages"], correct:1,
+     explain:"Raw residuals can be positive or negative and would cancel out on average. Squaring keeps every error positive and punishes big misses more heavily."},
+    {q:"In gradient descent, what determines the direction each step moves the parameters?",
+     opts:["A random choice each iteration","The direction that increases MSE the fastest","The direction that decreases MSE the fastest (steepest descent)","The average of all previous y values"], correct:2,
+     explain:"Gradient descent always steps in the direction of steepest decrease of the cost function — that's the 'descent' in its name."},
+    {q:"Which statement correctly describes a well-fit regression line?",
+     opts:["It passes through as many data points as possible","It minimizes the total squared distance across all points, even if it touches few points directly","It always has a positive slope","It has an intercept of zero"], correct:1,
+     explain:"The best-fit line balances error across every point simultaneously — it rarely passes exactly through most of them."}
+  ],
+  2:[
+    {q:"What does the sigmoid function do in logistic regression?",
+     opts:["Converts any real number into a probability between 0 and 1","Removes outliers from the dataset","Splits data into training and test sets","Converts categories into numbers"], correct:0,
+     explain:"Sigmoid squashes the linear output z=w·x+b into the (0,1) range so it can be interpreted as a probability."},
+    {q:"Lowering the decision threshold from 0.5 to 0.3 in a spam filter will generally:",
+     opts:["Classify fewer emails as spam","Classify more emails as spam, increasing false positives", "Have no effect on classification","Automatically increase precision"], correct:1,
+     explain:"A lower threshold means less evidence is needed to call something spam, so more emails (including some legitimate ones) get flagged — precision typically drops."},
+    {q:"What is a decision tree fundamentally doing at each split?",
+     opts:["Randomly dividing the data","Choosing a question about a feature that increases the purity of the resulting groups","Computing a sigmoid probability","Fitting a new regression line"], correct:1,
+     explain:"Each split is chosen to make the resulting child groups as pure (single-class) as possible, measured by metrics like Gini impurity or entropy."},
+    {q:"Why is logistic regression called 'regression' even though it's used for classification?",
+     opts:["It's a naming mistake with no real reason","It regresses (models) the log-odds of the outcome using a linear equation before applying sigmoid","It only works on numeric outputs","It was renamed from 'logistic classification' by mistake"], correct:1,
+     explain:"Historically, logistic regression fits a linear model to the log-odds of the outcome — the 'regression' step happens before the sigmoid converts it to a probability."}
+  ],
+  3:[
+    {q:"Why shouldn't you evaluate a model on the same data it was trained on?",
+     opts:["It's computationally more expensive","It will overestimate real-world performance because the model may have memorized that data","Training data is always mislabeled","Test data is always larger"], correct:1,
+     explain:"A model can achieve artificially high scores on data it has already seen, which doesn't reflect how it will perform on genuinely new inputs."},
+    {q:"A model has 2% training error and 35% test error. What is most likely happening?",
+     opts:["Underfitting","A perfectly generalizing model","Overfitting","The test set is mislabeled"], correct:2,
+     explain:"A large gap between very low training error and high test error is the classic signature of overfitting — the model memorized training data instead of learning general patterns."},
+    {q:"What does L2 regularization (Ridge) do to a model's cost function?",
+     opts:["Removes all features automatically","Adds a penalty for large weights, discouraging over-reliance on any single feature","Increases the learning rate","Doubles the training data size"], correct:1,
+     explain:"Regularization terms add a penalty proportional to the size of the weights, pushing the model toward simpler, more generalizable solutions."},
+    {q:"What is the main benefit of k-fold cross-validation over a single train/test split?",
+     opts:["It trains the model faster","It eliminates the need for a test set entirely","It gives a more reliable performance estimate by averaging over multiple different splits","It guarantees zero overfitting"], correct:2,
+     explain:"By repeating the split several times over different slices of data and averaging results, cross-validation reduces the risk that one lucky or unlucky split skews your performance estimate."}
+  ],
+  4:[
+    {q:"A fraud model on data that's 99% non-fraud always predicts 'not fraud' and scores 99% accuracy. What's wrong?",
+     opts:["Nothing — 99% accuracy is excellent","Accuracy is misleading here because the model never actually catches any fraud (0% recall on fraud)","The model needs more training data only","Accuracy should be even higher"], correct:1,
+     explain:"On heavily imbalanced data, a trivial model can score high accuracy while being completely useless at the task that actually matters — always check precision/recall on the minority class."},
+    {q:"Which metric answers: 'Of all the emails we flagged as spam, how many actually were spam?'",
+     opts:["Recall","Precision","Accuracy","R²"], correct:1,
+     explain:"Precision = TP/(TP+FP) — it measures how trustworthy a 'positive' prediction is, exactly the question asked."},
+    {q:"For a cancer screening test, why would you typically prioritize recall over precision?",
+     opts:["Recall is always more important in every situation","Missing a real cancer case (false negative) is far costlier than a false alarm that gets double-checked","Precision can't be computed for medical data","Recall is easier to calculate"], correct:1,
+     explain:"In screening, a missed positive case can be life-threatening, while a false positive typically just leads to a follow-up test — so recall is prioritized."},
+    {q:"An ROC-AUC score of 0.5 means:",
+     opts:["The model is perfect","The model performs no better than random guessing","The model has 50% precision","The model overfit the training data"], correct:1,
+     explain:"AUC of 0.5 corresponds to the diagonal 'no-skill' line — the classifier's rankings are no better than chance."}
+  ]
+};
+
+function renderQuiz(moduleNum){
+  const container = document.getElementById('quiz-'+moduleNum);
+  const questions = QUIZZES[moduleNum];
+  let html = `<div class="quiz-head"><span class="quiz-title">Module ${moduleNum} Quiz</span><span class="quiz-progress" id="qp-${moduleNum}">0 / ${questions.length} answered</span></div>`;
+  questions.forEach((q,qi)=>{
+    html += `<div class="qcard" data-qi="${qi}">
+      <div class="qtext">${qi+1}. ${q.q}</div>
+      ${q.opts.map((o,oi)=>`<button class="qopt" data-qi="${qi}" data-oi="${oi}" onclick="answerQuiz(${moduleNum},${qi},${oi})">${o}</button>`).join('')}
+      <div class="qexplain" id="qe-${moduleNum}-${qi}"></div>
+    </div>`;
+  });
+  html += `<div class="quiz-result" id="qr-${moduleNum}">
+      <div class="score-ring" id="qs-${moduleNum}"></div>
+      <p id="qsummary-${moduleNum}"></p>
+      <button class="btn primary" id="qnext-${moduleNum}" onclick="unlockNext(${moduleNum})">Unlock Module ${moduleNum+1} →</button>
+    </div>`;
+  container.innerHTML = html;
+}
+
+const quizAnswers = {1:{},2:{},3:{},4:{}};
+
+function answerQuiz(moduleNum, qi, oi){
+  if(quizAnswers[moduleNum][qi] !== undefined) return; // already answered
+  const q = QUIZZES[moduleNum][qi];
+  quizAnswers[moduleNum][qi] = oi;
+  const buttons = document.querySelectorAll(`.qopt[data-qi="${qi}"]`);
+  buttons.forEach(btn=>{
+    const boi = +btn.getAttribute('data-oi');
+    if(document.querySelectorAll(`.qcard[data-qi="${qi}"]`)[0].contains(btn)){
+      if(boi === q.correct) btn.classList.add('correct');
+      else if(boi === oi) btn.classList.add('incorrect');
+    }
+  });
+  const explainEl = document.getElementById(`qe-${moduleNum}-${qi}`);
+  explainEl.textContent = (oi===q.correct? "✓ Correct. " : "✗ Not quite. ") + q.explain;
+  explainEl.classList.add('show');
+  if(oi===q.correct) addXP(25);
+
+  const answered = Object.keys(quizAnswers[moduleNum]).length;
+  document.getElementById(`qp-${moduleNum}`).textContent = `${answered} / ${QUIZZES[moduleNum].length} answered`;
+
+  if(answered === QUIZZES[moduleNum].length){
+    finishQuiz(moduleNum);
+  }
+}
+
+function finishQuiz(moduleNum){
+  const questions = QUIZZES[moduleNum];
+  let correctCount = 0;
+  questions.forEach((q,qi)=>{ if(quizAnswers[moduleNum][qi]===q.correct) correctCount++; });
+  state.scores[moduleNum-1] = correctCount;
+  const resultEl = document.getElementById('qr-'+moduleNum);
+  document.getElementById('qs-'+moduleNum).textContent = `${correctCount}/${questions.length}`;
+  const summary = document.getElementById('qsummary-'+moduleNum);
+  const nextBtn = document.getElementById('qnext-'+moduleNum);
+  if(correctCount >= 3){
+    summary.textContent = correctCount===4 ? "Perfect score! You've mastered this module." : "Great work — you've passed this module.";
+    addXP(50);
+    state.badges.push(BADGE_NAMES[moduleNum-1]);
+    nextBtn.style.display='inline-block';
+    if(moduleNum===4) nextBtn.textContent = 'Unlock Final Challenge →';
+  } else {
+    summary.textContent = "You scored below 3/4 — review the module above and consider your answers. Scroll up to revisit key takeaways, then continue when ready.";
+    nextBtn.style.display='inline-block';
+    nextBtn.textContent = 'Continue anyway →';
+  }
+  resultEl.classList.add('show');
+}
+
+function unlockNext(moduleNum){
+  state.modulesDone[moduleNum-1] = true;
+  updateRail();
+  if(moduleNum < 4){
+    const nextMod = document.getElementById('module-'+(moduleNum+1));
+    nextMod.classList.remove('locked');
+    scrollToId('module-'+(moduleNum+1));
+  } else {
+    const finalMod = document.getElementById('module-final');
+    finalMod.classList.remove('locked');
+    renderBadges();
+    scrollToId('module-final');
+  }
+}
+
+function renderBadges(){
+  const el = document.getElementById('badges-earned');
+  el.innerHTML = '<div class="subblock"><h4>Badges earned</h4>' +
+    state.badges.map(b=>`<span class="badge-earned">🏅 ${b}</span>`).join('') +
+    `<span class="badge-earned">🏆 Supervised Learning Champion</span></div>`;
+}
+
+[1,2,3,4].forEach(renderQuiz);
+
+/* ============ FINAL CHALLENGE ============ */
+const FINAL_SCENARIOS = [
+  {scenario:"You're predicting house prices (a continuous number) from square footage, location, and age. Which family of algorithm fits this task?",
+   opts:["Classification (e.g. logistic regression)","Regression (e.g. linear regression)","Clustering","None — this isn't supervised learning"], correct:1,
+   explain:"Predicting a continuous price is a regression problem by definition."},
+  {scenario:"Your churn classifier gets 95% training accuracy but only 61% test accuracy. What should you try first?",
+   opts:["Train for even longer on the same data","Add regularization or reduce model complexity, and re-check with cross-validation","Report 95% as the final accuracy","Remove the test set entirely"], correct:1,
+   explain:"This is a textbook overfitting gap — regularization, simplification, and honest cross-validated evaluation are the standard fixes."},
+  {scenario:"You're building a fraud detector where missing a fraud case is very costly, but a few false alarms are acceptable. Which metric should you prioritize?",
+   opts:["Precision","Recall","R²","Raw accuracy"], correct:1,
+   explain:"When missed positives are costly, recall (catching as many real cases as possible) is the priority metric."},
+  {scenario:"A dataset is 97% 'not fraud' and 3% 'fraud'. A model reports 97% accuracy. What must you check before trusting it?",
+   opts:["Nothing, 97% is already excellent","Whether it has any real precision/recall on the fraud class, since a trivial always-negative model would also score 97%", "The color scheme of your dashboard","The size of the training set only"], correct:1,
+   explain:"On imbalanced data, accuracy alone can hide a model that never actually detects the minority class — precision/recall on that class is the real test."}
+];
+
+function renderFinalChallenge(){
+  const el = document.getElementById('final-challenge');
+  let html = `<div class="quiz-head"><span class="quiz-title">Capstone — 4 scenarios</span><span class="quiz-progress" id="fp">0 / 4 answered</span></div>`;
+  FINAL_SCENARIOS.forEach((s,i)=>{
+    html += `<div class="scenario"><b>Scenario ${i+1}:</b> ${s.scenario}</div>
+    <div class="qcard" data-fi="${i}">
+      ${s.opts.map((o,oi)=>`<button class="qopt" data-fi="${i}" data-oi="${oi}" onclick="answerFinal(${i},${oi})">${o}</button>`).join('')}
+      <div class="qexplain" id="fe-${i}"></div>
+    </div>`;
+  });
+  html += `<div class="quiz-result" id="fr">
+      <div class="score-ring" id="fs"></div>
+      <p id="fsummary"></p>
+    </div>`;
+  el.innerHTML = html;
+}
+renderFinalChallenge();
+const finalAnswers = {};
+function answerFinal(i, oi){
+  if(finalAnswers[i] !== undefined) return;
+  finalAnswers[i] = oi;
+  const s = FINAL_SCENARIOS[i];
+  document.querySelectorAll(`.qcard[data-fi="${i}"] .qopt`).forEach(btn=>{
+    const boi = +btn.getAttribute('data-oi');
+    if(boi===s.correct) btn.classList.add('correct');
+    else if(boi===oi) btn.classList.add('incorrect');
+  });
+  const ex = document.getElementById('fe-'+i);
+  ex.textContent = (oi===s.correct?"✓ Correct. ":"✗ Not quite. ") + s.explain;
+  ex.classList.add('show');
+  if(oi===s.correct) addXP(30);
+  const answered = Object.keys(finalAnswers).length;
+  document.getElementById('fp').textContent = `${answered} / 4 answered`;
+  if(answered===4){
+    let correct=0; FINAL_SCENARIOS.forEach((s,i)=>{ if(finalAnswers[i]===s.correct) correct++; });
+    document.getElementById('fs').textContent = `${correct}/4`;
+    document.getElementById('fsummary').textContent = correct===4
+      ? "Flawless. You're ready to apply supervised learning to real datasets — go build something."
+      : "Solid effort — revisit any missed scenario's explanation above, then move on to real practice on Kaggle.";
+    document.getElementById('fr').classList.add('show');
+    addXP(100);
+  }
+}
+</script>
+</body>
+</html>
