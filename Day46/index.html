@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Autonomous Agent Studio — Data Insight Pipeline</title>
+<style>
+:root{
+  --bg:#080b10;
+  --panel:#0f1620;
+  --panel-alt:#141d29;
+  --border:#22303f;
+  --border-soft:#1a2530;
+  --text:#e7edf3;
+  --muted:#7e8fa1;
+  --muted-dim:#546578;
+  --signal:#57e8cf;
+  --signal-dim:#2c6459;
+  --amber:#f2b84b;
+  --amber-dim:#5c4a24;
+  --danger:#f2716d;
+  --danger-dim:#5a2b2b;
+  --mono: ui-monospace, "SF Mono", "Cascadia Code", Consolas, "Roboto Mono", monospace;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --radius: 3px;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:
+    radial-gradient(ellipse 1200px 600px at 15% -10%, rgba(87,232,207,0.05), transparent),
+    radial-gradient(ellipse 900px 500px at 100% 0%, rgba(242,184,75,0.04), transparent),
+    var(--bg);
+  color:var(--text);
+  font-family:var(--sans);
+  min-height:100vh;
+  line-height:1.5;
+}
+::selection{background:var(--signal-dim); color:#fff;}
+::-webkit-scrollbar{width:8px; height:8px;}
+::-webkit-scrollbar-track{background:var(--panel);}
+::-webkit-scrollbar-thumb{background:var(--border); border-radius:4px;}
+::-webkit-scrollbar-thumb:hover{background:var(--muted-dim);}
+
+.wrap{max-width:1440px; margin:0 auto; padding:0 24px 80px;}
+
+/* ---------- header ---------- */
+header{
+  border-bottom:1px solid var(--border-soft);
+  padding:22px 0 18px;
+  margin-bottom:22px;
+  position:sticky; top:0; z-index:50;
+  background:rgba(8,11,16,0.88);
+  backdrop-filter:blur(10px);
+}
+.header-inner{max-width:1440px; margin:0 auto; padding:0 24px; display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap;}
+.brand{display:flex; align-items:center; gap:14px;}
+.brand-mark{
+  width:38px; height:38px; border:1px solid var(--signal); border-radius:2px;
+  display:flex; align-items:center; justify-content:center; position:relative;
+  font-family:var(--mono); color:var(--signal); font-size:15px; font-weight:700;
+  flex-shrink:0;
+}
+.brand-mark::after{
+  content:''; position:absolute; inset:-4px; border:1px solid var(--signal-dim); border-radius:4px; opacity:0.5;
+}
+.brand-text h1{
+  font-family:var(--mono); font-size:15px; letter-spacing:2px; margin:0; font-weight:700; text-transform:uppercase;
+}
+.brand-text .eyebrow{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:2.5px; color:var(--muted); text-transform:uppercase; margin-top:3px;
+}
+.status-cluster{display:flex; align-items:center; gap:14px; font-family:var(--mono);}
+.status-pill{
+  display:flex; align-items:center; gap:8px; padding:7px 13px; border:1px solid var(--border); border-radius:20px;
+  font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); background:var(--panel);
+}
+.status-dot{width:7px; height:7px; border-radius:50%; background:var(--muted-dim); flex-shrink:0;}
+.status-pill.idle .status-dot{background:var(--muted-dim);}
+.status-pill.running .status-dot{background:var(--signal); box-shadow:0 0 8px var(--signal); animation:pulse-dot 1.2s ease-in-out infinite;}
+.status-pill.running{color:var(--signal); border-color:var(--signal-dim);}
+.status-pill.done .status-dot{background:var(--amber); box-shadow:0 0 8px var(--amber);}
+.status-pill.done{color:var(--amber); border-color:var(--amber-dim);}
+.status-pill.error .status-dot{background:var(--danger); box-shadow:0 0 8px var(--danger);}
+.status-pill.error{color:var(--danger); border-color:var(--danger-dim);}
+@keyframes pulse-dot{0%,100%{opacity:1;} 50%{opacity:0.35;}}
+.round-indicator{font-size:12px; color:var(--muted); letter-spacing:0.5px;}
+.round-indicator b{color:var(--text); font-weight:600;}
+
+/* ---------- section titles ---------- */
+.section-title{
+  display:flex; align-items:baseline; gap:10px; margin:38px 0 16px;
+}
+.section-title .num{font-family:var(--mono); color:var(--signal); font-size:12px; letter-spacing:1px;}
+.section-title h2{font-size:13px; letter-spacing:2.5px; text-transform:uppercase; margin:0; font-weight:700; color:var(--text); font-family:var(--mono);}
+.section-title .rule{flex:1; height:1px; background:linear-gradient(90deg, var(--border), transparent);}
+.section-sub{font-size:13px; color:var(--muted); margin:-8px 0 20px; max-width:760px;}
+
+/* ---------- config panel ---------- */
+.config-panel{
+  background:var(--panel); border:1px solid var(--border); border-radius:var(--radius); padding:26px;
+}
+.config-grid{display:grid; grid-template-columns:1.4fr 1fr; gap:24px;}
+@media(max-width:900px){.config-grid{grid-template-columns:1fr;}}
+.field{margin-bottom:18px;}
+.field label{
+  display:block; font-family:var(--mono); font-size:10.5px; letter-spacing:1.8px; text-transform:uppercase;
+  color:var(--muted); margin-bottom:8px;
+}
+.field .hint{font-size:11.5px; color:var(--muted-dim); margin-top:6px;}
+textarea, input[type=text], input[type=number]{
+  width:100%; background:var(--panel-alt); border:1px solid var(--border); color:var(--text);
+  border-radius:var(--radius); padding:11px 13px; font-family:var(--sans); font-size:13.5px; resize:vertical;
+  transition:border-color .15s;
+}
+textarea:focus, input:focus{outline:none; border-color:var(--signal);}
+textarea{min-height:92px;}
+.param-row{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+.param-row input{font-family:var(--mono);}
+.run-btn{
+  width:100%; margin-top:6px; padding:14px 18px; background:var(--signal); color:#04140f; border:none;
+  border-radius:var(--radius); font-family:var(--mono); font-size:12.5px; letter-spacing:2px; text-transform:uppercase;
+  font-weight:700; cursor:pointer; transition:all .15s; display:flex; align-items:center; justify-content:center; gap:10px;
+}
+.run-btn:hover{background:#7cf3dd; transform:translateY(-1px);}
+.run-btn:disabled{background:var(--border); color:var(--muted-dim); cursor:not-allowed; transform:none;}
+.run-btn .arrow{transition:transform .15s;}
+.run-btn:hover:not(:disabled) .arrow{transform:translateX(3px);}
+.presets{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px;}
+.preset-chip{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:0.5px; padding:6px 11px; border:1px solid var(--border);
+  border-radius:14px; color:var(--muted); cursor:pointer; background:transparent; transition:all .12s;
+}
+.preset-chip:hover{border-color:var(--signal); color:var(--signal);}
+
+/* ---------- dashboard grid ---------- */
+.dash-grid{display:none; grid-template-columns:340px 1fr 320px; gap:20px; align-items:start;}
+.dash-grid.show{display:grid;}
+@media(max-width:1180px){.dash-grid{grid-template-columns:1fr;}}
+
+.card{background:var(--panel); border:1px solid var(--border); border-radius:var(--radius); padding:20px;}
+.card + .card{margin-top:20px;}
+.card-title{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:2px; text-transform:uppercase; color:var(--muted);
+  margin:0 0 16px; display:flex; align-items:center; justify-content:space-between;
+}
+
+/* ---------- diagram ---------- */
+.diagram-wrap svg{width:100%; height:auto; display:block;}
+.node-box{fill:var(--panel-alt); stroke:var(--border); stroke-width:1; transition:all .25s;}
+.node-box.active{stroke:var(--signal); fill:#0d2620; filter:drop-shadow(0 0 6px rgba(87,232,207,0.5));}
+.node-box.done-flash{stroke:var(--amber);}
+.node-label{fill:var(--muted); font-family:var(--mono); font-size:9px; letter-spacing:1px; text-transform:uppercase; text-anchor:middle;}
+.node-label.active{fill:var(--signal); font-weight:700;}
+.track-line{fill:none; stroke:var(--border); stroke-width:1; stroke-dasharray:3 4;}
+.branch-line{fill:none; stroke:var(--border); stroke-width:1; stroke-dasharray:2 4;}
+.branch-line.lit{stroke:var(--amber); stroke-dasharray:none; stroke-width:1.4;}
+.pulse-dot{fill:var(--signal); filter:drop-shadow(0 0 4px var(--signal)); opacity:0;}
+.entry-arrow{stroke:var(--border-soft); stroke-width:1; fill:none;}
+
+.agent-roster{margin-top:18px; display:flex; flex-direction:column; gap:6px;}
+.roster-item{
+  display:flex; align-items:center; gap:10px; padding:8px 10px; border-radius:var(--radius); border:1px solid transparent;
+  font-size:11.5px; color:var(--muted-dim); transition:all .15s;
+}
+.roster-item .dot{width:6px; height:6px; border-radius:50%; background:var(--border); flex-shrink:0;}
+.roster-item.active{background:var(--panel-alt); border-color:var(--signal-dim); color:var(--signal);}
+.roster-item.active .dot{background:var(--signal); box-shadow:0 0 6px var(--signal);}
+.roster-item .role{color:var(--muted-dim); font-size:10.5px; margin-left:auto; font-family:var(--mono);}
+.roster-item.active .role{color:var(--muted);}
+
+/* ---------- activity log ---------- */
+.log-panel{
+  background:#060a0e; border:1px solid var(--border-soft); border-radius:var(--radius); padding:14px 16px;
+  height:230px; overflow-y:auto; font-family:var(--mono); font-size:11.5px;
+}
+.log-line{padding:3px 0; color:var(--muted); display:flex; gap:10px; border-bottom:1px dashed rgba(255,255,255,0.03);}
+.log-line .t{color:var(--muted-dim); flex-shrink:0;}
+.log-line.info{color:var(--muted);}
+.log-line.agent{color:var(--signal);}
+.log-line.warn{color:var(--amber);}
+.log-line.err{color:var(--danger);}
+.log-line.ok{color:#8ee6c4;}
+
+/* ---------- tabs / outputs ---------- */
+.tabs{display:flex; gap:2px; border-bottom:1px solid var(--border); margin-bottom:14px; flex-wrap:wrap;}
+.tab-btn{
+  background:none; border:none; color:var(--muted-dim); font-family:var(--mono); font-size:10.5px; letter-spacing:1px;
+  text-transform:uppercase; padding:9px 13px; cursor:pointer; border-bottom:2px solid transparent; transition:all .12s;
+}
+.tab-btn:hover{color:var(--muted);}
+.tab-btn.active{color:var(--signal); border-bottom-color:var(--signal);}
+.tab-panel{display:none; font-size:13.5px; color:var(--text); white-space:pre-wrap; line-height:1.65; max-height:420px; overflow-y:auto; padding-right:4px;}
+.tab-panel.active{display:block;}
+.empty-state{color:var(--muted-dim); font-size:12.5px; font-family:var(--mono); padding:20px 0; text-align:center;}
+
+/* ---------- history ---------- */
+.history-list{display:flex; flex-direction:column; gap:8px;}
+.hist-row{
+  border:1px solid var(--border); border-radius:var(--radius); padding:10px 12px; background:var(--panel-alt);
+  cursor:pointer; transition:border-color .12s;
+}
+.hist-row:hover{border-color:var(--muted-dim);}
+.hist-row.selected{border-color:var(--signal);}
+.hist-top{display:flex; align-items:center; justify-content:space-between; font-family:var(--mono); font-size:11px;}
+.hist-round{color:var(--muted); letter-spacing:1px;}
+.hist-score{color:var(--signal); font-weight:700; font-size:13px;}
+.hist-delta{font-size:10.5px; margin-top:4px; font-family:var(--mono);}
+.hist-delta.up{color:#8ee6c4;}
+.hist-delta.flat{color:var(--muted-dim);}
+.hist-bar-track{height:3px; background:var(--border); border-radius:2px; margin-top:8px; overflow:hidden;}
+.hist-bar-fill{height:100%; background:var(--signal); border-radius:2px; transition:width .4s ease;}
+
+/* ---------- stats ---------- */
+.stat-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+.stat-box{background:var(--panel-alt); border:1px solid var(--border); border-radius:var(--radius); padding:12px 14px;}
+.stat-box .val{font-family:var(--mono); font-size:22px; font-weight:700; color:var(--signal);}
+.stat-box .lbl{font-size:10px; letter-spacing:1.2px; text-transform:uppercase; color:var(--muted-dim); margin-top:4px; font-family:var(--mono);}
+
+/* ---------- final summary ---------- */
+.final-section{display:none;}
+.final-section.show{display:block;}
+.final-banner{
+  border:1px solid var(--amber-dim); background:linear-gradient(135deg, rgba(242,184,75,0.06), transparent);
+  border-radius:var(--radius); padding:20px 24px; margin-bottom:20px; display:flex; align-items:center; gap:16px;
+}
+.final-banner .icon{font-family:var(--mono); font-size:22px; color:var(--amber);}
+.final-banner .txt b{color:var(--amber); font-family:var(--mono); letter-spacing:1px; font-size:12px; text-transform:uppercase; display:block; margin-bottom:4px;}
+.final-banner .txt span{font-size:13px; color:var(--muted);}
+.final-grid{display:grid; grid-template-columns:1.5fr 1fr; gap:20px;}
+@media(max-width:1000px){.final-grid{grid-template-columns:1fr;}}
+.report-body{white-space:pre-wrap; font-size:14px; line-height:1.75; color:var(--text);}
+.report-body h-marker{color:var(--signal);}
+.verdict-box{background:var(--panel-alt); border-left:2px solid var(--signal); padding:12px 16px; margin-top:16px; font-size:13px; color:var(--muted); font-style:italic;}
+
+.perf-table{width:100%; border-collapse:collapse; font-size:12.5px;}
+.perf-table th{text-align:left; font-family:var(--mono); font-size:10px; letter-spacing:1px; text-transform:uppercase; color:var(--muted-dim); padding:8px 6px; border-bottom:1px solid var(--border);}
+.perf-table td{padding:9px 6px; border-bottom:1px solid var(--border-soft); color:var(--muted);}
+.perf-table tr:last-child td{border-bottom:none;}
+.perf-table td.name{color:var(--text);}
+.perf-badge{font-family:var(--mono); font-size:10px; padding:2px 7px; border-radius:10px; background:var(--signal-dim); color:var(--signal);}
+
+.info-cards{display:grid; grid-template-columns:repeat(4,1fr); gap:14px;}
+@media(max-width:900px){.info-cards{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:560px){.info-cards{grid-template-columns:1fr;}}
+.info-card{background:var(--panel); border:1px solid var(--border); border-radius:var(--radius); padding:18px;}
+.info-card .n{font-family:var(--mono); color:var(--signal); font-size:11px; letter-spacing:1px;}
+.info-card h4{margin:8px 0 8px; font-size:13.5px;}
+.info-card p{margin:0; font-size:12px; color:var(--muted); line-height:1.55;}
+
+.arch-diagram{font-family:var(--mono); font-size:11.5px; color:var(--muted); background:#060a0e; border:1px solid var(--border-soft); border-radius:var(--radius); padding:18px; overflow-x:auto; white-space:pre;}
+
+.extend-list{display:flex; flex-direction:column; gap:10px;}
+.extend-item{display:flex; gap:12px; padding:12px 14px; background:var(--panel-alt); border:1px solid var(--border); border-radius:var(--radius);}
+.extend-item .ico{font-family:var(--mono); color:var(--amber); font-size:13px; flex-shrink:0; padding-top:1px;}
+.extend-item .body b{display:block; font-size:13px; margin-bottom:3px;}
+.extend-item .body span{font-size:12px; color:var(--muted);}
+
+.prompt-list{display:flex; flex-direction:column; gap:10px;}
+.prompt-item{
+  background:var(--panel-alt); border:1px solid var(--border); border-radius:var(--radius); padding:12px 14px;
+  font-family:var(--mono); font-size:12px; color:var(--muted); position:relative; padding-right:70px;
+}
+.copy-btn{
+  position:absolute; right:10px; top:10px; background:none; border:1px solid var(--border); color:var(--muted-dim);
+  font-family:var(--mono); font-size:9.5px; letter-spacing:1px; padding:4px 8px; border-radius:3px; cursor:pointer; text-transform:uppercase;
+}
+.copy-btn:hover{border-color:var(--signal); color:var(--signal);}
+
+.footer-note{text-align:center; color:var(--muted-dim); font-size:11.5px; font-family:var(--mono); margin-top:60px; letter-spacing:0.5px;}
+
+.spinner{
+  width:12px; height:12px; border:2px solid var(--border); border-top-color:var(--signal); border-radius:50%;
+  animation:spin .7s linear infinite; display:inline-block;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+.flag-badge{display:inline-flex; align-items:center; gap:6px; font-family:var(--mono); font-size:10.5px; padding:4px 9px; border-radius:12px;}
+.flag-badge.clear{background:rgba(87,232,207,0.08); color:var(--signal); border:1px solid var(--signal-dim);}
+.flag-badge.flagged{background:rgba(242,113,109,0.08); color:var(--danger); border:1px solid var(--danger-dim);}
+
+@media(max-width:640px){
+  .header-inner{flex-direction:column; align-items:flex-start;}
+  .status-cluster{width:100%; justify-content:space-between;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="brand">
+      <div class="brand-mark">AS</div>
+      <div class="brand-text">
+        <h1>Autonomous Agent Studio</h1>
+        <div class="eyebrow">Data Insight Orchestration Pipeline</div>
+      </div>
+    </div>
+    <div class="status-cluster">
+      <div class="round-indicator" id="roundIndicator">Awaiting run</div>
+      <div class="status-pill idle" id="statusPill"><span class="status-dot"></span><span id="statusText">Idle</span></div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- ================= CONFIG ================= -->
+  <div class="section-title"><span class="num">01</span><h2>Session Setup</h2><div class="rule"></div></div>
+  <p class="section-sub">Describe the dataset in plain English — the Planner and Executor agents work from this description, not a raw file. Adjust the stop-condition parameters or leave the interview defaults.</p>
+
+  <div class="config-panel">
+    <div class="config-grid">
+      <div>
+        <div class="field">
+          <label>Dataset Description</label>
+          <textarea id="datasetInput" placeholder="e.g. E-commerce transactions table, ~12,000 rows, columns: order_id, customer_id, order_date, category, unit_price, quantity, discount_pct, region, channel (web/app/store), customer_segment (new/returning)...">Customer subscription dataset for a mid-size SaaS company, ~8,500 rows, columns: customer_id, signup_date, plan_tier (basic/pro/enterprise), monthly_spend, region, industry, support_tickets_opened, last_login_days_ago, churned (yes/no), referral_source, contract_length_months.</textarea>
+        </div>
+        <div class="field">
+          <label>Business Context <span style="color:var(--muted-dim); text-transform:none; letter-spacing:0;">(optional)</span></label>
+          <textarea id="contextInput" style="min-height:64px;" placeholder="e.g. Leadership wants to reduce churn in the enterprise tier before Q3 renewals.">Leadership is concerned about rising churn in the last two quarters and wants to know which segments are most at risk before the renewal cycle.</textarea>
+        </div>
+        <div class="presets">
+          <button class="preset-chip" onclick="loadPreset('retail')">Retail sales dataset</button>
+          <button class="preset-chip" onclick="loadPreset('hr')">HR attrition dataset</button>
+          <button class="preset-chip" onclick="loadPreset('marketing')">Marketing campaign dataset</button>
+        </div>
+      </div>
+      <div>
+        <div class="field">
+          <label>Stop-Condition Parameters</label>
+          <div class="param-row">
+            <div>
+              <input type="number" id="targetScoreInput" value="8.0" step="0.1" min="1" max="10">
+              <div class="hint">Threshold — target score /10</div>
+            </div>
+            <div>
+              <input type="number" id="plateauDeltaInput" value="0.3" step="0.1" min="0.05" max="2">
+              <div class="hint">Plateau delta (2 straight rounds)</div>
+            </div>
+          </div>
+          <div class="param-row" style="margin-top:10px;">
+            <div>
+              <input type="number" id="maxRoundsInput" value="8" step="1" min="2" max="15">
+              <div class="hint">Hard iteration cap (fallback)</div>
+            </div>
+            <div>
+              <input type="text" id="modelInput" value="claude-sonnet-4-6" disabled style="color:var(--muted-dim);">
+              <div class="hint">Model (fixed)</div>
+            </div>
+          </div>
+        </div>
+        <button class="run-btn" id="runBtn" onclick="startRun()">Run Pipeline <span class="arrow">→</span></button>
+        <div class="hint" style="margin-top:10px; text-align:center;" id="runHint">Evaluator → Critic → Improver loop runs live against the Claude API until a stop condition fires.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= DASHBOARD ================= -->
+  <div class="section-title" id="dashSectionTitle" style="display:none;"><span class="num">02</span><h2>Live Orchestration</h2><div class="rule"></div></div>
+  <p class="section-sub" id="dashSectionSub" style="display:none;">Each agent call below is a real, separate request to the Claude API. The round counter is open-ended — it advances until the Evaluator's score plateaus, crosses the target threshold, or the hard cap is reached.</p>
+
+  <div class="dash-grid" id="dashGrid">
+
+    <!-- LEFT: diagram + roster -->
+    <div>
+      <div class="card">
+        <div class="card-title">Orchestration Loop</div>
+        <div class="diagram-wrap" id="diagramWrap"></div>
+        <div class="agent-roster" id="agentRoster"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Execution Stats</div>
+        <div class="stat-grid">
+          <div class="stat-box"><div class="val" id="statRounds">0</div><div class="lbl">Rounds Run</div></div>
+          <div class="stat-box"><div class="val" id="statCalls">0</div><div class="lbl">API Calls</div></div>
+          <div class="stat-box"><div class="val" id="statRetries">0</div><div class="lbl">Retries</div></div>
+          <div class="stat-box"><div class="val" id="statScore">—</div><div class="lbl">Current Score</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CENTER: log + outputs -->
+    <div>
+      <div class="card">
+        <div class="card-title">Activity Log</div>
+        <div class="log-panel" id="logPanel"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Intermediate Outputs</div>
+        <div class="tabs" id="outputTabs">
+          <button class="tab-btn active" data-tab="plan">Plan</button>
+          <button class="tab-btn" data-tab="draft">Draft</button>
+          <button class="tab-btn" data-tab="eval">Evaluation</button>
+          <button class="tab-btn" data-tab="critique">Critique</button>
+          <button class="tab-btn" data-tab="safety">Safety</button>
+          <button class="tab-btn" data-tab="memory">Memory</button>
+        </div>
+        <div class="tab-panel active" id="panel-plan"><div class="empty-state">— awaiting Planner output —</div></div>
+        <div class="tab-panel" id="panel-draft"><div class="empty-state">— awaiting Executor output —</div></div>
+        <div class="tab-panel" id="panel-eval"><div class="empty-state">— awaiting Evaluator output —</div></div>
+        <div class="tab-panel" id="panel-critique"><div class="empty-state">— awaiting Critic output —</div></div>
+        <div class="tab-panel" id="panel-safety"><div class="empty-state">— awaiting Safety Monitor output —</div></div>
+        <div class="tab-panel" id="panel-memory"><div class="empty-state">— awaiting Memory Manager notes —</div></div>
+      </div>
+    </div>
+
+    <!-- RIGHT: history -->
+    <div>
+      <div class="card">
+        <div class="card-title">Iteration History</div>
+        <div class="history-list" id="historyList">
+          <div class="empty-state">No rounds completed yet</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ================= FINAL SUMMARY ================= -->
+  <div class="final-section" id="finalSection">
+    <div class="section-title"><span class="num">03</span><h2>Final Result</h2><div class="rule"></div></div>
+
+    <div class="final-banner">
+      <div class="icon">◆</div>
+      <div class="txt"><b id="stopReasonLabel">Stop condition</b><span id="stopReasonDetail">—</span></div>
+    </div>
+
+    <div class="final-grid">
+      <div class="card">
+        <div class="card-title">Final Insight Report</div>
+        <div class="report-body" id="finalReportBody">—</div>
+        <div class="verdict-box" id="verdictBox" style="display:none;"></div>
+      </div>
+      <div>
+        <div class="card">
+          <div class="card-title">Agent Performance Summary</div>
+          <table class="perf-table" id="perfTable">
+            <thead><tr><th>Agent</th><th>Calls</th><th>Role</th></tr></thead>
+            <tbody id="perfTableBody"></tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="card-title">Score Progression</div>
+          <div id="scoreProgression" style="font-family:var(--mono); font-size:12px; color:var(--muted);"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= ARCHITECTURE ================= -->
+    <div class="section-title"><span class="num">04</span><h2>Architecture Overview</h2><div class="rule"></div></div>
+    <div class="card" style="margin-bottom:20px;">
+      <div class="arch-diagram" id="archDiagram"></div>
+    </div>
+
+    <div class="info-cards" id="agentExplainerCards"></div>
+
+    <!-- ================= EXTENSIONS ================= -->
+    <div class="section-title"><span class="num">05</span><h2>Extension Ideas</h2><div class="rule"></div></div>
+    <div class="extend-list" id="extendList"></div>
+
+    <!-- ================= FURTHER PROMPTS ================= -->
+    <div class="section-title"><span class="num">06</span><h2>Prompts For Building More Advanced Autonomous Systems</h2><div class="rule"></div></div>
+    <div class="prompt-list" id="promptList"></div>
+
+    <div class="footer-note">AUTONOMOUS AGENT STUDIO — 8 AGENTS · LIVE CLAUDE API ORCHESTRATION · NO FIXED ROUND COUNT</div>
+  </div>
+
+</div>
+
+<script>
+/* =========================================================================
+   CONFIG / STATE
+========================================================================= */
+const MODEL = "claude-sonnet-4-6";
+const API_URL = "https://api.anthropic.com/v1/messages";
+
+const AGENTS = [
+  {key:'planner',  label:'Planner',        role:'Scopes the analysis', angle:null},
+  {key:'executor', label:'Executor',       role:'Drafts the report', angle:null},
+  {key:'evaluator',label:'Evaluator',      role:'Scores the draft', angle:-90},
+  {key:'critic',   label:'Critic',         role:'Finds the weak point', angle:-18},
+  {key:'improver', label:'Improver',       role:'Revises the draft', angle:54},
+  {key:'safety',   label:'Safety Monitor', role:'Flags unsupported claims', angle:126},
+  {key:'memory',   label:'Memory Manager', role:'Distills the pattern', angle:198},
+  {key:'final',    label:'Final Reviewer', role:'Closes the loop', angle:null},
+];
+
+let state = {
+  running:false,
+  history:[],          // {round, draft, score, evalText, critique, safetyText, delta}
+  memoryNotes:[],       // {round, note}
+  callCounts:{},        // per agent
+  totalCalls:0,
+  retries:0,
+  stopReason:null,
+  plan:'', currentDraft:'', finalReport:'', verdict:'',
+  targetScore:8.0, plateauDelta:0.3, maxRounds:8,
+  selectedHistRound:null,
+};
+
+/* =========================================================================
+   DOM HELPERS
+========================================================================= */
+function $(id){ return document.getElementById(id); }
+function el(tag, cls, html){ const e=document.createElement(tag); if(cls) e.className=cls; if(html!==undefined) e.innerHTML=html; return e; }
+
+function log(msg, type){
+  type = type || 'info';
+  const panel = $('logPanel');
+  const line = el('div','log-line '+type);
+  const time = new Date().toLocaleTimeString('en-US',{hour12:false});
+  line.innerHTML = '<span class="t">'+time+'</span><span>'+msg+'</span>';
+  panel.appendChild(line);
+  panel.scrollTop = panel.scrollHeight;
+}
+
+function setStatus(kind, text){
+  const pill = $('statusPill');
+  pill.className = 'status-pill '+kind;
+  $('statusText').textContent = text;
+}
+
+function setRoundIndicator(text){
+  $('roundIndicator').textContent = text;
+}
+
+function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
+
+/* =========================================================================
+   DIAGRAM (SVG loop) — signature element
+========================================================================= */
+function buildDiagram(){
+  const cx=170, cy=195, r=112;
+  const loopAgents = AGENTS.filter(a=>a.angle!==null);
+  const pos = {};
+  loopAgents.forEach(a=>{
+    const rad = a.angle*Math.PI/180;
+    pos[a.key] = { x: cx + r*Math.cos(rad), y: cy + r*Math.sin(rad) };
+  });
+
+  let svg = `<svg viewBox="0 0 340 400" xmlns="http://www.w3.org/2000/svg">`;
+
+  // entry: planner -> executor -> evaluator
+  svg += `<g id="entryNodes">`;
+  svg += nodeSvg(170, 24, 'planner', 'Planner');
+  svg += `<line x1="170" y1="40" x2="170" y2="66" class="entry-arrow" marker-end="url(#arrow)"/>`;
+  svg += nodeSvg(170, 80, 'executor', 'Executor');
+  svg += `<line x1="170" y1="96" x2="${pos.evaluator.x}" y2="${pos.evaluator.y-16}" class="entry-arrow" marker-end="url(#arrow)"/>`;
+  svg += `</g>`;
+
+  // circular track
+  svg += `<circle cx="${cx}" cy="${cy}" r="${r}" class="track-line" id="trackCircle"/>`;
+
+  // branch line: critic -> final reviewer
+  svg += `<path d="M ${pos.critic.x+10} ${pos.critic.y} C 260 ${pos.critic.y-10}, 300 120, 300 60" class="branch-line" id="branchLine"/>`;
+  svg += nodeSvg(300, 44, 'final', 'Final Reviewer');
+
+  // loop nodes
+  loopAgents.forEach(a=>{ svg += nodeSvg(pos[a.key].x, pos[a.key].y, a.key, a.label); });
+
+  // pulse dot
+  svg += `<circle cx="${pos.evaluator.x}" cy="${pos.evaluator.y}" r="4" class="pulse-dot" id="pulseDot"/>`;
+
+  svg += `<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#1a2530"/></marker></defs>`;
+  svg += `</svg>`;
+  $('diagramWrap').innerHTML = svg;
+  window.__nodePos = pos;
+}
+
+function nodeSvg(x,y,key,label){
+  const w = key==='final'?76: (key==='planner'||key==='executor'?70:66);
+  const h = 30;
+  return `<g class="dnode" data-key="${key}">
+    <rect x="${x-w/2}" y="${y-h/2}" width="${w}" height="${h}" rx="3" class="node-box" id="box-${key}"/>
+    <text x="${x}" y="${y+3}" class="node-label" id="label-${key}">${label.toUpperCase()}</text>
+  </g>`;
+}
+
+function setActiveAgent(key){
+  AGENTS.forEach(a=>{
+    const box = $('box-'+a.key), lbl = $('label-'+a.key);
+    if(!box) return;
+    if(a.key===key){ box.classList.add('active'); lbl.classList.add('active'); }
+    else { box.classList.remove('active'); lbl.classList.remove('active'); }
+  });
+  // roster
+  document.querySelectorAll('.roster-item').forEach(r=>{
+    r.classList.toggle('active', r.dataset.key===key);
+  });
+  // move pulse dot along loop track if it's a loop agent
+  const pos = window.__nodePos;
+  if(pos && pos[key]){
+    const dot = $('pulseDot');
+    dot.setAttribute('cx', pos[key].x);
+    dot.setAttribute('cy', pos[key].y);
+    dot.style.opacity = 1;
+  } else {
+    const dot = $('pulseDot');
+    if(dot) dot.style.opacity = 0;
+  }
+}
+
+function litBranch(on){
+  const b = $('branchLine');
+  if(b) b.classList.toggle('lit', !!on);
+}
+
+function buildRoster(){
+  const wrap = $('agentRoster');
+  wrap.innerHTML = '';
+  AGENTS.forEach(a=>{
+    const row = el('div','roster-item');
+    row.dataset.key = a.key;
+    row.innerHTML = `<span class="dot"></span><span>${a.label}</span><span class="role">${a.role}</span>`;
+    wrap.appendChild(row);
+  });
+}
+
+/* =========================================================================
+   API CALL WITH RETRY
+========================================================================= */
+async function callAgent(agentKey, system, user, maxTokens){
+  maxTokens = maxTokens || 1000;
+  setActiveAgent(agentKey);
+  const agentMeta = AGENTS.find(a=>a.key===agentKey);
+  log((agentMeta?agentMeta.label:agentKey)+' — request sent…', 'agent');
+
+  state.callCounts[agentKey] = (state.callCounts[agentKey]||0)+1;
+  state.totalCalls++;
+  $('statCalls').textContent = state.totalCalls;
+
+  const maxAttempts = 3;
+  let lastErr = null;
+  for(let attempt=1; attempt<=maxAttempts; attempt++){
+    try{
+      const resp = await fetch(API_URL, {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          model: MODEL,
+          max_tokens: 1000,
+          system: system,
+          messages: [{role:'user', content: user}]
+        })
+      });
+      if(!resp.ok){
+        const errText = await resp.text().catch(()=> '');
+        throw new Error('HTTP '+resp.status+' '+errText.slice(0,180));
+      }
+      const data = await resp.json();
+      const text = (data.content||[])
+        .filter(b=>b.type==='text')
+        .map(b=>b.text)
+        .join('\n')
+        .trim();
+      if(!text) throw new Error('Empty response body');
+      log((agentMeta?agentMeta.label:agentKey)+' — response received ('+text.length+' chars)', 'ok');
+      return text;
+    } catch(e){
+      lastErr = e;
+      state.retries++;
+      $('statRetries').textContent = state.retries;
+      log((agentMeta?agentMeta.label:agentKey)+' — attempt '+attempt+' failed: '+e.message, 'warn');
+      if(attempt < maxAttempts){
+        await sleep(500 * Math.pow(2, attempt-1));
+      }
+    }
+  }
+  log((agentMeta?agentMeta.label:agentKey)+' — all retries exhausted. Aborting run.', 'err');
+  throw lastErr || new Error('Unknown failure');
+}
+
+/* =========================================================================
+   AGENT SYSTEM PROMPTS
+========================================================================= */
+const SYS = {
+  planner: `You are the Planner agent inside an autonomous data-insight pipeline. You receive a plain-English description of a dataset (and optional business context) — no raw data file exists. Your job is to scope the analysis before anyone writes a report.
+
+Produce a concise analysis plan covering:
+1. The 4-6 highest-value insight categories worth investigating given the described columns, scale, and domain.
+2. Specific trends, segments, correlations, or anomalies to look for, grounded in the actual fields described.
+3. The section structure the final insight report should follow.
+
+Rules:
+- Do not ask clarifying questions and do not request raw data — reason only from what was described.
+- Be concrete and specific to this dataset, not generic advice that could apply to any dataset.
+- Plain text, simple numbering, no markdown headers. Keep it under 250 words.`,
+
+  executor: `You are the Executor agent inside an autonomous data-insight pipeline. You receive the Planner's analysis plan and the original dataset description. Write the first draft of a polished data-insight report.
+
+Since no raw data file is available, reason plausibly and consistently from the described columns, scale, and domain to produce realistic, illustrative findings, trends, and recommendations. Frame numeric findings as illustrative analysis grounded in the described data characteristics, not as fabricated ground-truth figures.
+
+Structure exactly as:
+EXECUTIVE SUMMARY
+KEY FINDINGS (3-5 bullet-style findings)
+TRENDS & PATTERNS
+RECOMMENDATIONS
+
+Write in clear, confident business language. Keep the full draft under 480 words.`,
+
+  evaluator: `You are the Evaluator agent inside an autonomous data-insight pipeline. You score a draft insight report on a composite 0-10 scale, weighing three dimensions equally:
+- Insight Quality & Depth: are findings non-obvious and genuinely useful?
+- Accuracy & Rigor: is the reasoning logically sound and consistent with the stated dataset?
+- Clarity & Business Readability: is it well-structured and executive-friendly?
+
+Respond in EXACTLY this format, nothing else:
+SCORE: <one number, one decimal place, e.g. 7.2>
+QUALITY: <1-2 sentence assessment>
+ACCURACY: <1-2 sentence assessment>
+CLARITY: <1-2 sentence assessment>
+REASONING: <2-3 sentence justification for the composite score>
+
+Be a strict, discerning evaluator. Do not inflate scores — reserve 9-10 for genuinely exceptional, publication-ready work. A first draft should rarely exceed 7.`,
+
+  critic: `You are the Critic agent inside an autonomous data-insight pipeline. You receive the current draft and the Evaluator's assessment. Identify the SINGLE most impactful weakness holding the score back, and give 2-3 concrete, surgical fixes for the next revision.
+
+Point to specific sections or claims where possible. Do not rewrite the report yourself — only critique. Do not repeat the Evaluator's scores back verbatim; add new, actionable diagnosis. Keep it under 120 words.`,
+
+  improver: `You are the Improver agent inside an autonomous data-insight pipeline. You receive the current draft, the Evaluator's scores and reasoning, and the Critic's specific critique. Produce a revised, complete draft that directly addresses the critique while preserving whatever already scored well.
+
+Output ONLY the complete revised report text, using the same section structure (EXECUTIVE SUMMARY / KEY FINDINGS / TRENDS & PATTERNS / RECOMMENDATIONS). No preamble, no explanation of what you changed. Keep under 520 words.`,
+
+  safety: `You are the Safety Monitor agent inside an autonomous data-insight pipeline. Scan the given draft for:
+- Exact statistics or figures presented with false certainty as if from real data.
+- Unsupported claims that overstate confidence.
+- Any harmful, biased, or discriminatory framing (e.g. profiling protected groups negatively).
+
+Illustrative, clearly-framed estimates consistent with the described dataset are acceptable and should be marked CLEAR — this pipeline works from a dataset description, not raw data, so reasonable illustrative figures are expected.
+
+Respond in EXACTLY this format:
+STATUS: <CLEAR or FLAGGED>
+NOTES: <1-2 sentence explanation>`,
+
+  memory: `You are the Memory Manager agent inside an autonomous data-insight pipeline. You receive the running round-by-round history (scores and critiques) of this session. Write a short memory note — 2-3 sentences — distilling the recurring pattern of weakness across rounds, or noting what has now been resolved. This note is shown on the dashboard to help interpret the trajectory, not fed directly back into the Improver's instructions.
+
+Be specific and reference the actual trend in scores/critiques given, not generic advice.`,
+
+  final: `You are the Final Reviewer agent, the last step in an autonomous data-insight pipeline. You receive the final draft, the reason the loop stopped, and the round-by-round history. Produce:
+
+1. A final polished version of the report — light copyedit only (grammar, flow, tightening), do not change substantive claims or structure.
+2. A 2-3 sentence executive verdict on whether this report is ready to ship to stakeholders as-is, given the stop reason.
+
+Respond in EXACTLY this format:
+FINAL REPORT:
+<full polished report text, same section structure>
+
+VERDICT:
+<verdict text>`
+};
+
+function buildUser(kind, ctx){
+  if(kind==='planner'){
+    return `DATASET DESCRIPTION:\n${ctx.dataset}\n\nBUSINESS CONTEXT:\n${ctx.context || '(none provided)'}`;
+  }
+  if(kind==='executor'){
+    return `DATASET DESCRIPTION:\n${ctx.dataset}\n\nBUSINESS CONTEXT:\n${ctx.context || '(none provided)'}\n\nANALYSIS PLAN FROM PLANNER:\n${ctx.plan}`;
+  }
+  if(kind==='evaluator'){
+    return `DRAFT REPORT TO SCORE:\n${ctx.draft}`;
+  }
+  if(kind==='critic'){
+    return `DRAFT REPORT:\n${ctx.draft}\n\nEVALUATOR'S ASSESSMENT:\n${ctx.evalText}`;
+  }
+  if(kind==='improver'){
+    return `CURRENT DRAFT:\n${ctx.draft}\n\nEVALUATOR'S ASSESSMENT (this round):\n${ctx.evalText}\n\nCRITIC'S FEEDBACK (this round):\n${ctx.critique}`;
+  }
+  if(kind==='safety'){
+    return `DRAFT TO SCAN:\n${ctx.draft}`;
+  }
+  if(kind==='memory'){
+    const hist = ctx.history.map(h=>`Round ${h.round}: score ${h.score}. Critique: ${h.critique}`).join('\n');
+    return `SESSION HISTORY SO FAR:\n${hist}`;
+  }
+  if(kind==='final'){
+    const hist = ctx.history.map(h=>`Round ${h.round}: score ${h.score}`).join(' | ');
+    return `FINAL DRAFT:\n${ctx.draft}\n\nSTOP REASON:\n${ctx.stopReason}\n\nSCORE TRAJECTORY:\n${hist}`;
+  }
+  return '';
+}
+
+/* =========================================================================
+   PARSING HELPERS (parsing the model's own structured text, not scoring rules)
+========================================================================= */
+function parseScore(evalText){
+  const m = evalText.match(/SCORE:\s*([0-9]+(\.[0-9]+)?)/i);
+  if(!m) return null;
+  let v = parseFloat(m[1]);
+  if(isNaN(v)) return null;
+  return Math.max(0, Math.min(10, v));
+}
+function parseSafetyStatus(safetyText){
+  const m = safetyText.match(/STATUS:\s*(CLEAR|FLAGGED)/i);
+  return m ? m[1].toUpperCase() : 'UNKNOWN';
+}
+function parseFinal(finalText){
+  const idx = finalText.toUpperCase().indexOf('VERDICT:');
+  if(idx === -1) return {report: finalText.replace(/^FINAL REPORT:\s*/i,'').trim(), verdict:''};
+  let report = finalText.slice(0, idx).replace(/^FINAL REPORT:\s*/i,'').trim();
+  let verdict = finalText.slice(idx+8).trim();
+  return {report, verdict};
+}
+
+/* =========================================================================
+   UI RENDER: tabs, history, stats
+========================================================================= */
+function setTab(name, content){
+  const panel = $('panel-'+name);
+  if(panel) panel.innerHTML = `<div>${escapeHtml(content)}</div>`;
+}
+function escapeHtml(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function renderHistory(){
+  const wrap = $('historyList');
+  if(state.history.length===0){ wrap.innerHTML = '<div class="empty-state">No rounds completed yet</div>'; return; }
+  wrap.innerHTML = '';
+  state.history.forEach(h=>{
+    const row = el('div','hist-row'+(state.selectedHistRound===h.round?' selected':''));
+    let deltaHtml = '';
+    if(h.delta !== null){
+      const cls = h.delta >= state.plateauDelta ? 'up':'flat';
+      deltaHtml = `<div class="hist-delta ${cls}">${h.delta>=0?'+':''}${h.delta.toFixed(2)} vs previous round</div>`;
+    }
+    row.innerHTML = `
+      <div class="hist-top"><span class="hist-round">ROUND ${h.round}</span><span class="hist-score">${h.score!==null?h.score.toFixed(1):'—'}/10</span></div>
+      ${deltaHtml}
+      <div class="hist-bar-track"><div class="hist-bar-fill" style="width:${(h.score||0)*10}%"></div></div>
+    `;
+    row.onclick = ()=>{
+      state.selectedHistRound = h.round;
+      setTab('draft', h.draft);
+      setTab('eval', h.evalText);
+      setTab('critique', h.critique);
+      if(h.safetyText) setTab('safety', h.safetyText);
+      activateTabButton('draft');
+      renderHistory();
+    };
+    wrap.appendChild(row);
+  });
+  $('statRounds').textContent = state.history.length;
+  const last = state.history[state.history.length-1];
+  $('statScore').textContent = last && last.score!==null ? last.score.toFixed(1) : '—';
+}
+
+function activateTabButton(name){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.tab===name));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active', p.id==='panel-'+name));
+}
+
+document.addEventListener('click', (e)=>{
+  if(e.target.classList && e.target.classList.contains('tab-btn')){
+    activateTabButton(e.target.dataset.tab);
+  }
+});
+
+/* =========================================================================
+   PRESETS
+========================================================================= */
+function loadPreset(kind){
+  const presets = {
+    retail: {
+      dataset: "Retail point-of-sale dataset, ~22,000 rows, columns: transaction_id, store_id, store_region, date, product_category, sku, unit_price, quantity, discount_applied, payment_method, loyalty_member (yes/no).",
+      context: "Merchandising team wants to know which categories and regions are underperforming ahead of the next quarterly buy."
+    },
+    hr: {
+      dataset: "Employee attrition dataset, ~4,200 rows, columns: employee_id, department, job_level, tenure_months, monthly_salary, last_performance_rating, remote_status, manager_id, overtime_hours_avg, attrited (yes/no).",
+      context: "HR leadership wants to understand what's driving attrition in the mid-tenure band before the next engagement survey."
+    },
+    marketing: {
+      dataset: "Digital marketing campaign dataset, ~6,700 rows, columns: campaign_id, channel (email/paid_search/social/display), spend, impressions, clicks, conversions, audience_segment, device_type, campaign_start_date.",
+      context: "Growth team is reallocating next quarter's budget and wants to know which channel/segment combinations are actually driving conversions."
+    }
+  };
+  const p = presets[kind];
+  if(!p) return;
+  $('datasetInput').value = p.dataset;
+  $('contextInput').value = p.context;
+}
+
+/* =========================================================================
+   MAIN ORCHESTRATION LOOP
+========================================================================= */
+async function startRun(){
+  if(state.running) return;
+  const dataset = $('datasetInput').value.trim();
+  if(!dataset){ alert('Please describe the dataset first.'); return; }
+
+  // reset state
+  state = {
+    running:true, history:[], memoryNotes:[], callCounts:{}, totalCalls:0, retries:0,
+    stopReason:null, plan:'', currentDraft:'', finalReport:'', verdict:'',
+    targetScore: parseFloat($('targetScoreInput').value)||8.0,
+    plateauDelta: parseFloat($('plateauDeltaInput').value)||0.3,
+    maxRounds: parseInt($('maxRoundsInput').value)||8,
+    selectedHistRound:null,
+  };
+
+  $('logPanel').innerHTML = '';
+  $('historyList').innerHTML = '<div class="empty-state">No rounds completed yet</div>';
+  ['plan','draft','eval','critique','safety','memory'].forEach(t=>setTab(t, '— pending —'));
+  $('statCalls').textContent='0'; $('statRetries').textContent='0'; $('statRounds').textContent='0'; $('statScore').textContent='—';
+  $('finalSection').classList.remove('show');
+  litBranch(false);
+
+  $('dashGrid').classList.add('show');
+  $('dashSectionTitle').style.display = '';
+  $('dashSectionSub').style.display = '';
+  $('runBtn').disabled = true;
+  $('runBtn').innerHTML = '<span class="spinner"></span> Running…';
+  setStatus('running', 'Running');
+  setRoundIndicator('Initializing pipeline…');
+
+  const ctx = { dataset, context: $('contextInput').value.trim() };
+
+  try{
+    // ---- Planner ----
+    log('Planner agent activated — scoping analysis from dataset description.', 'info');
+    const plan = await callAgent('planner', SYS.planner, buildUser('planner', ctx));
+    state.plan = plan;
+    setTab('plan', plan);
+    activateTabButton('plan');
+
+    // ---- Executor ----
+    log('Executor agent activated — drafting first report.', 'info');
+    const draft0 = await callAgent('executor', SYS.executor, buildUser('executor', {...ctx, plan}));
+    state.currentDraft = draft0;
+    setTab('draft', draft0);
+
+    // ---- Loop ----
+    let round = 0;
+    let prevScore = null;
+    let smallDeltaStreak = 0;
+
+    while(true){
+      round++;
+      setRoundIndicator(`Round ${round} — checking stop condition…`);
+      litBranch(false);
+
+      // Evaluator
+      log(`— Round ${round}: Evaluator scoring current draft —`, 'info');
+      const evalText = await callAgent('evaluator', SYS.evaluator, buildUser('evaluator', {draft: state.currentDraft}));
+      const score = parseScore(evalText);
+      setTab('eval', evalText);
+      log(`Evaluator score: ${score!==null?score.toFixed(1):'unparseable'} / 10`, 'ok');
+
+      // Critic
+      log(`— Round ${round}: Critic diagnosing weak points —`, 'info');
+      const critique = await callAgent('critic', SYS.critic, buildUser('critic', {draft: state.currentDraft, evalText}));
+      setTab('critique', critique);
+
+      const delta = (prevScore!==null && score!==null) ? +(score-prevScore).toFixed(2) : null;
+
+      state.history.push({round, draft: state.currentDraft, score, evalText, critique, safetyText:null, delta});
+      renderHistory();
+
+      // ---- stop checks, in order: plateau, threshold, cap ----
+      if(delta!==null){
+        if(delta < state.plateauDelta) smallDeltaStreak++;
+        else smallDeltaStreak = 0;
+      }
+      const plateauFired = smallDeltaStreak >= 2;
+      const thresholdFired = score!==null && score >= state.targetScore;
+      const capFired = round >= state.maxRounds;
+
+      let firedReason = null;
+      if(plateauFired) firedReason = 'plateau';
+      else if(thresholdFired) firedReason = 'threshold';
+      else if(capFired) firedReason = 'cap';
+
+      if(firedReason){
+        state.stopReason = firedReason;
+        litBranch(true);
+        setActiveAgent('final');
+        log(`Stop condition fired: ${firedReason.toUpperCase()}. Routing to Final Reviewer.`, 'warn');
+        break;
+      }
+
+      // Improver
+      log(`— Round ${round}: Improver revising draft —`, 'info');
+      let newDraft = await callAgent('improver', SYS.improver, buildUser('improver', {draft: state.currentDraft, evalText, critique}));
+
+      // Safety Monitor
+      log(`— Round ${round}: Safety Monitor scanning revision —`, 'info');
+      let safetyText = await callAgent('safety', SYS.safety, buildUser('safety', {draft: newDraft}));
+      let safetyStatus = parseSafetyStatus(safetyText);
+      setTab('safety', safetyText);
+      state.history[state.history.length-1].safetyText = safetyText;
+
+      if(safetyStatus === 'FLAGGED'){
+        log('Safety Monitor flagged the revision — regenerating once with the flag noted.', 'warn');
+        newDraft = await callAgent('improver', SYS.improver, buildUser('improver', {
+          draft: state.currentDraft, evalText,
+          critique: critique + '\n\nAdditional constraint: the previous revision was flagged by the Safety Monitor — ' + safetyText + ' Avoid this in the rewrite.'
+        }));
+      }
+
+      // Memory Manager
+      log(`— Round ${round}: Memory Manager updating session notes —`, 'info');
+      const memNote = await callAgent('memory', SYS.memory, buildUser('memory', {history: state.history}));
+      state.memoryNotes.push({round, note: memNote});
+      setTab('memory', state.memoryNotes.map(m=>`Round ${m.round}: ${m.note}`).join('\n\n'));
+
+      state.currentDraft = newDraft;
+      setTab('draft', newDraft);
+      prevScore = score;
+    }
+
+    // ---- Final Reviewer ----
+    log('Final Reviewer agent activated — producing polished report and verdict.', 'info');
+    const finalText = await callAgent('final', SYS.final, buildUser('final', {draft: state.currentDraft, stopReason: state.stopReason, history: state.history}));
+    const {report, verdict} = parseFinal(finalText);
+    state.finalReport = report || state.currentDraft;
+    state.verdict = verdict;
+
+    renderFinal();
+    log('Pipeline complete. Final report ready.', 'ok');
+    setStatus('done', 'Complete');
+    setRoundIndicator(`Stopped after round ${round} — ${state.stopReason.toUpperCase()}`);
+
+  } catch(err){
+    log('Pipeline aborted: ' + err.message, 'err');
+    setStatus('error', 'Error');
+    setRoundIndicator('Run failed — see activity log');
+  } finally{
+    state.running = false;
+    $('runBtn').disabled = false;
+    $('runBtn').innerHTML = 'Run Pipeline <span class="arrow">→</span>';
+  }
+}
+
+/* =========================================================================
+   FINAL SUMMARY RENDER
+========================================================================= */
+const STOP_LABELS = {
+  plateau: {title:'Stopped — Score Plateaued', detail:'Evaluator score improved by less than the plateau delta for two consecutive rounds, so further iteration was unlikely to add value.'},
+  threshold: {title:'Stopped — Target Threshold Reached', detail:'Evaluator score crossed the target threshold set at interview.'},
+  cap: {title:'Stopped — Hard Iteration Cap', detail:'The safety-fallback iteration cap was reached before a plateau or threshold condition fired.'},
+};
+
+function renderFinal(){
+  $('finalSection').classList.add('show');
+
+  const sl = STOP_LABELS[state.stopReason] || {title:'Stopped', detail:'—'};
+  $('stopReasonLabel').textContent = sl.title;
+  $('stopReasonDetail').textContent = sl.detail + ` (Target ${state.targetScore.toFixed(1)} · Plateau delta ${state.plateauDelta.toFixed(2)} · Cap ${state.maxRounds} rounds)`;
+
+  $('finalReportBody').textContent = state.finalReport;
+  if(state.verdict){
+    $('verdictBox').style.display = 'block';
+    $('verdictBox').textContent = 'Final Reviewer verdict: ' + state.verdict;
+  }
+
+  // performance table
+  const roleMap = {};
+  AGENTS.forEach(a=> roleMap[a.key]=a.role);
+  const tbody = $('perfTableBody');
+  tbody.innerHTML = '';
+  AGENTS.forEach(a=>{
+    const calls = state.callCounts[a.key]||0;
+    if(calls===0) return;
+    const tr = el('tr','');
+    tr.innerHTML = `<td class="name">${a.label}</td><td><span class="perf-badge">${calls}</span></td><td>${a.role}</td>`;
+    tbody.appendChild(tr);
+  });
+
+  // score progression
+  const prog = state.history.map(h=> (h.score!==null? h.score.toFixed(1):'—')).join('  →  ');
+  $('scoreProgression').innerHTML = `<div style="margin-bottom:8px; color:var(--text);">${prog}</div><div style="color:var(--muted-dim); font-size:11px;">${state.history.length} evaluation rounds · ${state.totalCalls} total API calls · ${state.retries} retries</div>`;
+
+  renderArchitecture();
+  renderExplainerCards();
+  renderExtensions();
+  renderPrompts();
+
+  $('finalSection').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function renderArchitecture(){
+  $('archDiagram').textContent =
+`DATASET DESCRIPTION + CONTEXT
+        │
+        ▼
+   [ PLANNER ]  ──  scopes insight categories & report structure
+        │
+        ▼
+   [ EXECUTOR ] ──  writes first full draft report
+        │
+        ▼
+  ┌──────────────────────── LOOP (no fixed count) ────────────────────────┐
+  │                                                                        │
+  │   [ EVALUATOR ] → composite score /10 (quality · accuracy · clarity)   │
+  │         │                                                              │
+  │         ▼                                                              │
+  │    [ CRITIC ] → single highest-impact weakness + fixes                 │
+  │         │                                                              │
+  │    stop check: plateau? → threshold? → hard cap?  ── YES ──┐           │
+  │         │ NO                                               │           │
+  │         ▼                                                  │           │
+  │   [ IMPROVER ] → revised full draft                         │          │
+  │         │                                                   │          │
+  │         ▼                                                   │          │
+  │  [ SAFETY MONITOR ] → CLEAR / FLAGGED (re-improve if flagged)│         │
+  │         │                                                   │          │
+  │         ▼                                                   │          │
+  │ [ MEMORY MANAGER ] → distilled trend note                   │          │
+  │         │                                                   │          │
+  │         └──────────────── back to EVALUATOR ◄───────────────┘          │
+  │                                                              │         │
+  └──────────────────────────────────────────────────────────────┼─────────┘
+                                                                  ▼
+                                                        [ FINAL REVIEWER ]
+                                                     polished report + verdict`;
+}
+
+const AGENT_EXPLAINERS = [
+  {n:'01', k:'planner', t:'Planner', d:'Reads the dataset description and business context once, up front, and decides what is actually worth analyzing — which insight categories matter and how the report should be structured. Nothing downstream runs without this scope.'},
+  {n:'02', k:'executor', t:'Executor', d:'Takes the plan and writes the first complete draft. This is the only agent that produces content from a blank page — every later agent reacts to what it wrote.'},
+  {n:'03', k:'evaluator', t:'Evaluator', d:'Re-scores the current draft every single round on quality, accuracy, and clarity. Its score is the only signal the stop-check logic trusts — nothing is hardcoded.'},
+  {n:'04', k:'critic', t:'Critic', d:'Reads the Evaluator assessment and pinpoints the one change that would move the score most, so the Improver is not guessing at what to fix.'},
+  {n:'05', k:'improver', t:'Improver', d:'Rewrites the full draft using both the Evaluator score reasoning and the Critic specific fix list — this is where state threads forward round to round.'},
+  {n:'06', k:'safety', t:'Safety Monitor', d:'Scans every revision for fabricated certainty or unsupported claims before it re-enters the loop, and triggers a one-time re-generation if something is flagged.'},
+  {n:'07', k:'memory', t:'Memory Manager', d:'Distills the running history into a short trend note each round — surfaced on the dashboard so a human can see whether the same weakness keeps recurring.'},
+  {n:'08', k:'final', t:'Final Reviewer', d:'Only runs once, after a stop condition fires. Light copyedit of the winning draft plus an honest verdict on whether it is actually ready to ship.'},
+];
+function renderExplainerCards(){
+  const wrap = $('agentExplainerCards');
+  wrap.innerHTML = '';
+  AGENT_EXPLAINERS.forEach(a=>{
+    const c = el('div','info-card');
+    c.innerHTML = `<div class="n">${a.n}</div><h4>${a.t}</h4><p>${a.d}</p>`;
+    wrap.appendChild(c);
+  });
+}
+
+const EXTENSIONS = [
+  {ico:'▸', t:'Real data ingestion', d:'Swap the plain-English dataset description for actual uploaded CSV/JSON, computing real summary statistics before the Planner runs, so the Executor grounds findings in real numbers instead of illustrative ones.'},
+  {ico:'▸', t:'Human-in-the-loop checkpoints', d:'Pause after the Critic stage and let a person approve, edit, or override the critique before the Improver runs — turns full autonomy into supervised autonomy.'},
+  {ico:'▸', t:'Multi-report branching', d:'Run the Planner once, then fan out parallel Executor/loop branches for different audiences (exec summary vs. technical appendix), each with its own stop condition.'},
+  {ico:'▸', t:'Tool-using agents', d:'Give the Executor a code-execution tool to actually compute statistics against uploaded data, and let the Safety Monitor call a fact-checking tool instead of reasoning from text alone.'},
+  {ico:'▸', t:'Persistent memory across sessions', d:'Store the Memory Manager notes in a database keyed by dataset domain, so future runs on similar datasets start with lessons already learned.'},
+];
+function renderExtensions(){
+  const wrap = $('extendList');
+  wrap.innerHTML = '';
+  EXTENSIONS.forEach(e=>{
+    const item = el('div','extend-item');
+    item.innerHTML = `<div class="ico">${e.ico}</div><div class="body"><b>${e.t}</b><span>${e.d}</span></div>`;
+    wrap.appendChild(item);
+  });
+}
+
+const FURTHER_PROMPTS = [
+  '"Add a human-approval gate after the Critic stage that pauses the loop and shows me the proposed fix before the Improver runs."',
+  '"Extend this pipeline with a Tool-Use agent that can execute Python against an uploaded CSV to compute real statistics instead of illustrative ones."',
+  '"Turn the single Evaluator into a panel of three specialist evaluators (rigor, narrative, executive-readability) and average their scores with disagreement flagged."',
+  '"Add a branch where, if the Safety Monitor flags the same issue twice, the loop escalates to a human reviewer instead of silently retrying."',
+  '"Generalize this orchestration shell so the same Planner → Executor → Evaluator/Critic/Improver loop can be reused for a code-review agent instead of a data-insight agent."',
+];
+function renderPrompts(){
+  const wrap = $('promptList');
+  wrap.innerHTML = '';
+  FURTHER_PROMPTS.forEach(p=>{
+    const item = el('div','prompt-item');
+    item.innerHTML = `${p}<button class="copy-btn" onclick="copyPrompt(this)">Copy</button>`;
+    item.dataset.raw = p.replace(/^"|"$/g,'');
+    wrap.appendChild(item);
+  });
+}
+function copyPrompt(btn){
+  const raw = btn.parentElement.dataset.raw;
+  navigator.clipboard && navigator.clipboard.writeText(raw).then(()=>{
+    const orig = btn.textContent; btn.textContent='Copied'; setTimeout(()=>btn.textContent=orig, 1200);
+  }).catch(()=>{});
+}
+
+/* =========================================================================
+   INIT
+========================================================================= */
+buildDiagram();
+buildRoster();
+</script>
+</body>
+</html>
