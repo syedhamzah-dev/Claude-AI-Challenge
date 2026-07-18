@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python vs JavaScript vs Go vs Rust — Career Decision Builder</title>
+<style>
+  :root{
+    --bg:#0b0d12;
+    --bg-panel:#12151c;
+    --bg-card:#161a23;
+    --border:#242938;
+    --border-soft:#1c202b;
+    --text:#e8eaf0;
+    --text-dim:#9aa1b4;
+    --text-faint:#5c6377;
+    --accent:#7dd3fc;
+    --accent2:#c4b5fd;
+    --good:#4ade80;
+    --warn:#fbbf24;
+    --python:#5aa9e6;
+    --python2:#f5d76e;
+    --js:#f0d94b;
+    --go:#5fd1c9;
+    --rust:#e0713c;
+    --radius:14px;
+    --serif:'Georgia','Iowan Old Style',ui-serif,serif;
+    --mono:'SF Mono','Menlo','Consolas',monospace;
+    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:radial-gradient(ellipse at top, #131722 0%, #0b0d12 55%);
+    color:var(--text);
+    font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;
+    padding:0 0 80px;
+  }
+  .wrap{max-width:980px;margin:0 auto;padding:0 20px;}
+  header.top{
+    padding:56px 20px 32px;
+    text-align:center;
+    border-bottom:1px solid var(--border-soft);
+    margin-bottom:36px;
+  }
+  header.top h1{
+    font-family:var(--serif);
+    font-weight:400;
+    font-size:clamp(28px,4.5vw,42px);
+    margin:0 0 12px;
+    letter-spacing:-0.01em;
+  }
+  header.top .accent-word{color:var(--accent);font-style:italic;}
+  header.top p{
+    color:var(--text-dim);
+    font-size:15px;
+    max-width:620px;
+    margin:0 auto;
+    line-height:1.6;
+  }
+  .badge-row{
+    display:flex;gap:8px;justify-content:center;margin-top:18px;flex-wrap:wrap;
+  }
+  .badge{
+    font-family:var(--mono);
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    color:var(--text-dim);
+    border:1px solid var(--border);
+    padding:5px 10px;
+    border-radius:20px;
+  }
+
+  section.panel{
+    background:var(--bg-panel);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:26px 24px;
+    margin-bottom:22px;
+  }
+  h2.section-title{
+    font-family:var(--serif);
+    font-weight:400;
+    font-size:19px;
+    margin:0 0 4px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .section-sub{color:var(--text-faint);font-size:13px;margin:0 0 20px;}
+
+  /* WEIGHT SLIDERS */
+  .weight-row{margin-bottom:18px;}
+  .weight-row:last-child{margin-bottom:0;}
+  .weight-label{
+    display:flex;justify-content:space-between;align-items:baseline;
+    margin-bottom:8px;font-size:14px;
+  }
+  .weight-label .name{color:var(--text);font-weight:600;}
+  .weight-label .pct{font-family:var(--mono);color:var(--accent);font-size:13px;}
+  input[type=range]{
+    -webkit-appearance:none;width:100%;height:6px;border-radius:3px;
+    background:var(--border);outline:none;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none;width:18px;height:18px;border-radius:50%;
+    background:var(--accent);cursor:pointer;border:3px solid var(--bg-panel);
+    box-shadow:0 0 0 1px var(--accent);
+  }
+  input[type=range]::-moz-range-thumb{
+    width:18px;height:18px;border-radius:50%;
+    background:var(--accent);cursor:pointer;border:3px solid var(--bg-panel);
+  }
+  .weight-desc{font-size:12px;color:var(--text-faint);margin-top:5px;}
+  .reset-btn{
+    background:none;border:1px solid var(--border);color:var(--text-dim);
+    font-family:var(--mono);font-size:12px;padding:8px 14px;border-radius:8px;
+    cursor:pointer;margin-top:8px;transition:all .15s;
+  }
+  .reset-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+  .weight-warning{
+    display:none;
+    background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.3);
+    color:var(--warn);padding:12px 14px;border-radius:10px;font-size:13px;
+    margin-top:14px;
+  }
+  .weight-warning.show{display:block;}
+
+  /* RESULTS */
+  #results-empty{
+    text-align:center;padding:40px 20px;color:var(--text-faint);font-size:14px;
+  }
+  .rank-card{
+    background:var(--bg-card);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:20px 22px;
+    margin-bottom:14px;
+    transition:border-color .2s;
+  }
+  .rank-card[data-rank="0"]{border-color:rgba(125,211,252,0.4);}
+  .rank-top{display:flex;align-items:center;gap:16px;cursor:pointer;}
+  .rank-num{
+    font-family:var(--serif);font-size:26px;color:var(--text-faint);
+    width:32px;flex-shrink:0;
+  }
+  .rank-card[data-rank="0"] .rank-num{color:var(--accent);}
+  .lang-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+  .rank-info{flex:1;min-width:0;}
+  .rank-info .lname{font-size:17px;font-weight:600;}
+  .rank-info .ltag{font-size:12px;color:var(--text-faint);font-family:var(--mono);}
+  .rank-score{
+    font-family:var(--mono);font-size:20px;font-weight:600;color:var(--accent);
+    width:64px;text-align:right;flex-shrink:0;
+  }
+  .rank-chevron{color:var(--text-faint);font-size:14px;transition:transform .2s;flex-shrink:0;}
+  .rank-card.open .rank-chevron{transform:rotate(90deg);}
+  .rank-bar-track{
+    height:7px;background:var(--border-soft);border-radius:4px;margin-top:14px;overflow:hidden;
+  }
+  .rank-bar-fill{height:100%;border-radius:4px;transition:width .4s ease;}
+
+  .rank-detail{
+    display:none;margin-top:20px;padding-top:18px;border-top:1px solid var(--border-soft);
+  }
+  .rank-card.open .rank-detail{display:block;}
+  .crit-block{margin-bottom:16px;}
+  .crit-block:last-child{margin-bottom:0;}
+  .crit-head{
+    display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;
+  }
+  .crit-head .cname{font-size:13px;font-weight:600;color:var(--text);}
+  .crit-head .cscore{
+    font-family:var(--mono);font-size:12px;color:var(--text-dim);
+    background:var(--bg-panel);padding:2px 8px;border-radius:10px;
+    border:1px solid var(--border);
+  }
+  .crit-fact{
+    font-size:13px;color:var(--text-dim);line-height:1.55;margin:0;
+  }
+  .cite{
+    font-family:var(--mono);font-size:10px;color:var(--accent);
+    vertical-align:super;cursor:pointer;
+  }
+  .synth-note{
+    font-size:11px;color:var(--text-faint);font-style:italic;margin-top:4px;
+  }
+
+  /* SOURCES PANEL */
+  details.collapsible{
+    background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--radius);
+    margin-bottom:22px;overflow:hidden;
+  }
+  details.collapsible summary{
+    padding:20px 24px;cursor:pointer;list-style:none;
+    display:flex;align-items:center;justify-content:space-between;
+    font-family:var(--serif);font-size:18px;
+  }
+  details.collapsible summary::-webkit-details-marker{display:none;}
+  details.collapsible summary .arrow{
+    font-family:var(--mono);font-size:13px;color:var(--text-faint);transition:transform .2s;
+  }
+  details.collapsible[open] summary .arrow{transform:rotate(90deg);}
+  .collapsible-body{padding:0 24px 24px;}
+
+  .source-item{
+    display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border-soft);font-size:13px;
+  }
+  .source-item:last-child{border-bottom:none;}
+  .source-num{
+    font-family:var(--mono);color:var(--accent);flex-shrink:0;width:26px;
+  }
+  .source-item a{color:var(--text);text-decoration:none;font-weight:500;}
+  .source-item a:hover{color:var(--accent);text-decoration:underline;}
+  .source-item .stype{color:var(--text-faint);font-size:11px;display:block;margin-top:2px;}
+
+  .research-text p{font-size:13.5px;color:var(--text-dim);line-height:1.7;}
+  .research-text h4{
+    font-size:13px;color:var(--text);margin:18px 0 6px;text-transform:uppercase;
+    letter-spacing:0.04em;font-family:var(--mono);
+  }
+  .conflict-box{
+    background:rgba(196,181,253,0.06);border:1px solid rgba(196,181,253,0.2);
+    border-radius:10px;padding:14px 16px;margin:10px 0;font-size:13px;color:var(--text-dim);
+  }
+  .conflict-box b{color:var(--accent2);}
+
+  footer.disclaimer{
+    text-align:center;color:var(--text-faint);font-size:12px;padding:20px;line-height:1.6;
+  }
+
+  @media (max-width:600px){
+    .rank-score{width:52px;font-size:17px;}
+    section.panel{padding:20px 16px;}
+    header.top{padding:40px 16px 26px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <h1>Python vs JavaScript vs Go vs <span class="accent-word">Rust</span></h1>
+    <p>Built for a computer science student choosing which language to specialize in for career prospects — especially Data Science / AI roles. Adjust the sliders below to match your own priorities and watch the ranking update live.</p>
+    <div class="badge-row">
+      <span class="badge">4 criteria</span>
+      <span class="badge">12 cited sources</span>
+      <span class="badge">Live weighting</span>
+      <span class="badge">India + global data</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <section class="panel" id="loading-state">
+    <div style="text-align:center;color:var(--text-faint);font-size:13px;padding:10px;">Loading comparison engine…</div>
+  </section>
+
+  <section class="panel" id="weights-panel" style="display:none;">
+    <h2 class="section-title">⚖️ Your priorities</h2>
+    <p class="section-sub">Drag each slider to reflect how much that factor matters to you. Weights are automatically normalized — they don't need to add up to 100.</p>
+
+    <div id="weight-sliders"></div>
+
+    <button class="reset-btn" id="reset-weights">Reset to equal weighting</button>
+    <div class="weight-warning" id="weight-warning">All priorities are set to zero — showing an unweighted view. Move at least one slider to get a ranked result.</div>
+  </section>
+
+  <section class="panel" id="results-panel" style="display:none;">
+    <h2 class="section-title">🏆 Ranked result</h2>
+    <p class="section-sub">Click any language to see the underlying data and citations behind its score.</p>
+    <div id="results-empty" style="display:none;">No ranking to show — adjust your priorities above.</div>
+    <div id="results-list"></div>
+  </section>
+
+  <details class="collapsible" id="research-panel">
+    <summary>🔍 How this was researched <span class="arrow">›</span></summary>
+    <div class="collapsible-body research-text">
+      <p>This comparison combines <b style="color:var(--text)">two kinds of numbers</b>: (1) directly sourced facts — TIOBE percentages, Stack Overflow survey figures, GitHub Octoverse contributor counts, and Glassdoor/Indeed/AmbitionBox salary data — quoted or closely paraphrased from the cited pages, and (2) <b style="color:var(--text)">1–10 "synthesized" ratings</b>, which are this tool's own judgment calls that translate those raw facts into a comparable scale. The synthesized ratings are clearly labeled in each language's detail view and are not themselves sourced numbers — they're an analyst's read of the sourced facts sitting next to them.</p>
+
+      <h4>Conflicts between sources</h4>
+      <div class="conflict-box"><b>"Most popular" means different things.</b> TIOBE (search-engine mentions), Stack Overflow (self-reported usage), and GitHub Octoverse (contributor/repo counts) all rank languages differently. JavaScript leads Stack Overflow's usage survey (66%) and Octoverse's new-repo count, while Python leads TIOBE. This tool reports all three rather than picking one "winner" metric.</div>
+      <div class="conflict-box"><b>Rust salary data has a small sample size.</b> Glassdoor's India figure for Rust developers (₹12L average) is based on far fewer submitted salaries than Python or Node.js listings (dozens vs. hundreds), so it's noisier and skews toward senior/specialist roles. This is flagged directly in Rust's job-market detail.</div>
+      <div class="conflict-box"><b>Go's TIOBE ranking dropped</b> from #7 to #13 between July 2025 and July 2026, which could misleadingly suggest declining relevance. Industry commentary (cited) notes this reflects search/discussion volume, not job-market abandonment — Go remains a standard choice for cloud infrastructure and APIs.</div>
+
+      <h4>What wasn't independently verified</h4>
+      <p>Salary figures for India are drawn from aggregator sites (Glassdoor, AmbitionBox via secondary write-ups, Indeed) rather than government wage statistics, and reflect self-reported submissions. Package-registry counts (PyPI, crates.io) are point-in-time snapshots from the cited dates and will drift over time. No numbers in this tool were invented — every score in a detail panel traces to a citation in the Sources panel below.</p>
+    </div>
+  </details>
+
+  <details class="collapsible" id="sources-panel">
+    <summary>📚 Sources <span class="arrow">›</span></summary>
+    <div class="collapsible-body" id="sources-list"></div>
+  </details>
+
+</div>
+
+<footer class="disclaimer">
+  Built as a decision-support tool, not financial or career advice. Job markets and salaries shift quickly — verify current figures before making major decisions. Data current as of July 2026.
+</footer>
+
+<script>
+(function(){
+
+  // ---------- DATA ----------
+  const sources = [
+    {id:1, name:"Stack Overflow 2025 Developer Survey — Technology", url:"https://survey.stackoverflow.co/2025/technology", type:"Primary survey · 49,000+ developers"},
+    {id:2, name:"TechRepublic — TIOBE Index for July 2026", url:"https://www.techrepublic.com/article/news-tiobe-index-language-rankings/", type:"Reporting on TIOBE Programming Community Index"},
+    {id:3, name:"GitHub Blog — Octoverse 2025", url:"https://github.blog/news-insights/octoverse/octoverse-a-new-developer-joins-github-every-second-as-ai-leads-typescript-to-1/", type:"Primary platform data · 180M+ developers"},
+    {id:4, name:"upGrad — Python Developer Salary in India 2026", url:"https://www.upgrad.com/blog/python-developer-salary-india-freshers-experienced/", type:"Aggregates AmbitionBox & Glassdoor India data"},
+    {id:5, name:"Glassdoor India — Node.js Developer Salary", url:"https://www.glassdoor.co.in/Salaries/node-js-developer-salary-SRCH_KO0,17.htm", type:"Self-reported salary data, India"},
+    {id:6, name:"Indeed India — Golang Developer Salaries", url:"https://in.indeed.com/career/golang-developer/salaries", type:"Job-market salary data, India"},
+    {id:7, name:"Glassdoor India — Golang Developer Salary", url:"https://www.glassdoor.co.in/Salaries/golang-developer-salary-SRCH_KO0,16.htm", type:"Self-reported salary data, India"},
+    {id:8, name:"Glassdoor India — Rust Developer Salary", url:"https://www.glassdoor.co.in/Salaries/rust-developer-salary-SRCH_KO0,14.htm", type:"Self-reported salary data, India (small sample)"},
+    {id:9, name:"PyPI — The Python Package Index", url:"https://pypi.org/", type:"Official registry stats"},
+    {id:10, name:"00f.net — The State of the Rust Dependency Ecosystem", url:"https://00f.net/2025/10/17/state-of-the-rust-ecosystem/", type:"Independent analysis of 200,650 crates.io packages, Oct 2025"},
+    {id:11, name:"Medium (D. Y. Pratama) — Golang's True Rivals", url:"https://dimasyotama.medium.com/golangs-true-rivals-why-comparing-go-to-node-js-and-python-misses-the-mark-414935ec7284", type:"Technical comparison, Go vs Rust learning curve"},
+    {id:12, name:"SlideShare (DataMites) — Python vs Other Languages: What to Learn in 2025", url:"https://www.slideshare.net/slideshow/python-vs-other-languages-what-to-learn-in-2025-pptx/280651580", type:"Industry write-up on language ease-of-learning"}
+  ];
+
+  const criteria = [
+    {id:"job", name:"Job Market Demand & Salary", desc:"Volume of openings plus India/global pay level"},
+    {id:"learn", name:"Learning Curve for a Student", desc:"Higher = faster to reach working proficiency"},
+    {id:"eco", name:"Data Science / AI Ecosystem", desc:"Libraries, tooling, and AI-repository presence"},
+    {id:"comm", name:"Community & Learning Resources", desc:"Size of community, tutorials, package registry"}
+  ];
+
+  const languages = [
+    {
+      id:"python", name:"Python", tag:"Interpreted · general-purpose · data/AI leader", color:"var(--python)",
+      scores:{job:9, learn:9, eco:10, comm:9},
+      facts:{
+        job:[
+          `TIOBE Index ranks Python #1 overall at 18.94% (July 2026); Stack Overflow's 2025 survey notes a 7-point YoY usage jump, calling it "the go-to language for AI, data science, and back-end development." <span class="cite" data-src="1,2">[1,2]</span>`,
+          `In India, average full-stack Python developer salary is around ₹4L/year, ranging from ₹3.2L (fresher) to ₹13.1L (senior), per AmbitionBox/Glassdoor data compiled by upGrad. <span class="cite" data-src="4">[4]</span>`
+        ],
+        learn:[
+          `Widely characterized in industry write-ups as excelling "in simplicity and readability, making it ideal for quick development and prototyping" — a common reason it's the default first language in most CS programs. <span class="cite" data-src="12">[12]</span>`
+        ],
+        eco:[
+          `PyPI hosts 763,130+ published projects (official registry count, March 2026). <span class="cite" data-src="9">[9]</span>`,
+          `GitHub Octoverse 2025 attributes 582,196 new AI repositories to Python — more than any other language — alongside dominance of pandas, NumPy, scikit-learn, and PyTorch in that ecosystem. <span class="cite" data-src="3">[3]</span>`
+        ],
+        comm:[
+          `Python added ~850,579 GitHub contributors in the 2025 period (+48.78% YoY) and is essentially tied with JavaScript for most new repositories created (9.26M vs. JS's 9.34M). <span class="cite" data-src="3">[3]</span>`
+        ]
+      }
+    },
+    {
+      id:"js", name:"JavaScript / Node.js", tag:"Interpreted · web & backend · most widely used", color:"var(--js)",
+      scores:{job:8, learn:6, eco:3, comm:9},
+      facts:{
+        job:[
+          `JavaScript is the single most-used language among all developers surveyed — 66% usage in Stack Overflow's 2025 survey — though it ranks lower on TIOBE (#6, 2.72%, July 2026) since that index measures search/discussion volume rather than raw usage. <span class="cite" data-src="1,2">[1,2]</span>`,
+          `Node.js developer salaries in India average roughly ₹4.3L–₹5.5L/year, with entry-level around ₹4L and 10–20 year veterans averaging ₹17.7L. <span class="cite" data-src="5">[5]</span>`
+        ],
+        learn:[
+          `JavaScript's syntax is approachable for beginners, but async/callback patterns, the npm module ecosystem, and rapid framework churn add a moderate learning curve beyond basic scripts. <span class="synth-note">Analyst characterization based on general ecosystem observation, not a single cited benchmark.</span>`
+        ],
+        eco:[
+          `Minimal presence in core data-science workflows — libraries like TensorFlow.js exist but remain a small niche. GitHub Octoverse attributes the bulk of new AI repositories to Python, not JavaScript. <span class="cite" data-src="3">[3]</span>`
+        ],
+        comm:[
+          `JavaScript created 9,345,046 new GitHub repositories (Sep 2024–Aug 2025) — narrowly ahead of Python — and added ~427,148 contributors (+24.79% YoY); it remains the most-used language in Stack Overflow's 2025 survey at 66%. <span class="cite" data-src="1,3">[1,3]</span>`
+        ]
+      }
+    },
+    {
+      id:"go", name:"Go (Golang)", tag:"Compiled · cloud & infrastructure · Google-backed", color:"var(--go)",
+      scores:{job:6, learn:8, eco:3, comm:5},
+      facts:{
+        job:[
+          `Go fell from #7 to #13 on the TIOBE Index between July 2025 and July 2026 — commentary attributes this to search-volume shifts rather than a decline in real-world adoption; Go remains standard for cloud APIs, network services, and infrastructure tooling. <span class="cite" data-src="2">[2]</span>`,
+          `India salary data shows Golang developers averaging ₹6.3L–₹7.1L/year (Glassdoor, Indeed) — higher than Python or Node.js averages — with senior roles averaging ₹13L. <span class="cite" data-src="6,7">[6,7]</span>`
+        ],
+        learn:[
+          `Go was "intentionally simpler, aiming for faster onboarding and developer productivity," per a direct technical comparison against Rust — a notably shallower curve than Rust's ownership model. <span class="cite" data-src="11">[11]</span>`
+        ],
+        eco:[
+          `Minimal data-science ecosystem — libraries such as Gonum exist, but nothing comparable to Python's pandas/NumPy/scikit-learn stack. Go does not appear among the languages GitHub Octoverse associates with 2025's AI-repository growth. <span class="cite" data-src="3">[3]</span>`
+        ],
+        comm:[
+          `Go's community is smaller than Python's or JavaScript's — it isn't among the six languages (Python, JavaScript, TypeScript, Java, C++, C#) that account for ~80% of new GitHub repositories in 2025. <span class="cite" data-src="3">[3]</span>`
+        ]
+      }
+    },
+    {
+      id:"rust", name:"Rust", tag:"Compiled · systems programming · most admired", color:"var(--rust)",
+      scores:{job:4, learn:3, eco:4, comm:6},
+      facts:{
+        job:[
+          `Rust entered the TIOBE Index top 10 for the first time in July 2026 (#10, 1.34%), climbing from #18 a year earlier, and has been Stack Overflow's "most admired" language for 9 consecutive years (72% approval, 2025 survey). <span class="cite" data-src="1,2">[1,2]</span>`,
+          `Rust shows the highest average India salary of the four — ₹12,00,000/year on Glassdoor — but this is based on a much smaller sample than Python or Node.js listings, and reflects a specialized, lower-volume job market (Bengaluru-specific listings average ₹20L on very few data points). <span class="cite" data-src="8">[8]</span>`
+        ],
+        learn:[
+          `Rust "has a significantly steeper learning curve … primarily due to its complex syntax and strict memory management rules (ownership, borrow checker)," per direct comparison with Go. <span class="cite" data-src="11">[11]</span>`
+        ],
+        eco:[
+          `Young data-science ecosystem — crates.io hosted roughly 200,650 published crates as of October 2025 per independent analysis, with ML crates like linfa and candle emerging but far less mature than Python's stack; Rust is more often used underneath AI/data tooling for performance than for day-to-day analysis itself. <span class="cite" data-src="10">[10]</span>`
+        ],
+        comm:[
+          `Smaller in absolute size than Python's or JavaScript's communities and not yet among GitHub's top languages by new repositories, but highly engaged — crates.io traffic reached 1.2 billion downloads in a single day per the same analysis. <span class="cite" data-src="10">[10]</span>`
+        ]
+      }
+    }
+  ];
+
+  // ---------- STATE ----------
+  let weights = {job:25, learn:25, eco:25, comm:25};
+
+  // ---------- RENDER: SOURCES ----------
+  function renderSources(){
+    const el = document.getElementById('sources-list');
+    el.innerHTML = sources.map(s => `
+      <div class="source-item" id="src-${s.id}">
+        <div class="source-num">[${s.id}]</div>
+        <div>
+          <a href="${s.url}" target="_blank" rel="noopener">${s.name}</a>
+          <span class="stype">${s.type} · ${s.url}</span>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // ---------- RENDER: WEIGHT SLIDERS ----------
+  function renderSliders(){
+    const el = document.getElementById('weight-sliders');
+    el.innerHTML = criteria.map(c => `
+      <div class="weight-row">
+        <div class="weight-label">
+          <span class="name">${c.name}</span>
+          <span class="pct" id="pct-${c.id}">0%</span>
+        </div>
+        <input type="range" min="0" max="100" value="${weights[c.id]}" id="slider-${c.id}" data-crit="${c.id}">
+        <div class="weight-desc">${c.desc}</div>
+      </div>
+    `).join('');
+
+    criteria.forEach(c => {
+      document.getElementById(`slider-${c.id}`).addEventListener('input', e => {
+        weights[c.id] = parseInt(e.target.value, 10);
+        update();
+      });
+    });
+  }
+
+  function normalizedWeights(){
+    const total = Object.values(weights).reduce((a,b)=>a+b,0);
+    if(total === 0) return null;
+    const norm = {};
+    criteria.forEach(c => norm[c.id] = weights[c.id]/total);
+    return norm;
+  }
+
+  function computeScores(norm){
+    return languages.map(lang => {
+      let total = 0;
+      criteria.forEach(c => { total += lang.scores[c.id] * norm[c.id]; });
+      return {lang, total};
+    }).sort((a,b) => b.total - a.total);
+  }
+
+  // ---------- RENDER: RESULTS ----------
+  function renderResults(){
+    const norm = normalizedWeights();
+    const warningEl = document.getElementById('weight-warning');
+    const emptyEl = document.getElementById('results-empty');
+    const listEl = document.getElementById('results-list');
+
+    // update pct labels
+    const rawTotal = Object.values(weights).reduce((a,b)=>a+b,0);
+    criteria.forEach(c => {
+      const pctEl = document.getElementById(`pct-${c.id}`);
+      if(pctEl) pctEl.textContent = rawTotal === 0 ? '0%' : Math.round((weights[c.id]/rawTotal)*100) + '%';
+    });
+
+    if(!norm){
+      warningEl.classList.add('show');
+      emptyEl.style.display = 'block';
+      listEl.innerHTML = '';
+      return;
+    }
+    warningEl.classList.remove('show');
+    emptyEl.style.display = 'none';
+
+    const ranked = computeScores(norm);
+    const maxScore = 10;
+
+    // preserve open state across re-render
+    const openIds = new Set(
+      Array.from(listEl.querySelectorAll('.rank-card.open')).map(el => el.dataset.id)
+    );
+
+    listEl.innerHTML = ranked.map((r, idx) => {
+      const pct = (r.total / maxScore) * 100;
+      const isOpen = openIds.has(r.lang.id);
+      return `
+      <div class="rank-card ${isOpen ? 'open' : ''}" data-rank="${idx}" data-id="${r.lang.id}">
+        <div class="rank-top" data-toggle="${r.lang.id}">
+          <div class="rank-num">${idx+1}</div>
+          <div class="lang-dot" style="background:${r.lang.color}"></div>
+          <div class="rank-info">
+            <div class="lname">${r.lang.name}</div>
+            <div class="ltag">${r.lang.tag}</div>
+          </div>
+          <div class="rank-score">${r.total.toFixed(1)}</div>
+          <div class="rank-chevron">›</div>
+        </div>
+        <div class="rank-bar-track"><div class="rank-bar-fill" style="width:${pct}%;background:${r.lang.color}"></div></div>
+        <div class="rank-detail">
+          ${criteria.map(c => `
+            <div class="crit-block">
+              <div class="crit-head">
+                <span class="cname">${c.name}</span>
+                <span class="cscore">Synthesized score: ${r.lang.scores[c.id]}/10</span>
+              </div>
+              ${r.lang.facts[c.id].map(f => `<p class="crit-fact">${f}</p>`).join('')}
+            </div>
+          `).join('')}
+        </div>
+      </div>`;
+    }).join('');
+
+    listEl.querySelectorAll('[data-toggle]').forEach(el => {
+      el.addEventListener('click', () => {
+        const card = el.closest('.rank-card');
+        card.classList.toggle('open');
+      });
+    });
+
+    listEl.querySelectorAll('.cite').forEach(el => {
+      el.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const first = el.dataset.src.split(',')[0];
+        const panel = document.getElementById('sources-panel');
+        panel.open = true;
+        const target = document.getElementById(`src-${first}`);
+        if(target){
+          target.scrollIntoView({behavior:'smooth', block:'center'});
+          target.style.background = 'rgba(125,211,252,0.08)';
+          setTimeout(()=>{ target.style.background = ''; }, 1400);
+        }
+      });
+    });
+  }
+
+  function update(){
+    renderResults();
+  }
+
+  document.getElementById('reset-weights').addEventListener('click', () => {
+    weights = {job:25, learn:25, eco:25, comm:25};
+    criteria.forEach(c => {
+      const s = document.getElementById(`slider-${c.id}`);
+      if(s) s.value = 25;
+    });
+    update();
+  });
+
+  // ---------- INIT (simulated graceful load) ----------
+  function init(){
+    try{
+      renderSources();
+      renderSliders();
+      update();
+      document.getElementById('loading-state').style.display = 'none';
+      document.getElementById('weights-panel').style.display = 'block';
+      document.getElementById('results-panel').style.display = 'block';
+    }catch(err){
+      document.getElementById('loading-state').innerHTML =
+        '<div style="color:var(--warn);font-size:13px;">Something went wrong loading the comparison data. Try refreshing the page.</div>';
+      console.error(err);
+    }
+  }
+
+  setTimeout(init, 250);
+})();
+</script>
+</body>
+</html>
